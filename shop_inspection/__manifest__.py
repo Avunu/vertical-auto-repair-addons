@@ -11,7 +11,7 @@
     "version": "18.0.1.3.0",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
-    "website": "https://avu.nu",
+    "website": "https://github.com/Avunu/vertical-auto-repair-addons",
     "license": "AGPL-3",
     "depends": [
         "fleet_vehicle_inspection",

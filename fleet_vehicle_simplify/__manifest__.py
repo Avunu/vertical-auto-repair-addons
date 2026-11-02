@@ -8,7 +8,7 @@
     "version": "18.0.1.0.1",
     "category": "Human Resources/Fleet",
     "author": "Avunu LLC",
-    "website": "https://avu.nu",
+    "website": "https://github.com/Avunu/vertical-auto-repair-addons",
     "license": "AGPL-3",
     "installable": True,
     "depends": [

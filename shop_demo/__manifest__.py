@@ -10,7 +10,7 @@
     "version": "18.0.1.1.0",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
-    "website": "https://avu.nu",
+    "website": "https://github.com/Avunu/vertical-auto-repair-addons",
     "license": "AGPL-3",
     "installable": True,
     # Everything created gets an XML ID, so uninstalling this module removes

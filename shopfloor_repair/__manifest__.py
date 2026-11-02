@@ -7,7 +7,7 @@
     "version": "18.0.1.0.9",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
-    "website": "https://avu.nu",
+    "website": "https://github.com/Avunu/vertical-auto-repair-addons",
     "license": "AGPL-3",
     # This module carries no frontend. The Vue app lives in
     # shopfloor_repair_mobile, which is also where the shopfloor.app record
