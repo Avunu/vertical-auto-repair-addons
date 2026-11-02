@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo noupdate="1">
+    <record id="mail_template_inspection_report" model="mail.template">
+        <field name="name">Repair: Inspection Report</field>
+        <field name="model_id" ref="repair.model_repair_order" />
+        <field
+            name="subject"
+        >{{ object.company_id.name }}: Inspection report for {{ object.vehicle_id.display_name or object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="description">Sends the customer their vehicle inspection report with a portal link</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>
+        Hello <t t-out="object.partner_id.name or ''"/>,
+    </p>
+    <p>
+        We completed the inspection of your vehicle
+        <strong t-out="object.vehicle_id.display_name or ''"/>
+        (repair order <t t-out="object.name or ''"/>).
+        The full report with our findings and photos is attached, and you can
+        also view it online:
+    </p>
+    <p style="margin: 16px 0px;">
+        <a t-att-href="object.get_portal_url()"
+           style="background-color: #875A7B; padding: 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;">
+            View Inspection Report
+        </a>
+    </p>
+    <p>
+        <t t-if="object.count_today">
+            Today's services/concerns: <t t-out="object.count_today"/><br/>
+        </t>
+        <t t-if="object.count_good">
+            Good: <t t-out="object.count_good"/><br/>
+        </t>
+        <t t-if="object.count_attention">
+            Currently need attention: <t t-out="object.count_attention"/><br/>
+        </t>
+        <t t-if="object.count_fail_state">
+            Failed state inspection: <t t-out="object.count_fail_state"/><br/>
+        </t>
+        <t t-if="object.count_future">
+            Will need attention in the future: <t t-out="object.count_future"/><br/>
+        </t>
+    </p>
+    <p>
+        If you have any questions, just reply to this email or give us a call.
+    </p>
+    <p>
+        Thank you,<br/>
+        <t t-out="object.company_id.name or ''"/>
+    </p>
+</div>
+        </field>
+        <field
+            name="report_template_ids"
+            eval="[Command.link(ref('action_report_shop_inspection'))]"
+        />
+        <field name="auto_delete" eval="True" />
+    </record>
+</odoo>

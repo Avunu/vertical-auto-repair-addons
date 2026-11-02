@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+shop_inspection_category_user,shop.inspection.category user,model_shop_inspection_category,fleet.fleet_group_user,1,0,0,0
+shop_inspection_category_manager,shop.inspection.category manager,model_shop_inspection_category,fleet.fleet_group_manager,1,1,1,1
+shop_inspection_condition_user,shop.inspection.condition user,model_shop_inspection_condition,fleet.fleet_group_user,1,0,0,0
+shop_inspection_condition_manager,shop.inspection.condition manager,model_shop_inspection_condition,fleet.fleet_group_manager,1,1,1,1
+shop_inspection_action_user,shop.inspection.action user,model_shop_inspection_action,fleet.fleet_group_user,1,0,0,0
+shop_inspection_action_manager,shop.inspection.action manager,model_shop_inspection_action,fleet.fleet_group_manager,1,1,1,1
+shop_inspection_measurement_spec_user,shop.inspection.measurement.spec user,model_shop_inspection_measurement_spec,fleet.fleet_group_user,1,0,0,0
+shop_inspection_measurement_spec_manager,shop.inspection.measurement.spec manager,model_shop_inspection_measurement_spec,fleet.fleet_group_manager,1,1,1,1
+shop_inspection_measurement_user,shop.inspection.measurement user,model_shop_inspection_measurement,fleet.fleet_group_user,1,0,0,0
+shop_inspection_measurement_manager,shop.inspection.measurement manager,model_shop_inspection_measurement,fleet.fleet_group_manager,1,1,1,1
+shop_inspection_category_stock_user,shop.inspection.category stock user,model_shop_inspection_category,stock.group_stock_user,1,0,0,0
+shop_inspection_condition_stock_user,shop.inspection.condition stock user,model_shop_inspection_condition,stock.group_stock_user,1,0,0,0
+shop_inspection_action_stock_user,shop.inspection.action stock user,model_shop_inspection_action,stock.group_stock_user,1,0,0,0
+shop_inspection_measurement_stock_user,shop.inspection.measurement stock user,model_shop_inspection_measurement,stock.group_stock_user,1,0,0,0
+shop_inspection_measurement_spec_stock_user,shop.inspection.measurement.spec stock user,model_shop_inspection_measurement_spec,stock.group_stock_user,1,0,0,0
+fleet_vehicle_inspection_stock_user,fleet.vehicle.inspection stock user,fleet_vehicle_inspection.model_fleet_vehicle_inspection,stock.group_stock_user,1,0,0,0
+fleet_vehicle_inspection_line_stock_user,fleet.vehicle.inspection.line stock user,fleet_vehicle_inspection.model_fleet_vehicle_inspection_line,stock.group_stock_user,1,0,0,0
+fleet_vehicle_inspection_line_image_stock_user,fleet.vehicle.inspection.line.image stock user,fleet_vehicle_inspection.model_fleet_vehicle_inspection_line_image,stock.group_stock_user,1,0,0,0
+fleet_vehicle_inspection_item_stock_user,fleet.vehicle.inspection.item stock user,fleet_vehicle_inspection.model_fleet_vehicle_inspection_item,stock.group_stock_user,1,0,0,0
+

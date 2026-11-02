@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="fleet_vehicle_inspection_item_form_view" model="ir.ui.view">
+        <field name="name">fleet.vehicle.inspection.item.form (in shop_inspection)</field>
+        <field name="model">fleet.vehicle.inspection.item</field>
+        <field
+            name="inherit_id"
+            ref="fleet_vehicle_inspection.fleet_vehicle_inspection_item_form_view"
+        />
+        <field name="arch" type="xml">
+            <notebook position="before">
+                <group>
+                    <group>
+                        <field name="category_id" />
+                    </group>
+                </group>
+            </notebook>
+            <page name="instruction" position="after">
+                <page name="shop_catalogs" string="Findings Catalog">
+                    <group>
+                        <field name="condition_ids" widget="many2many_tags" />
+                        <field
+                            name="recommended_action_ids"
+                            widget="many2many_tags"
+                        />
+                    </group>
+                </page>
+                <page name="shop_measurements" string="Measurements">
+                    <field name="measurement_spec_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="name" />
+                            <field name="position" />
+                            <field name="uom" />
+                            <field name="spec_min" />
+                            <field name="spec_max" />
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+    <record id="fleet_vehicle_inspection_item_tree_view" model="ir.ui.view">
+        <field name="name">fleet.vehicle.inspection.item.list (in shop_inspection)</field>
+        <field name="model">fleet.vehicle.inspection.item</field>
+        <field
+            name="inherit_id"
+            ref="fleet_vehicle_inspection.fleet_vehicle_inspection_item_tree_view"
+        />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="category_id" />
+            </field>
+        </field>
+    </record>
+    <record id="fleet_vehicle_inspection_item_search_view" model="ir.ui.view">
+        <field name="name">fleet.vehicle.inspection.item.search (in shop_inspection)</field>
+        <field name="model">fleet.vehicle.inspection.item</field>
+        <field
+            name="inherit_id"
+            ref="fleet_vehicle_inspection.fleet_vehicle_inspection_item_search_view"
+        />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="category_id" />
+                <group expand="0" string="Group By">
+                    <filter
+                        string="Category"
+                        name="group_category"
+                        context="{'group_by': 'category_id'}"
+                    />
+                </group>
+            </field>
+        </field>
+    </record>
+</odoo>

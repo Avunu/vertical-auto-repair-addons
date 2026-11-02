@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!--
+        Components first, scenario last: the scenario's template references
+        them by tag, so they have to be registered on Vue before the root
+        instance mounts. `new_scenario_hook` is the marker shopfloor_mobile_base
+        leaves for exactly this.
+    -->
+    <template
+        id="shopfloor_app_assets"
+        inherit_id="shopfloor_mobile_base.shopfloor_app_assets"
+    >
+        <t id="new_scenario_hook" position="before">
+            <t t-set="sfr_mod" t-value="'shopfloor_repair_mobile'" />
+            <t t-set="sfr_v" t-value="get_version(sfr_mod)" />
+            <link
+                id="link_css_repair_job"
+                t-attf-href="/#{sfr_mod}/static/src/css/repair_job.css?v=#{sfr_v}"
+                rel="stylesheet"
+            />
+            <!-- One entry module; the browser loads every other module in
+                 static/src/ through its imports, in the order listed there.
+                 It registers every component (`Vue.component`), page
+                 (`page_registry`) and the `repair_job` scenario
+                 (`process_registry`) - including the "app-bar-actions"/
+                 "nav-items-extra"/"user-session-detail" global-component
+                 overrides and the Profile page replacement, which rely on
+                 this block loading after shopfloor_mobile_base's own
+                 registration scripts: this anchor point (`new_scenario_hook`,
+                 position="before") is positioned well after them in the base
+                 assets template. Plain ES modules, no build step - the same
+                 way shopfloor_mobile_base ships its own. -->
+            <script
+                id="script_repair_mobile_index"
+                t-attf-src="/#{sfr_mod}/static/src/index.esm.js?v=#{sfr_v}"
+                type="module"
+            />
+        </t>
+    </template>
+</odoo>

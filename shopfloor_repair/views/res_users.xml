@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="view_users_form_shopfloor_default_profile" model="ir.ui.view">
+        <field name="name">res.users.form.shopfloor.default.profile</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='share']" position="after">
+                <field
+                    name="shopfloor_default_profile_id"
+                    groups="shopfloor_base.group_shopfloor_manager"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

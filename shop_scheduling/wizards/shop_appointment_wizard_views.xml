@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="shop_appointment_slot_view_list" model="ir.ui.view">
+        <field name="name">shop.appointment.slot.list</field>
+        <field name="model">shop.appointment.slot</field>
+        <field name="arch" type="xml">
+            <list string="Openings" create="false" delete="false" edit="false">
+                <field name="name" string="Opening (shop time)" />
+                <field name="technician_ids" widget="many2many_tags" string="Free" />
+                <field name="technician_count" string="#" optional="hide" />
+                <button
+                    name="action_book"
+                    type="object"
+                    string="Book"
+                    class="btn-link"
+                    icon="fa-calendar-check-o"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="shop_appointment_wizard_form" model="ir.ui.view">
+        <field name="name">shop.appointment.wizard.form</field>
+        <field name="model">shop.appointment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Schedule Appointment">
+                <group>
+                    <group>
+                        <field name="repair_id" invisible="1" />
+                        <field name="openings_searched" invisible="1" />
+                        <field name="partner_id" readonly="1" />
+                        <field name="vehicle_id" readonly="1" invisible="not vehicle_id" />
+                        <field name="type_id" />
+                    </group>
+                    <group>
+                        <field name="duration" widget="float_time" />
+                        <field name="technician_id" />
+                        <field name="search_days" />
+                    </group>
+                </group>
+                <p class="text-muted">
+                    Openings come from every technician bookable for this
+                    appointment type at once, in the shop's own timezone
+                    (<field name="shop_tz" class="oe_inline" readonly="1" />).
+                    Whoever is still free when you take one gets the job.
+                </p>
+                <field name="slot_ids" nolabel="1" readonly="1" invisible="not openings_searched">
+                    <list string="Openings" create="false" delete="false" edit="false">
+                        <field name="name" string="Opening (shop time)" />
+                        <field
+                            name="technician_ids"
+                            widget="many2many_tags"
+                            string="Free"
+                        />
+                        <button
+                            name="action_book"
+                            type="object"
+                            string="Book"
+                            class="btn-link"
+                            icon="fa-calendar-check-o"
+                        />
+                    </list>
+                </field>
+                <div
+                    class="alert alert-warning"
+                    role="alert"
+                    invisible="not openings_searched or slot_ids"
+                >
+                    Nothing opens up for this appointment in the days ahead.
+                    Shorten it, look further ahead, drop the preferred
+                    technician, or widen the availability calendar.
+                </div>
+                <footer>
+                    <button
+                        name="action_find_openings"
+                        type="object"
+                        string="Find Openings"
+                        class="btn-primary"
+                    />
+                    <button
+                        name="action_schedule"
+                        type="object"
+                        string="Open Calendar"
+                    />
+                    <button
+                        name="action_open_portal"
+                        type="object"
+                        string="Send to Portal"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="shop_appointment_wizard_action" model="ir.actions.act_window">
+        <field name="name">Schedule Appointment</field>
+        <field name="res_model">shop.appointment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

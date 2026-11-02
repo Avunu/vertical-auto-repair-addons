@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!--
+        `key` must match the service component's `_usage`, and the Vue
+        scenario registers itself in process_registry under the same name.
+    -->
+    <record id="shopfloor_scenario_repair_job" model="shopfloor.scenario">
+        <field name="name">Repair Jobs</field>
+        <field name="key">repair_job</field>
+        <!--
+            allow_repair_end       technician may close the job (decided 2026-08-06)
+            show_unassigned        jobs with no technician appear in every list,
+                                   so a tech can pick up the next one
+            include_responsible    also list jobs where the tech is the core
+                                   "Responsible"; off, because that field
+                                   defaults to whoever created the order
+            catalog_page_size      rows per catalog page
+            require_photo_on_fail  block a problem grade until a photo exists
+        -->
+        <field name="options_edit">{
+    "allow_repair_end": true,
+    "show_unassigned": true,
+    "include_responsible": false,
+    "catalog_page_size": 30,
+    "require_photo_on_fail": false
+}</field>
+    </record>
+</odoo>

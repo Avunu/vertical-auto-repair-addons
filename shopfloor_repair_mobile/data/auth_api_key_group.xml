@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!--
+        The group is created empty on purpose: keys carry identities and must
+        never ship as data. Create one auth.api.key per technician (Settings >
+        Technical > API Keys), point its user at that technician, and add it
+        here. See the module README.
+    -->
+    <record id="auth_api_key_group_technician" model="auth.api.key.group">
+        <field name="name">Repair Shop Technicians</field>
+        <field name="code">repair_shop_technician</field>
+    </record>
+</odoo>

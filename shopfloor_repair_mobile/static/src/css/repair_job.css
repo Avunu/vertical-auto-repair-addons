@@ -1,0 +1,751 @@
+/*
+ * Copyright 2026 Avunu LLC (avu.nu)
+ * License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
+ *
+ * Sized for a tablet held in a workshop: nothing below 44px of tap target,
+ * the vehicle readable at arm's length, and safe-area insets so the
+ * home-screen PWA does not tuck buttons under the iPad's rounded corners.
+ */
+
+.repair_job .empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- job list & card ---------- */
+
+.repair-job-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.5rem;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    cursor: pointer;
+    min-height: 76px;
+}
+
+.repair-job-row:active {
+    background: #f2f2f2;
+}
+
+.repair-job-row__main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.repair-job-row .job-label,
+.repair-job-card .job-label {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.repair-job-row .meta,
+.repair-job-card__subtitle .job-ref {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.repair-job-row .concern {
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.repair-job-row__running {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border: 2px solid #2e7d32;
+    border-radius: 6px;
+}
+
+.repair-job-row__running .elapsed {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.repair-job-row__side {
+    flex: 0 0 auto;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.repair-job-row__side .when,
+.repair-job-row__side .hours {
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.repair-job-card__title {
+    align-items: flex-start;
+}
+
+.repair-job-card .concern .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.repair-job-card .concern p {
+    margin: 0.2rem 0 0.75rem;
+    white-space: pre-line;
+}
+
+/* ---------- timer ---------- */
+
+.repair-timer {
+    margin-top: 0.75rem;
+}
+
+.repair-timer--running {
+    border-color: #2e7d32;
+    border-width: 2px;
+}
+
+.repair-timer__body {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.repair-timer__readout {
+    flex: 1 1 160px;
+}
+
+.repair-timer .elapsed {
+    font-size: 2.25rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+.repair-timer .elapsed--idle {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.repair-timer .totals {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.repair-timer__action {
+    flex: 1 1 180px;
+}
+
+/* ---------- clock ---------- */
+
+.clock-status--running {
+    border-color: #2e7d32;
+    border-width: 2px;
+}
+
+.clock-status__body {
+    text-align: center;
+}
+
+.clock-status__body .elapsed {
+    font-size: 2.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+.clock-status__body .elapsed--idle {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.clock-status__label {
+    margin-top: 0.35rem;
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- parts ---------- */
+
+.part-row,
+.catalog-row,
+.inspection-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    min-height: 72px;
+}
+
+.part-row__info,
+.catalog-row__info,
+.inspection-row__info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.part-row .name,
+.catalog-row .name,
+.inspection-row .name {
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.part-row .meta,
+.catalog-row .meta,
+.inspection-row .meta {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.part-row .meta .qty {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+/*
+ * Vuetify's own `.v-card--outlined` border wins on specificity, so these have
+ * to be qualified or the status stripe silently disappears.
+ */
+.repair-parts-list .part-row--done {
+    border-left: 6px solid #2e7d32;
+}
+
+.repair-parts-list .part-row--partial {
+    border-left: 6px solid #e5ab00;
+}
+
+.part-row__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.qty-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.qty-stepper__field {
+    font-size: 1.5rem;
+}
+
+.qty-stepper__field input {
+    text-align: center;
+    font-size: 1.5rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- catalog ---------- */
+
+.catalog-categories {
+    margin-bottom: 0.5rem;
+}
+
+.catalog-row__stock {
+    flex: 0 0 auto;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.catalog-row__stock .in-stock {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2e7d32;
+}
+
+.catalog-row__stock .out-of-stock {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.catalog-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+}
+
+/* ---------- inspections ---------- */
+
+.checklist-group {
+    margin-bottom: 0.75rem;
+}
+
+.checklist-group__title {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 0.6rem 1rem;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    min-height: 64px;
+}
+
+.checklist-item:active {
+    background: #f2f2f2;
+}
+
+.checklist-item__marker {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checklist-item__body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.checklist-item .name {
+    font-size: 1.05rem;
+    font-weight: 500;
+}
+
+.checklist-item .summary,
+.checklist-item .note {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.checklist-item .tags {
+    margin-top: 0.25rem;
+}
+
+.checklist-item__side {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.severity-selector .severity-btn {
+    height: 60px !important;
+    justify-content: flex-start;
+}
+
+.severity-selector .severity-btn__label {
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 1rem;
+    white-space: normal;
+    text-align: left;
+    line-height: 1.2;
+}
+
+.severity-selector .severity-btn--selected {
+    outline: 3px solid rgba(0, 0, 0, 0.65);
+    outline-offset: -3px;
+}
+
+.measurement-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.measurement-row--alert {
+    background: rgba(194, 42, 74, 0.06);
+}
+
+.measurement-row__label {
+    flex: 1 1 auto;
+}
+
+.measurement-row__label .spec {
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.measurement-row__input {
+    flex: 0 0 160px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.measurement-row__input input {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.photo-capture {
+    margin-top: 0.75rem;
+}
+
+.photo-capture__input {
+    display: none;
+}
+
+/* ---------- tablet / PWA ---------- */
+
+@media (min-width: 960px) {
+    .job-hub .button-list .v-btn {
+        min-height: 64px;
+    }
+}
+
+.repair_job .button-list {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* ---------- app-bar timers (shift-timer / job-timer-compact) ---------- */
+
+.app-bar-actions {
+    display: flex;
+    align-items: center;
+}
+
+/* Vuetify's own .v-toolbar (which v-app-bar renders as) is already
+   position:relative, so centering against it - rather than against the
+   narrow, right-aligned .app-bar-actions wrapper the timers happen to
+   live inside - centers them in the whole bar, independent of the
+   title's width or the magnifier button's position. */
+.app-bar-timers {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+}
+
+.app-bar-timer {
+    display: flex;
+    align-items: baseline;
+    font-size: 0.8125rem;
+    line-height: 1;
+    white-space: nowrap;
+    margin-right: 12px;
+}
+
+.app-bar-timers .app-bar-timer:last-child {
+    margin-right: 0;
+}
+
+.app-bar-timer__label {
+    opacity: 0.85;
+    margin-right: 4px;
+}
+
+.job-timer-compact .app-bar-timer__label {
+    /* The job name can run long; keep the timer's own width predictable
+       and let the label itself truncate rather than push the magnifier
+       button off the edge of a narrow screen. */
+    max-width: 8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---------- Profile page: profile picker row ---------- */
+
+/* <manual-select> renders each profile as a Vuetify v-list-item (content +
+   action columns, Vuetify's own list padding/sizing) instead of a plain
+   full-width v-btn like the Language/Logout/Back buttons below it, and its
+   "selected" row color is the shared `item_selected` theme token ("success",
+   green) - the same one parts-consumption screens use for "fully consumed".
+   Recoloring that token globally would reach those unrelated screens too,
+   so all of this is scoped to just the Profile page's own
+   `.settings-profile` class, and reads the *live* theme color (set by
+   shopfloor_mobile_base_theme_carbon) via Vuetify's own CSS custom
+   property rather than a value hardcoded here - unselected and selected
+   both render identically to a `btn-action` row now, not just selected
+   ones, since with a single profile the row should always read as one
+   solid action bar, not toggle in and out of the theme color.
+
+   Vuetify injects its theme colors as a runtime <style> tag
+   (`.v-application .success {background-color: var(--v-success-base)
+   !important}`) that lands *after* this static stylesheet in the cascade,
+   so a same-specificity `!important` rule loses to it on a tie - confirmed
+   by two rounds of this still rendering green/white instead of the brand color
+   despite raising the selector to 3 classes (`.v-application
+   .settings-profile .list-item-wrapper`), matching Vuetify's own 2-class
+   rule plus one. Rather than keep guessing at Vuetify's exact injected
+   selector, the `:not(#_)` pairs below are a standard specificity-hack:
+   each adds a whole extra class's worth of specificity (`#_` matches no
+   real element, so they're inert otherwise), pushing this rule's
+   specificity well past anything Vuetify could plausibly inject, so it
+   wins outright rather than depending on a cascade-order tie-break. */
+.settings-profile .list-item-wrapper:not(#_):not(#_) {
+    background-color: var(--v-primary-base) !important;
+    width: 100%;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.settings-profile .v-list-item {
+    min-height: 56px;
+    padding: 0 24px;
+}
+
+/* Was white, matched against a background-color fix that turned out not
+   to actually resolve at this nested location (Vuetify's `--v-primary-base`
+   custom property doesn't reliably inherit down into `<manual-select>`'s
+   own `v-card`/`v-list` structure here - confirmed via DevTools: the rule
+   above wins the cascade but the variable itself resolves to nothing,
+   leaving the row's real background whatever it already was). Black reads
+   correctly regardless of that background color, rather than depending on
+   getting it right. */
+.settings-profile .list-item-wrapper .v-list-item__content,
+.settings-profile .list-item-wrapper .v-list-item__content * {
+    color: #000 !important;
+}
+
+/* `sf-checkbox` (manual_select.esm.js) is a plain native
+   <input type="checkbox"> with no built-in custom appearance beyond a
+   theme color class when checked - hidden entirely and redrawn here so
+   it reads as a box that only shows a checkmark once checked, instead of
+   the browser's native (green-tinted, in this theme) default. Outlined in
+   black, not white - the row's own background hasn't reliably resolved to
+   the intended brand color (see the CSS custom property note further up), so a
+   white outline was invisible against whatever it ends up next to. */
+.settings-profile .sf-checkbox {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    border: 2px solid #000;
+    border-radius: 4px;
+    background: transparent;
+    position: relative;
+    cursor: pointer;
+}
+
+.settings-profile .sf-checkbox:checked::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* ---------- Drawer: hide the base shopfloor.menu-driven "My Jobs" row ---------- */
+
+/* `<nav-items>` (shopfloor_mobile_base/components/screen.esm.js) renders
+   its own real, `shopfloor.menu`-backed "My Jobs" entry as a sibling of
+   our own `<nav-items-extra>` (a distinct component, distinct root class -
+   this selector is an exact match, so it can't also hide ours). Now
+   redundant: nav_items_extra.esm.js has its own "My Jobs" row, styled to match
+   the rest of the drawer, per an explicit ask to keep ours instead of the
+   base one. */
+.nav-items {
+    display: none;
+}
+
+/* ---------- App bar: hide the dead (i) info-icon button ---------- */
+
+/* Opens shopfloor_mobile_base's generic barcode-lookup screen
+   (scan_anything with displayOnly=1), which calls a `scan` REST method
+   this app never implements for repair orders - confirmed it always
+   renders nothing but a lone back button, so it's pure dead weight here.
+   `btn-info-icon` (misc.esm.js) renders an `mdi-information` icon with no
+   class of its own to hang a selector off - targeting the icon itself. */
+.v-app-bar .v-btn:has(.mdi-information) {
+    display: none;
+}
+
+/* ---------- Timesheets: one table, a band per day ---------------------- */
+
+/* `pages/timesheets.esm.js` renders a single card holding a header row, then
+   per day a band followed by one row per entry. Every row - header included -
+   is the same CSS grid, so Start / End / Duration line up all the way down
+   without a <table>: a flexible job column, three fixed-width time columns,
+   and one slot for the actions menu. Colours are translucent black so they
+   follow the theme instead of fighting it. */
+.timesheet-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 96px 96px 88px 56px;
+    align-items: center;
+    column-gap: 8px;
+    min-height: 60px;
+    padding: 6px 8px 6px 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.timesheet-row--head {
+    min-height: 40px;
+    border-top: none;
+    background: rgba(0, 0, 0, 0.06);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.timesheet-row__job {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.timesheet-row__plate {
+    font-weight: 500;
+}
+
+.timesheet-row__sub {
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.timesheet-row__num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.timesheet-row__duration {
+    font-weight: 500;
+}
+
+.timesheet-row__actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* A break between two clocked periods: no job, no actions - just a quiet
+   row in the day's timeline so the gaps are as visible as the work. */
+.timesheet-row--break {
+    min-height: 44px;
+    background: rgba(0, 0, 0, 0.02);
+    color: rgba(0, 0, 0, 0.6);
+    font-style: italic;
+}
+
+.timesheet-row--break .timesheet-row__plate {
+    font-weight: 400;
+}
+
+.timesheet-day {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.03);
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.timesheet-day__date {
+    font-weight: 500;
+}
+
+.timesheet-day__totals {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.timesheet-day__total {
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.timesheet-day__total strong {
+    color: rgba(0, 0, 0, 0.87);
+    margin: 0 4px;
+}
+
+.timesheet-day--editable {
+    cursor: pointer;
+}
+
+.timesheet-day--editable:active {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+/* Phone width: tighter time columns so the job column keeps room. */
+@media (max-width: 640px) {
+    .timesheet-row {
+        grid-template-columns: minmax(0, 1fr) 68px 68px 60px 44px;
+        column-gap: 4px;
+        padding-left: 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ---------- Timesheet dialogs: job picker, total, previews ------------- */
+
+.repair-job-picker__label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(0, 0, 0, 0.6);
+    margin: 8px 0 4px;
+}
+
+.repair-job-picker__list {
+    margin-bottom: 8px;
+}
+
+/* Same green as the base app's selected-row colour, so a picked row reads
+   the same here as in every other list in the app. */
+.repair-job-picker__item--active {
+    background-color: #8bc34a;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.repair-timesheet-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+}
+
+.repair-timesheet-hint {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+    margin: 8px 0 4px;
+}
+
+.repair-timesheet-preview__invalid {
+    color: #b71c1c;
+    margin-top: 8px;
+}
+
+.repair-notes {
+    margin: 12px 0;
+}
+
+.repair-notes-existing {
+    white-space: pre-wrap;
+    margin-bottom: 12px;
+}

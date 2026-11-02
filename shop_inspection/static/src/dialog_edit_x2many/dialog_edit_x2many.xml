@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<templates xml:space="preserve">
+    <t
+        t-name="shop_inspection.DialogEditListRenderer.RecordRow"
+        t-inherit="web.ListRenderer.RecordRow"
+        t-inherit-mode="primary"
+    >
+        <!-- Core sends new records to a "save your changes first" toast,
+             because its handler navigates away. The dialog needs no id. -->
+        <xpath expr="//td[hasclass('o_list_record_open_form_view')]" position="attributes">
+            <attribute name="t-on-click.stop">() => props.onOpenFormView(record, true)</attribute>
+        </xpath>
+        <xpath
+            expr="//td[hasclass('o_list_record_open_form_view')]/button"
+            position="replace"
+        >
+            <button
+                class="btn btn-link align-top text-end o_shop_open_record_dialog"
+                name="Open in dialog"
+                aria-label="Open in dialog"
+                title="Open this line"
+                tabindex="-1"
+            >
+                <i class="fa fa-expand" role="img" />
+            </button>
+        </xpath>
+    </t>
+</templates>

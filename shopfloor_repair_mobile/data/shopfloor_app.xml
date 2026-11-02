@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<!--
+    noupdate="1": this record represents live app configuration, editable
+    through the UI (Auth Type included) - see migrations/18.0.1.0.1 for why
+    that matters for an install that predates this attribute.
+-->
+<odoo noupdate="1">
+    <!--
+        The app is served at /shopfloor/app/repair_shop and its REST endpoints
+        at /shopfloor/api/repair_shop/... (both derived from tech_name).
+    -->
+    <record id="shopfloor_app_repair_shop" model="shopfloor.app">
+        <field name="name">Repair Shop Floor</field>
+        <field name="short_name">Shop Floor</field>
+        <field name="tech_name">repair_shop</field>
+        <field name="category">repair</field>
+        <!-- Technicians sign in with their own Google/Apple account rather
+             than typing an auth.api.key by hand; see
+             shopfloor_mobile_base_auth_oauth's README for setup. The group
+             below still gates which api keys this app accepts - oauth login
+             resolves to one the same way a hand-typed key would. -->
+        <field name="auth_type">oauth</field>
+        <field
+            name="auth_api_key_group_ids"
+            eval="[(4, ref('shopfloor_repair_mobile.auth_api_key_group_technician'))]"
+        />
+        <field
+            name="profile_ids"
+            eval="[(4, ref('shopfloor_repair.shopfloor_profile_technician'))]"
+        />
+    </record>
+</odoo>

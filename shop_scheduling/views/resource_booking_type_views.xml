@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="resource_booking_type_view_form" model="ir.ui.view">
+        <field name="name">resource.booking.type.form (in shop_scheduling)</field>
+        <field name="model">resource.booking.type</field>
+        <field
+            name="inherit_id"
+            ref="resource_booking.resource_booking_type_view_form"
+        />
+        <field name="arch" type="xml">
+            <field name="combination_assignment" position="after">
+                <field name="shop_repair_ok" />
+                <field name="color" widget="color_picker" />
+            </field>
+        </field>
+    </record>
+</odoo>

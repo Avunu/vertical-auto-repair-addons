@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020", "DOM"],
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "allowUmdGlobalAccess": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "/shopfloor_mobile_base/static/src/services/registry.esm.js": ["./src/types/stubs/registry"],
+      "/shopfloor_mobile_base/static/src/services/page_registry.esm.js": ["./src/types/stubs/page_registry"],
+      "/shopfloor_mobile_base/static/src/services/process_registry.esm.js": ["./src/types/stubs/process_registry"],
+      "/shopfloor_mobile_base/static/src/services/translation_registry.esm.js": ["./src/types/stubs/translation_registry"],
+      "/shopfloor_mobile_base/static/src/services/event_hub.esm.js": ["./src/types/stubs/event_hub"],
+      "/shopfloor_mobile_base/static/src/scenario/mixins.esm.js": ["./src/types/stubs/mixins"]
+    },
+    "types": []
+  },
+  "include": ["src/**/*.js", "src/**/*.d.ts"]
+}

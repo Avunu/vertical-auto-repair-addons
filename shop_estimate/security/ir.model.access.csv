@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+shop_service_job_sale_manager,shop.service.job sale manager,model_shop_service_job,sales_team.group_sale_manager,1,1,1,1
+shop_service_job_salesman,shop.service.job salesman,model_shop_service_job,sales_team.group_sale_salesman,1,1,0,0
+shop_service_job_stock_user,shop.service.job stock user,model_shop_service_job,stock.group_stock_user,1,0,0,0
+shop_service_job_fleet_manager,shop.service.job fleet manager,model_shop_service_job,fleet.fleet_group_manager,1,1,1,1
+shop_service_job_part_sale_manager,shop.service.job.part sale manager,model_shop_service_job_part,sales_team.group_sale_manager,1,1,1,1
+shop_service_job_part_salesman,shop.service.job.part salesman,model_shop_service_job_part,sales_team.group_sale_salesman,1,1,0,0
+shop_service_job_part_stock_user,shop.service.job.part stock user,model_shop_service_job_part,stock.group_stock_user,1,0,0,0
+shop_service_job_part_fleet_manager,shop.service.job.part fleet manager,model_shop_service_job_part,fleet.fleet_group_manager,1,1,1,1
+shop_estimate_builder_user,shop.estimate.builder user,model_shop_estimate_builder,base.group_user,1,1,1,1
+shop_estimate_builder_line_user,shop.estimate.builder.line user,model_shop_estimate_builder_line,base.group_user,1,1,1,1

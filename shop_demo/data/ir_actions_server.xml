@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!-- The seed runs once on install. This makes it re-runnable from
+         Settings ▸ Technical ▸ Server Actions, which tops up anything that
+         was deleted by hand without duplicating what is still there. -->
+    <record id="action_reseed_demo" model="ir.actions.server">
+        <field name="name">Shop Demo: seed / top up demo data</field>
+        <field name="model_id" ref="base.model_res_company" />
+        <field name="state">code</field>
+        <field name="code">action = env["shop.demo.seed"].action_reseed()</field>
+    </record>
+</odoo>

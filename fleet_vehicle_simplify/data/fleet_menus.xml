@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!-- Reporting tab: cost/contract analysis for a leased corporate fleet,
+         not relevant to a repair shop's customer vehicles. -->
+    <record id="fleet.menu_fleet_reporting" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+
+    <!-- "Fleet" dropdown: lease contracts and odometer logs don't apply here;
+         vehicle inspections have their own dedicated flow under Repairs. -->
+    <record id="fleet.fleet_vehicle_log_contract_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="fleet.fleet_vehicle_odometer_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="fleet_vehicle_inspection.fleet_vehicle_inspection_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+
+    <!-- Configuration: everything from "Inspection Items" down is either the
+         OCA inspection catalog (superseded by shop_inspection's own catalog
+         menus, which we're also hiding here) or lease-vehicle configuration
+         (vehicle status/tags, activity types) tied to the workflow we removed
+         from the vehicle form. -->
+    <record id="fleet_vehicle_inspection.fleet_vehicle_inspection_item_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="fleet_vehicle_inspection_template.fleet_vehicle_inspection_template_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="shop_inspection.shop_inspection_category_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="shop_inspection.shop_inspection_condition_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="shop_inspection.shop_inspection_action_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="fleet.fleet_vehicle_service_types_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="fleet.fleet_vehicle_state_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="fleet.fleet_vehicle_tag_menu" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <record id="fleet.fleet_menu_config_activity_type" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+</odoo>

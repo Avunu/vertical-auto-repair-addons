@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="fleet_vehicle_inspection_form_view" model="ir.ui.view">
+        <field name="name">fleet.vehicle.inspection.form (in shop_inspection)</field>
+        <field name="model">fleet.vehicle.inspection</field>
+        <field
+            name="inherit_id"
+            ref="fleet_vehicle_inspection.fleet_vehicle_inspection_form_view"
+        />
+        <field name="arch" type="xml">
+            <field name="vehicle_id" position="before">
+                <field name="repair_id" readonly="state!='draft'" />
+            </field>
+            <field name="inspected_by" position="after">
+                <field name="technician_id" readonly="state!='draft'" />
+                <field name="service_advisor_id" readonly="state!='draft'" />
+            </field>
+            <!-- Keeps the inline list, but the per-row button opens the line
+                 in a dialog instead of saving and leaving for a full page. -->
+            <field name="inspection_line_ids" position="attributes">
+                <attribute name="widget">x2many_dialog_edit</attribute>
+            </field>
+            <xpath expr="//page[@name='inspection_lines']" position="after">
+                <page
+                    name="shop_measurements"
+                    string="Measurements"
+                    invisible="not measurement_ids"
+                >
+                    <!-- Value entry only: the rows are created from the item
+                         specs, so no create/delete here. -->
+                    <field
+                        name="measurement_ids"
+                        nolabel="1"
+                        readonly="state!='draft'"
+                    >
+                        <list editable="bottom" create="0" delete="0">
+                            <field name="line_id" readonly="1" />
+                            <field name="name" readonly="1" />
+                            <field name="position" readonly="1" />
+                            <field name="value" />
+                            <field name="uom" readonly="1" />
+                            <field name="spec_min" readonly="1" optional="show" />
+                            <field name="spec_max" readonly="1" optional="hide" />
+                            <field
+                                name="out_of_spec"
+                                widget="boolean_toggle"
+                                readonly="1"
+                                decoration-danger="out_of_spec"
+                            />
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+            <notebook position="before">
+                <group name="shop_severity_summary">
+                    <div class="d-flex gap-2 flex-wrap" colspan="2">
+                        <span
+                            class="badge text-bg-primary"
+                        >Today's Services: <field name="count_today" /></span>
+                        <span
+                            class="badge text-bg-success"
+                        >Good: <field name="count_good" /></span>
+                        <span
+                            class="badge text-bg-warning"
+                        >Future: <field name="count_future" /></span>
+                        <span
+                            class="badge text-bg-warning"
+                        >Needs Attention: <field name="count_attention" /></span>
+                        <span
+                            class="badge text-bg-danger"
+                        >Failed State Inspection: <field
+                                name="count_fail_state"
+                            /></span>
+                    </div>
+                </group>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_inspection_line_tree_view" model="ir.ui.view">
+        <field name="name">fleet.vehicle.inspection.line.list (in shop_inspection)</field>
+        <field name="model">fleet.vehicle.inspection.line</field>
+        <field
+            name="inherit_id"
+            ref="fleet_vehicle_inspection.fleet_vehicle_inspection_line_tree_view"
+        />
+        <field name="arch" type="xml">
+            <!-- Grade the checklist straight in the row instead of opening a
+                 dialog per line. The form view stays reachable through the
+                 row-expand arrow for photos and instructions. -->
+            <xpath expr="//list" position="attributes">
+                <attribute name="editable">bottom</attribute>
+                <attribute name="open_form_view">1</attribute>
+            </xpath>
+            <field name="inspection_item_id" position="after">
+                <field name="category_id" optional="show" />
+                <!-- No badge widget: it renders read-only, which would defeat
+                     inline grading. -->
+                <field
+                    name="severity"
+                    decoration-success="severity == 'good'"
+                    decoration-info="severity == 'today'"
+                    decoration-warning="severity in ('future', 'attention')"
+                    decoration-danger="severity == 'fail_state'"
+                />
+                <field
+                    name="condition_ids"
+                    widget="many2many_tags"
+                    optional="show"
+                    options="{'no_create': False}"
+                />
+                <field
+                    name="recommended_action_ids"
+                    widget="many2many_tags"
+                    optional="show"
+                    options="{'no_create': False}"
+                />
+                <field name="measurement_alert" column_invisible="1" />
+                <field
+                    name="measurement_summary"
+                    optional="show"
+                    decoration-danger="measurement_alert"
+                />
+            </field>
+            <field name="inspection_item_instruction" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_inspection_line_form_view" model="ir.ui.view">
+        <field name="name">fleet.vehicle.inspection.line.form (in shop_inspection)</field>
+        <field name="model">fleet.vehicle.inspection.line</field>
+        <field
+            name="inherit_id"
+            ref="fleet_vehicle_inspection.fleet_vehicle_inspection_line_form_view"
+        />
+        <field name="arch" type="xml">
+            <xpath expr="//group/field[@name='inspection_item_id']" position="after">
+                <field
+                    name="severity"
+                    widget="radio"
+                    readonly="state!='draft'"
+                />
+                <field
+                    name="condition_ids"
+                    widget="many2many_tags"
+                    readonly="state!='draft'"
+                    options="{'no_create': False}"
+                />
+                <field
+                    name="recommended_action_ids"
+                    widget="many2many_tags"
+                    readonly="state!='draft'"
+                    options="{'no_create': False}"
+                />
+            </xpath>
+            <page name="result" position="after">
+                <page name="shop_measurements" string="Measurements">
+                    <field name="measurement_ids" readonly="state!='draft'">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="name" />
+                            <field name="position" />
+                            <field name="value" />
+                            <field name="uom" />
+                            <field name="spec_min" optional="show" />
+                            <field name="spec_max" optional="hide" />
+                            <field
+                                name="out_of_spec"
+                                widget="boolean_toggle"
+                                readonly="1"
+                                decoration-danger="out_of_spec"
+                            />
+                            <field name="spec_id" column_invisible="1" />
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_inspection_search_view" model="ir.ui.view">
+        <field name="name">fleet.vehicle.inspection.search (in shop_inspection)</field>
+        <field name="model">fleet.vehicle.inspection</field>
+        <field
+            name="inherit_id"
+            ref="fleet_vehicle_inspection.fleet_vehicle_inspection_search_view"
+        />
+        <field name="arch" type="xml">
+            <field name="vehicle_id" position="after">
+                <field name="repair_id" />
+                <field name="technician_id" />
+            </field>
+        </field>
+    </record>
+</odoo>

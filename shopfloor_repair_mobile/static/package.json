@@ -1,0 +1,14 @@
+{
+  "name": "shopfloor_repair_mobile",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Type- and template-checking for the Shopfloor Repair Technician (Mobile) app's plain ES modules (JSDoc, no build step).",
+  "scripts": {
+    "typecheck": "tsc -p . && node check_templates.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vue": "2.6.12",
+    "vue-template-compiler": "2.6.12"
+  }
+}

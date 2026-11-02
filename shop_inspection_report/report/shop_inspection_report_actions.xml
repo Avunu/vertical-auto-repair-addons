@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="action_report_shop_inspection" model="ir.actions.report">
+        <field name="name">Inspection Report</field>
+        <field name="model">repair.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">shop_inspection_report.report_inspection</field>
+        <field name="report_file">shop_inspection_report.report_inspection</field>
+        <field
+            name="print_report_name"
+        >'Inspection Report - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="repair.model_repair_order" />
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

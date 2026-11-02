@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo noupdate="1">
+    <!-- Checklist categories -->
+    <record id="category_check_in" model="shop.inspection.category">
+        <field name="name">Check In</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="category_pre_inspection" model="shop.inspection.category">
+        <field name="name">Pre-Inspection / Test Drive</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="category_courtesy" model="shop.inspection.category">
+        <field name="name">Courtesy Inspection</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="category_state_safety" model="shop.inspection.category">
+        <field name="name">State Safety Inspection</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <!-- Conditions -->
+    <record id="condition_expired" model="shop.inspection.condition">
+        <field name="name">Expired</field>
+    </record>
+    <record id="condition_due_now" model="shop.inspection.condition">
+        <field name="name">Due Now</field>
+    </record>
+    <record id="condition_noise_present" model="shop.inspection.condition">
+        <field name="name">Noise(s) Present</field>
+    </record>
+    <record id="condition_check_engine_light" model="shop.inspection.condition">
+        <field name="name">Check Engine Light On</field>
+    </record>
+    <record id="condition_fail" model="shop.inspection.condition">
+        <field name="name">Fail</field>
+    </record>
+    <record id="condition_failed_test" model="shop.inspection.condition">
+        <field name="name">Failed Test</field>
+    </record>
+    <record id="condition_fluid_dirty" model="shop.inspection.condition">
+        <field name="name">Fluid Is Dirty</field>
+    </record>
+    <record id="condition_fluid_low" model="shop.inspection.condition">
+        <field name="name">Fluid Level Is Low</field>
+    </record>
+    <record id="condition_fluid_moisture" model="shop.inspection.condition">
+        <field name="name">Fluid Has High Moisture Content</field>
+    </record>
+    <record id="condition_leaking" model="shop.inspection.condition">
+        <field name="name">Leaking</field>
+    </record>
+    <record id="condition_leaking_transmission" model="shop.inspection.condition">
+        <field name="name">Leaking Transmission Fluid</field>
+    </record>
+    <record id="condition_headlights_cloudy" model="shop.inspection.condition">
+        <field name="name">Headlights Are Cloudy</field>
+    </record>
+    <record id="condition_broken_damaged" model="shop.inspection.condition">
+        <field name="name">Broken / Damaged</field>
+    </record>
+    <record id="condition_torn_cracked" model="shop.inspection.condition">
+        <field name="name">Torn / Cracked</field>
+    </record>
+    <record id="condition_dirty_restricted" model="shop.inspection.condition">
+        <field name="name">Dirty / Restricted</field>
+    </record>
+    <record id="condition_worn_beyond_spec" model="shop.inspection.condition">
+        <field name="name">Worn Beyond Specification</field>
+    </record>
+    <record id="condition_missing" model="shop.inspection.condition">
+        <field name="name">Missing</field>
+    </record>
+
+    <!-- Recommended actions -->
+    <record id="action_state_inspection" model="shop.inspection.action">
+        <field name="name">Perform State Safety Inspection / Emissions Test</field>
+    </record>
+    <record id="action_oil_change" model="shop.inspection.action">
+        <field name="name">Perform Oil Change Service</field>
+    </record>
+    <record id="action_inspect_cause" model="shop.inspection.action">
+        <field name="name">Inspect For Cause of Condition</field>
+    </record>
+    <record id="action_required_testing" model="shop.inspection.action">
+        <field name="name">Perform Required Testing</field>
+    </record>
+    <record id="action_replace_air_filter" model="shop.inspection.action">
+        <field name="name">Replace Air Filter</field>
+    </record>
+    <record id="action_replace_belts" model="shop.inspection.action">
+        <field name="name">Replace Belt(s)</field>
+    </record>
+    <record id="action_replace_wipers" model="shop.inspection.action">
+        <field name="name">Replace Wiper Arm(s) / Blade(s)</field>
+    </record>
+    <record id="action_fluid_service" model="shop.inspection.action">
+        <field name="name">Perform Fluid Service</field>
+    </record>
+    <record id="action_headlight_restoration" model="shop.inspection.action">
+        <field name="name">Perform Headlight Restoration</field>
+    </record>
+    <record id="action_replace_struts" model="shop.inspection.action">
+        <field name="name">Replace Strut(s)</field>
+    </record>
+    <record id="action_replace_shocks" model="shop.inspection.action">
+        <field name="name">Replace Shock(s)</field>
+    </record>
+    <record id="action_repair_leaks" model="shop.inspection.action">
+        <field name="name">Repair Leak(s)</field>
+    </record>
+    <record id="action_rotate_tires" model="shop.inspection.action">
+        <field name="name">Rotate Tires</field>
+    </record>
+    <record id="action_replace_tires" model="shop.inspection.action">
+        <field name="name">Replace Tire(s)</field>
+    </record>
+    <record id="action_replace_brakes" model="shop.inspection.action">
+        <field name="name">Replace Brake Pads and Rotors</field>
+    </record>
+    <record id="action_test_check_engine" model="shop.inspection.action">
+        <field name="name">Test for Cause of Check Engine Light Being On</field>
+    </record>
+    <record id="action_replace_battery" model="shop.inspection.action">
+        <field name="name">Replace Battery</field>
+    </record>
+    <record id="action_fill_fluid" model="shop.inspection.action">
+        <field name="name">Fill Fluid to Proper Level</field>
+    </record>
+</odoo>

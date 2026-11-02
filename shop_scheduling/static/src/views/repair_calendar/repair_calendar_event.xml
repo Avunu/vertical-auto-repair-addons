@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<templates xml:space="preserve">
+
+    <!-- Vehicle on top, customer · order reference under it; the month grid
+         is one line per job. Falls back to the customer, then the reference,
+         for a job with no vehicle. -->
+    <t t-name="shop_scheduling.RepairCalendarEvent">
+        <t t-set="customer" t-value="rawRecord.partner_id and rawRecord.partner_id[1]" />
+        <t t-set="vehicle" t-value="rawRecord.shop_vehicle_label or customer or title" />
+        <span
+            t-if="!isTimeHidden"
+            class="d-none d-lg-inline fc-time fw-normal"
+            t-esc="startTime"
+        />
+        <div class="o_event_title text-truncate">
+            <span class="fw-bold" t-esc="vehicle" />
+            <t t-if="isMonth">
+                <t t-if="customer and customer !== vehicle">
+                    · <t t-esc="customer" />
+                </t>
+            </t>
+            <t t-elif="title !== vehicle">
+                <div class="fw-normal text-truncate">
+                    <t t-if="customer and customer !== vehicle">
+                        <t t-esc="customer" /> ·
+                    </t>
+                    <t t-esc="title" />
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

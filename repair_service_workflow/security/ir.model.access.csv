@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+repair_service_confirm_wizard_user,repair.service.confirm.wizard user,model_repair_service_confirm_wizard,base.group_user,1,1,1,1
+repair_service_confirm_wizard_line_user,repair.service.confirm.wizard.line user,model_repair_service_confirm_wizard_line,base.group_user,1,1,1,1
+repair_service_finalize_wizard_user,repair.service.finalize.wizard user,model_repair_service_finalize_wizard,base.group_user,1,1,1,1
+repair_service_finalize_wizard_line_user,repair.service.finalize.wizard.line user,model_repair_service_finalize_wizard_line,base.group_user,1,1,1,1

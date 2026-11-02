@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!--
+        Posted by the shop floor app when a technician adds a note. Who is
+        told is plain Odoo follower configuration: Followers -> Edit
+        Subscription on the order (or a user's default subscriptions).
+        Internal, so customers following their repair never receive it.
+    -->
+    <record id="mt_repair_technician_note" model="mail.message.subtype">
+        <field name="name">Technician Note</field>
+        <field name="res_model">repair.order</field>
+        <field name="internal" eval="True" />
+        <field name="default" eval="True" />
+        <field name="description">Technician note</field>
+    </record>
+</odoo>

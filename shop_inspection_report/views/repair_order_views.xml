@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="view_repair_order_form" model="ir.ui.view">
+        <field name="name">repair.order.form (in shop_inspection_report)</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="shop_inspection.view_repair_order_form" />
+        <field name="arch" type="xml">
+            <button name="action_new_inspection" position="after">
+                <button
+                    name="action_send_inspection_report"
+                    type="object"
+                    string="Send Inspection Report"
+                    invisible="inspection_count == 0"
+                />
+            </button>
+        </field>
+    </record>
+</odoo>

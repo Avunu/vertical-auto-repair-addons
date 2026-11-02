@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_repair_purchase_order_match" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.repair.purchase.order.match</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+        <field name="arch" type="xml">
+            <setting id="auto_receipt_reminder" position="after">
+                <setting
+                    id="repair_match_typesafe"
+                    help="API key used to match imported purchase orders to open repair orders"
+                >
+                    <field name="repair_match_typesafe_api_key" password="True"/>
+                </setting>
+            </setting>
+        </field>
+    </record>
+
+</odoo>

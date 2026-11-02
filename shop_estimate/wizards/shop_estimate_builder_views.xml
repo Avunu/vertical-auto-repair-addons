@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="shop_estimate_builder_view_form" model="ir.ui.view">
+        <field name="name">shop.estimate.builder.form</field>
+        <field name="model">shop.estimate.builder</field>
+        <field name="arch" type="xml">
+            <form string="Build Estimate">
+                <group>
+                    <field name="repair_id" readonly="1" />
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom" create="0">
+                        <field name="include" widget="boolean_toggle" />
+                        <field name="finding_line_id" column_invisible="1" />
+                        <field name="item_name" />
+                        <field
+                            name="severity"
+                            widget="badge"
+                            decoration-info="severity == 'today'"
+                            decoration-warning="severity in ('future', 'attention')"
+                            decoration-danger="severity == 'fail_state'"
+                        />
+                        <field name="condition_ids" widget="many2many_tags" />
+                        <field name="notes" optional="show" />
+                        <field name="job_id" />
+                        <field name="must_do" widget="boolean_toggle" />
+                        <field name="quantity" />
+                        <field name="price_unit" />
+                    </list>
+                </field>
+                <footer>
+                    <button
+                        name="action_generate"
+                        type="object"
+                        string="Update Estimate"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" special="cancel" class="btn-secondary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="shop_estimate_builder_action" model="ir.actions.act_window">
+        <field name="name">Build Estimate</field>
+        <field name="res_model">shop.estimate.builder</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="repair.model_repair_order" />
+        <field name="binding_view_types">form</field>
+    </record>
+</odoo>

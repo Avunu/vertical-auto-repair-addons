@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="view_repair_order_form_service_workflow" model="ir.ui.view">
+        <field name="name">repair.order.form.service.workflow</field>
+        <field name="model">repair.order</field>
+        <field
+            name="inherit_id"
+            ref="repair_service.view_repair_order_form_inherit"
+        />
+        <field name="arch" type="xml">
+            <!-- repair.order itself also has a top-level `product_id`
+                 ("Product to Repair"), so every xpath below is scoped
+                 under `repair_service_ids` explicitly rather than using the
+                 `<field name="..." position="...">` shorthand, which
+                 matches the first same-named field anywhere in the arch. -->
+            <xpath
+                expr="//field[@name='repair_service_ids']//field[@name='product_id']"
+                position="before"
+            >
+                <!-- has_running_timer isn't displayed - it's read by
+                     repair_order_form_controller_patch.js to confirm before
+                     saving an unaccepted service that still has a running
+                     timer. `accepted` stays the plain default checkbox
+                     widget so the list's own single-click toggle shortcut
+                     (list_renderer.js's onCellClicked) keeps working; that
+                     shortcut only fires for the default "boolean" widget,
+                     which is exactly why an earlier per-click custom widget
+                     here silently never triggered on a single click. -->
+                <field name="has_running_timer" column_invisible="1" />
+                <field name="accepted" />
+            </xpath>
+            <xpath
+                expr="//field[@name='repair_service_ids']//field[@name='product_id']"
+                position="attributes"
+            >
+                <attribute name="context">{'default_purchase_ok': False, 'default_type': 'service', 'default_service_policy': 'ordered_prepaid'}</attribute>
+            </xpath>
+            <xpath
+                expr="//field[@name='repair_service_ids']//field[@name='product_uom']"
+                position="after"
+            >
+                <field name="estimated_time" widget="float_time" />
+            </xpath>
+            <xpath
+                expr="//field[@name='repair_service_ids']//field[@name='product_uom_qty']"
+                position="before"
+            >
+                <field name="actual_time" widget="float_time" />
+            </xpath>
+            <xpath
+                expr="//field[@name='repair_service_ids']//field[@name='product_uom_qty']"
+                position="attributes"
+            >
+                <attribute name="string">Invoiced</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!-- Portal users can read their own repair orders (the inspection
+         portal page and /my listing). Rendering of the report content
+         itself happens with sudo records after the token/ownership check. -->
+    <record id="access_repair_order_portal" model="ir.model.access">
+        <field name="name">repair.order portal</field>
+        <field name="model_id" ref="repair.model_repair_order" />
+        <field name="group_id" ref="base.group_portal" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="rule_repair_order_portal" model="ir.rule">
+        <field name="name">Portal: own repair orders only</field>
+        <field name="model_id" ref="repair.model_repair_order" />
+        <field name="groups" eval="[Command.link(ref('base.group_portal'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field
+            name="domain_force"
+        >[('partner_id', 'child_of', user.commercial_partner_id.id)]</field>
+    </record>
+
+    <record id="access_fleet_vehicle_inspection_portal" model="ir.model.access">
+        <field name="name">fleet.vehicle.inspection portal</field>
+        <field
+            name="model_id"
+            ref="fleet_vehicle_inspection.model_fleet_vehicle_inspection"
+        />
+        <field name="group_id" ref="base.group_portal" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="rule_fleet_vehicle_inspection_portal" model="ir.rule">
+        <field name="name">Portal: inspections of own repair orders only</field>
+        <field
+            name="model_id"
+            ref="fleet_vehicle_inspection.model_fleet_vehicle_inspection"
+        />
+        <field name="groups" eval="[Command.link(ref('base.group_portal'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field
+            name="domain_force"
+        >[('repair_id.partner_id', 'child_of', user.commercial_partner_id.id)]</field>
+    </record>
+</odoo>

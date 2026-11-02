@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!-- Severity band colors, shared by PDF and portal rendering -->
+    <template id="inspection_severity_banner">
+        <t
+            t-set="banner_colors"
+            t-value="{
+                'today': '#2e4bce',
+                'good': '#28a745',
+                'future': '#f0d800',
+                'attention': '#fd7e14',
+                'fail_state': '#dc3545',
+            }"
+        />
+        <t
+            t-set="banner_text"
+            t-value="'#212529' if section['severity'] == 'future' else '#ffffff'"
+        />
+        <div
+            t-attf-style="background-color: {{ banner_colors[section['severity']] }}; color: {{ banner_text }}; padding: 6px 12px; font-weight: bold; font-size: 1.1em; border-radius: 4px; margin-top: 16px;"
+        >
+            <span t-out="section['count']" />
+            <span t-out="section['label']" />
+        </div>
+    </template>
+
+    <!-- One finding line: condition / recommended action / notes /
+         measurements / photos -->
+    <template id="inspection_report_line">
+        <div style="border: 1px solid #dee2e6; border-radius: 4px; padding: 8px 12px; margin-top: 8px; page-break-inside: avoid;">
+            <div style="font-weight: bold;">
+                <span t-field="line.inspection_item_id.name" />
+            </div>
+            <div class="row mt-1">
+                <div class="col-6" t-if="line.condition_ids">
+                    <div
+                        style="font-size: 0.75em; color: #6c757d; text-transform: uppercase;"
+                    >Condition</div>
+                    <div>
+                        <t t-foreach="line.condition_ids" t-as="condition">
+                            <span t-field="condition.name" /><t
+                                t-if="not condition_last"
+                            >, </t>
+                        </t>
+                    </div>
+                </div>
+                <div class="col-6" t-if="line.recommended_action_ids">
+                    <div
+                        style="font-size: 0.75em; color: #6c757d; text-transform: uppercase;"
+                    >Recommended Action</div>
+                    <div>
+                        <t t-foreach="line.recommended_action_ids" t-as="action">
+                            <span t-field="action.name" /><t
+                                t-if="not action_last"
+                            >, </t>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-1" t-if="line.result_description">
+                <div
+                    style="font-size: 0.75em; color: #6c757d; text-transform: uppercase;"
+                >Notes</div>
+                <div><span t-field="line.result_description" /></div>
+            </div>
+            <t
+                t-set="measurements"
+                t-value="line.measurement_ids.filtered(lambda m: m.value)"
+            />
+            <div class="mt-1" t-if="measurements">
+                <table class="table table-sm table-borderless" style="width: auto; margin-bottom: 0;">
+                    <t t-foreach="measurements" t-as="measurement">
+                        <tr>
+                            <td style="padding: 0 12px 0 0;">
+                                <span t-field="measurement.name" />
+                                <t t-if="measurement.position != 'none'">
+                                    (<span t-field="measurement.position" />)
+                                </t>
+                            </td>
+                            <td
+                                t-attf-style="padding: 0 12px 0 0; {{ 'color: #dc3545; font-weight: bold;' if measurement.out_of_spec else '' }}"
+                            >
+                                <span t-out="measurement.value" />
+                                <span t-field="measurement.uom" />
+                            </td>
+                            <td
+                                style="padding: 0; color: #6c757d; font-size: 0.85em;"
+                            >
+                                <t t-if="measurement.spec_min">
+                                    min <span t-out="measurement.spec_min" />
+                                </t>
+                                <t t-if="measurement.spec_max">
+                                    max <span t-out="measurement.spec_max" />
+                                </t>
+                            </td>
+                        </tr>
+                    </t>
+                </table>
+            </div>
+            <div class="mt-1" t-if="line.inspection_line_image_ids">
+                <t t-foreach="line.inspection_line_image_ids" t-as="image">
+                    <img
+                        t-att-src="image_data_uri(image.image_256)"
+                        style="max-height: 96px; margin: 2px; border-radius: 4px;"
+                        alt="Finding photo"
+                    />
+                </t>
+            </div>
+            <div style="font-size: 0.75em; color: #6c757d; margin-top: 4px;">
+                <span t-field="line.inspection_id.date_inspected" />
+            </div>
+        </div>
+    </template>
+
+    <!-- The report body: header block + severity sections + photo appendix.
+         Shared by the PDF document and the portal page. -->
+    <template id="inspection_report_content">
+        <div class="row">
+            <div class="col-6">
+                <h2 t-if="doc.vehicle_id">
+                    <span t-field="doc.vehicle_id.model_year" />
+                    <span t-field="doc.vehicle_id.model_id" />
+                </h2>
+                <div t-if="doc.vehicle_vin">
+                    <strong>VIN:</strong> <span t-field="doc.vehicle_vin" />
+                </div>
+                <div t-if="doc.vehicle_license_plate">
+                    <strong>Plate:</strong>
+                    <span t-field="doc.vehicle_license_plate" />
+                </div>
+                <div t-if="doc.vehicle_id.unit_number">
+                    <strong>Unit:</strong>
+                    <span t-field="doc.vehicle_id.unit_number" />
+                </div>
+                <div t-if="doc.odometer_in">
+                    <strong>Odometer:</strong> <span t-out="doc.odometer_in" />
+                    <span t-field="doc.vehicle_odometer_unit" />
+                </div>
+            </div>
+            <div class="col-6">
+                <div>
+                    <strong>Repair Order:</strong> <span t-field="doc.name" />
+                </div>
+                <div t-if="doc.partner_id">
+                    <strong>Customer:</strong> <span t-field="doc.partner_id.name" />
+                </div>
+                <div t-if="doc.technician_id">
+                    <strong>Technician:</strong>
+                    <span t-field="doc.technician_id.name" />
+                </div>
+                <div t-if="doc.service_advisor_id">
+                    <strong>Service Advisor:</strong>
+                    <span t-field="doc.service_advisor_id.name" />
+                </div>
+                <div>
+                    <strong>Date:</strong>
+                    <span
+                        t-out="max(doc._shop_report_inspections().mapped('date_inspected'), default=None)"
+                        t-options="{'widget': 'datetime'}"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <t t-set="sections" t-value="doc._shop_report_sections()" />
+        <t t-foreach="sections" t-as="section">
+            <t t-call="shop_inspection_report.inspection_severity_banner" />
+            <!-- Good items: compact category-grouped name list -->
+            <t t-if="section['severity'] == 'good'">
+                <t t-foreach="section['categories']" t-as="group">
+                    <div style="margin-top: 8px;">
+                        <strong>
+                            <span
+                                t-out="group['category'].name or 'Other'"
+                            />
+                        </strong>
+                        <div class="row">
+                            <t t-foreach="group['lines']" t-as="line">
+                                <div class="col-6">
+                                    <span
+                                        t-field="line.inspection_item_id.name"
+                                    />
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+            <!-- Everything else: full finding blocks -->
+            <t t-else="">
+                <t t-foreach="section['categories']" t-as="group">
+                    <div
+                        style="margin-top: 10px; font-weight: bold; color: #6c757d; border-bottom: 1px solid #dee2e6;"
+                    >
+                        <span t-out="group['category'].name or 'Other'" />
+                    </div>
+                    <t t-foreach="group['lines']" t-as="line">
+                        <t
+                            t-call="shop_inspection_report.inspection_report_line"
+                        />
+                    </t>
+                </t>
+            </t>
+        </t>
+
+        <t t-set="appendix_images" t-value="doc._shop_report_images()" />
+        <t t-if="appendix_images">
+            <div style="page-break-before: always;" />
+            <h3 style="margin-top: 16px;">Photos</h3>
+            <t
+                t-foreach="range(0, len(appendix_images), 4)"
+                t-as="chunk_start"
+            >
+                <div class="row" style="page-break-inside: avoid;">
+                    <t
+                        t-foreach="appendix_images[chunk_start:chunk_start + 4]"
+                        t-as="image"
+                    >
+                        <div class="col-6" style="margin-bottom: 8px;">
+                            <img
+                                t-att-src="image_data_uri(image.image_1024)"
+                                style="width: 100%; border-radius: 4px;"
+                                alt="Inspection photo"
+                            />
+                            <div style="font-size: 0.8em; color: #6c757d;">
+                                <span
+                                    t-field="image.inspection_line_id.inspection_item_id.name"
+                                />
+                                —
+                                <span
+                                    t-field="image.inspection_line_id.inspection_id.date_inspected"
+                                    t-options="{'widget': 'date'}"
+                                />
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_inspection_document">
+        <t t-call="web.external_layout">
+            <t t-set="o" t-value="doc" />
+            <div class="page">
+                <h2>Vehicle Inspection Report</h2>
+                <t t-call="shop_inspection_report.inspection_report_content" />
+            </div>
+        </t>
+    </template>
+
+    <template id="report_inspection">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t
+                    t-call="shop_inspection_report.report_inspection_document"
+                    t-lang="doc.partner_id.lang or doc.env.lang"
+                />
+            </t>
+        </t>
+    </template>
+</odoo>

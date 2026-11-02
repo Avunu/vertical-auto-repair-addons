@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <template
+        id="portal_my_home_menu_inspection"
+        name="Portal layout: inspection menu entries"
+        inherit_id="portal.portal_breadcrumbs"
+        priority="35"
+    >
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li
+                t-if="page_name == 'inspection'"
+                t-attf-class="breadcrumb-item #{'active ' if not repair else ''}"
+            >
+                <a
+                    t-if="repair"
+                    t-attf-href="/my/inspections?{{ keep_query() }}"
+                >Inspections</a>
+                <t t-else="">Inspections</t>
+            </li>
+            <li t-if="page_name == 'inspection' and repair" class="breadcrumb-item active">
+                <t t-out="repair.name" />
+            </li>
+        </xpath>
+    </template>
+
+    <template
+        id="portal_my_home_inspection"
+        name="Vehicle Inspections"
+        customize_show="True"
+        inherit_id="portal.portal_my_home"
+        priority="35"
+    >
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True" />
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/repair/static/description/icon.png'" />
+                <t t-set="title">Vehicle Inspections</t>
+                <t t-set="url" t-value="'/my/inspections'" />
+                <t t-set="text">Review your vehicle inspection reports</t>
+                <t t-set="placeholder_count" t-value="'inspection_count'" />
+            </t>
+        </div>
+    </template>
+
+    <template id="portal_my_inspections" name="My Vehicle Inspections">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Vehicle Inspections</t>
+            </t>
+            <div t-if="not repairs" class="alert alert-warning" role="alert">
+                There are currently no inspection reports for your account.
+            </div>
+            <t t-if="repairs" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Repair Order</th>
+                        <th>Vehicle</th>
+                        <th class="text-end">Date</th>
+                        <th class="text-center">Findings</th>
+                    </tr>
+                </thead>
+                <t t-foreach="repairs" t-as="repair">
+                    <tr>
+                        <td>
+                            <a t-att-href="repair.get_portal_url()">
+                                <t t-out="repair.name" />
+                            </a>
+                        </td>
+                        <td>
+                            <t t-out="repair.vehicle_id.display_name or ''" />
+                        </td>
+                        <td class="text-end">
+                            <span t-field="repair.create_date" t-options="{'widget': 'date'}" />
+                        </td>
+                        <td class="text-center">
+                            <span
+                                t-if="repair.count_good"
+                                class="badge rounded-pill text-bg-success"
+                            ><t t-out="repair.count_good" /> Good</span>
+                            <span
+                                t-if="repair.count_attention"
+                                class="badge rounded-pill text-bg-warning"
+                            ><t t-out="repair.count_attention" /> Attention</span>
+                            <span
+                                t-if="repair.count_fail_state"
+                                class="badge rounded-pill text-bg-danger"
+                            ><t t-out="repair.count_fail_state" /> Failed</span>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_inspection_page" name="Vehicle Inspection Report">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="stock.group_stock_user">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t
+                        t-set="backend_url"
+                        t-value="'/odoo/action-repair.action_repair_order_tree/%s' % repair.id"
+                    />
+                </t>
+            </t>
+            <div class="row mt-3 justify-content-center">
+                <div class="col-12 col-lg-10">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">
+                                Vehicle Inspection Report
+                                <small class="text-muted" t-out="repair.name" />
+                            </h4>
+                            <a
+                                class="btn btn-secondary"
+                                t-att-href="repair.get_portal_url(report_type='pdf', download=True)"
+                                title="Download PDF"
+                            >
+                                <i class="fa fa-download" /> Download
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <t t-set="doc" t-value="repair" />
+                            <t
+                                t-call="shop_inspection_report.inspection_report_content"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

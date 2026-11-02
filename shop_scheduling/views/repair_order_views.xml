@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="view_repair_order_form" model="ir.ui.view">
+        <field name="name">repair.order.form (in shop_scheduling)</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[last()]" position="after">
+                <button
+                    name="action_shop_schedule"
+                    type="object"
+                    string="Schedule"
+                    invisible="state in ('done', 'cancel')"
+                />
+            </xpath>
+            <div name="button_box" position="inside">
+                <button
+                    name="action_view_bookings"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-calendar"
+                    invisible="booking_count == 0"
+                >
+                    <field
+                        name="booking_count"
+                        widget="statinfo"
+                        string="Appointments"
+                    />
+                </button>
+            </div>
+            <xpath expr="//sheet//field[@name='partner_id']" position="after">
+                <!-- Moving an existing appointment to another type means
+                     rebooking it, which only the Schedule wizard does. -->
+                <field
+                    name="booking_type_id"
+                    options="{'no_create': True}"
+                    readonly="booking_id or state in ('done', 'cancel')"
+                />
+            </xpath>
+            <xpath expr="//field[@name='schedule_date']" position="after">
+                <field name="booking_id" readonly="1" invisible="not booking_id" />
+                <field name="book_hours" widget="float_time" invisible="not book_hours" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_repair_order_form_filter" model="ir.ui.view">
+        <field name="name">repair.select (in shop_scheduling)</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form_filter" />
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="technician_id" />
+            </field>
+            <filter name="filter_late" position="after">
+                <separator />
+                <filter
+                    string="My Jobs"
+                    name="my_jobs"
+                    domain="[('technician_id', '=', uid)]"
+                />
+                <filter
+                    string="Unscheduled"
+                    name="unscheduled"
+                    domain="[('booking_ids', '=', False), ('state', 'not in', ('done', 'cancel'))]"
+                />
+            </filter>
+            <filter name="partner" position="before">
+                <filter
+                    string="Technician"
+                    name="groupby_technician"
+                    domain="[]"
+                    context="{'group_by': 'technician_id'}"
+                />
+                <filter
+                    string="Scheduled Date"
+                    name="groupby_schedule_date"
+                    domain="[]"
+                    context="{'group_by': 'schedule_date'}"
+                />
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_repair_order_calendar" model="ir.ui.view">
+        <field name="name">repair.order.calendar (in shop_scheduling)</field>
+        <field name="model">repair.order</field>
+        <field
+            name="inherit_id"
+            ref="repair_scheduled_date_calendar_view.view_repair_order_calendar"
+        />
+        <field name="arch" type="xml">
+            <!-- Colour and sidebar filter follow the appointment type; the
+                 event card is drawn by the repair_calendar view. -->
+            <calendar position="attributes">
+                <attribute name="color">booking_type_color</attribute>
+                <attribute name="js_class">repair_calendar</attribute>
+            </calendar>
+            <field name="user_id" position="after">
+                <field name="technician_id" />
+                <field name="booking_type_id" filters="1" color="color" />
+                <field name="shop_vehicle_label" />
+            </field>
+        </field>
+    </record>
+
+    <!-- The shop board. Core's card is written for a workshop repairing a
+         *product*, so it leads with product_id, which this shop never fills
+         (the job is anchored to a vehicle instead). Swap that for what a
+         service writer scans a board for: which vehicle, whose it is, who has
+         it, and when it is due. -->
+    <record id="view_repair_kanban" model="ir.ui.view">
+        <field name="name">repair.kanban (in shop_scheduling)</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_kanban" />
+        <field name="arch" type="xml">
+            <!-- product_id is dead weight here; the vehicle takes its place.
+                 vehicle_id displays as Brand/Model/Plate. -->
+            <field name="product_id" position="replace">
+                <field name="vehicle_id" class="fw-bold text-truncate d-block" />
+            </field>
+
+            <!-- Customer keeps its column; the rest hangs underneath so the
+                 card stays two columns wide on a phone. -->
+            <xpath expr="//field[@name='partner_id']/.." position="inside">
+                <div
+                    class="float-end w-100 text-end text-muted"
+                    invisible="not schedule_date"
+                >
+                    <i class="fa fa-clock-o me-1" title="Scheduled" />
+                    <field name="schedule_date" widget="remaining_days" />
+                </div>
+            </xpath>
+
+            <!-- Technician as an avatar, the way Odoo shows an assignee
+                 everywhere else. Unassigned jobs show a placeholder rather
+                 than collapsing the row, so the board stays aligned.
+
+                 No plate badge here: fleet.vehicle's display name is already
+                 Brand/Model/Plate, so the line above carries it. -->
+            <xpath expr="//div[hasclass('row')]" position="inside">
+                <div class="col-12 text-muted">
+                    <field
+                        name="technician_id"
+                        widget="many2one_avatar_user"
+                        invisible="not technician_id"
+                    />
+                    <span class="fst-italic" invisible="technician_id">Unassigned</span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_shop_my_jobs" model="ir.actions.act_window">
+        <field name="name">My Jobs</field>
+        <field name="res_model">repair.order</field>
+        <field name="view_mode">kanban,list,calendar,form</field>
+        <field name="search_view_id" ref="repair.view_repair_order_form_filter" />
+        <field name="context">{'search_default_my_jobs': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No jobs are assigned to you</p>
+            <p>Jobs land here when an appointment books you, or when the shop
+               manager puts you on a repair order.</p>
+        </field>
+    </record>
+</odoo>

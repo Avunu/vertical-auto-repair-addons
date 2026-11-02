@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="shop_inspection_category_view_list" model="ir.ui.view">
+        <field name="name">shop.inspection.category.list</field>
+        <field name="model">shop.inspection.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="note" optional="hide" />
+            </list>
+        </field>
+    </record>
+    <record id="shop_inspection_category_act_window" model="ir.actions.act_window">
+        <field name="name">Inspection Categories</field>
+        <field name="res_model">shop.inspection.category</field>
+        <field name="view_mode">list</field>
+    </record>
+    <menuitem
+        id="shop_inspection_category_menu"
+        name="Inspection Categories"
+        parent="fleet.fleet_configuration"
+        action="shop_inspection_category_act_window"
+        sequence="17"
+    />
+
+    <record id="shop_inspection_condition_view_list" model="ir.ui.view">
+        <field name="name">shop.inspection.condition.list</field>
+        <field name="model">shop.inspection.condition</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+            </list>
+        </field>
+    </record>
+    <record id="shop_inspection_condition_act_window" model="ir.actions.act_window">
+        <field name="name">Inspection Conditions</field>
+        <field name="res_model">shop.inspection.condition</field>
+        <field name="view_mode">list</field>
+    </record>
+    <menuitem
+        id="shop_inspection_condition_menu"
+        name="Inspection Conditions"
+        parent="fleet.fleet_configuration"
+        action="shop_inspection_condition_act_window"
+        sequence="18"
+    />
+
+    <record id="shop_inspection_action_view_list" model="ir.ui.view">
+        <field name="name">shop.inspection.action.list</field>
+        <field name="model">shop.inspection.action</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+            </list>
+        </field>
+    </record>
+    <record id="shop_inspection_action_act_window" model="ir.actions.act_window">
+        <field name="name">Recommended Actions</field>
+        <field name="res_model">shop.inspection.action</field>
+        <field name="view_mode">list</field>
+    </record>
+    <menuitem
+        id="shop_inspection_action_menu"
+        name="Recommended Actions"
+        parent="fleet.fleet_configuration"
+        action="shop_inspection_action_act_window"
+        sequence="19"
+    />
+</odoo>

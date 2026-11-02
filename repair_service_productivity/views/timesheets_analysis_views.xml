@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!--
+        Inheriting straight from hr_timesheet's own pivot/graph views won't
+        work here: `non_billable_time` (our xpath anchor) doesn't exist
+        until sale_timesheet's own inherited views add it, so every ref=
+        below targets sale_timesheet's records, not hr_timesheet's.
+
+        sale_timesheet.timesheets_analysis_report_graph_inherit is a
+        (core, upstream) copy-paste bug: despite the name, its own
+        inherit_id points at hr_timesheet's *pivot*-by-employee view, not
+        a graph - core's own comment above the next record flags this
+        ("TO DO: Remove in master and update existing inherit_id").
+        timesheets_analysis_report_graph_timesheet_grid is the one that
+        actually inherits the graph-by-employee view, so that is what
+        gets extended here instead.
+    -->
+    <!--
+        timesheets_analysis_report_graph_inherit (the buggy one, see the
+        comment two records down) contributes its own billable_time/
+        non_billable_time straight onto the shared parent
+        (hr_timesheet.timesheets_analysis_report_pivot_employee), same as
+        timesheets_analysis_report_pivot_inherit does right below it.
+        Odoo merges *every* view descending from a given root into the
+        final client-facing arch for that view type, not just the one
+        this module's own record below happens to declare as its direct
+        inherit_id - confirmed live (fresh process each time, so not a
+        caching artifact) that trying to de-duplicate the resulting two
+        copies of each field from within a view that only inherits the
+        non-buggy sibling cannot work, because the buggy sibling's own
+        contribution is merged in as a separate, parallel branch, outside
+        that chain entirely. The only place that can actually remove it
+        is a view that inherits from the buggy sibling directly, which is
+        what this record does - it has nothing to do with graphs despite
+        the id, this purely neutralizes that one upstream bug so the
+        pivot view below sees a single copy of each field, as intended.
+    -->
+    <record id="timesheets_analysis_report_graph_inherit_bugfix" model="ir.ui.view">
+        <field name="name">timesheets.analysis.report.graph.inherit.bugfix</field>
+        <field name="model">timesheets.analysis.report</field>
+        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_graph_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='billable_time']" position="replace" />
+            <xpath expr="//field[@name='non_billable_time']" position="replace" />
+        </field>
+    </record>
+
+    <record id="timesheets_analysis_report_pivot_employee_inherit" model="ir.ui.view">
+        <field name="name">timesheets.analysis.report.pivot.employee.repair.productivity</field>
+        <field name="model">timesheets.analysis.report</field>
+        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_pivot_inherit" />
+        <field name="arch" type="xml">
+            <!-- `type="measure"` is what makes a field pre-selected when
+                 the pivot first loads - inherited from hr_timesheet's own
+                 base view, unit_amount ("Time Spent") is the only field
+                 carrying it there, so it's cleared here and moved onto
+                 the three fields this module actually cares about. The
+                 user can still add Time Spent back manually from the
+                 Measures dropdown; this only changes what's selected by
+                 default. -->
+            <xpath expr="//field[@name='unit_amount']" position="attributes">
+                <attribute name="type"></attribute>
+            </xpath>
+            <xpath expr="//field[@name='billable_time']" position="attributes">
+                <attribute name="type">measure</attribute>
+            </xpath>
+            <xpath expr="//field[@name='non_billable_time']" position="attributes">
+                <attribute name="type">measure</attribute>
+            </xpath>
+            <xpath expr="//field[@name='non_billable_time']" position="after">
+                <field name="estimated_vs_actual_time" type="measure" widget="timesheet_uom" />
+            </xpath>
+        </field>
+    </record>
+    <record id="timesheets_analysis_report_graph_employee_inherit" model="ir.ui.view">
+        <field name="name">timesheets.analysis.report.graph.employee.repair.productivity</field>
+        <field name="model">timesheets.analysis.report</field>
+        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_graph_timesheet_grid" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='non_billable_time']" position="after">
+                <field name="estimated_vs_actual_time" widget="timesheet_uom" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- "Timesheets by Billing Type" (groups/colors by timesheet_invoice_type,
+         the same billable/non-billable split this module attributes repair
+         time onto). These two are standalone views (no inherit_id of their
+         own), unlike the pair above. -->
+    <record id="timesheets_analysis_report_pivot_invoice_type_inherit" model="ir.ui.view">
+        <field name="name">timesheets.analysis.report.pivot.invoice_type.repair.productivity</field>
+        <field name="model">timesheets.analysis.report</field>
+        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_pivot_invoice_type" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='non_billable_time']" position="after">
+                <field name="estimated_vs_actual_time" widget="timesheet_uom" />
+            </xpath>
+        </field>
+    </record>
+    <record id="timesheets_analysis_report_graph_invoice_type_inherit" model="ir.ui.view">
+        <field name="name">timesheets.analysis.report.graph.invoice_type.repair.productivity</field>
+        <field name="model">timesheets.analysis.report</field>
+        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_graph_invoice_type" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='non_billable_time']" position="after">
+                <field name="estimated_vs_actual_time" widget="timesheet_uom" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

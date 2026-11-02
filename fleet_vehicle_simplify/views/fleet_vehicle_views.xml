@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="fleet_vehicle_view_form_simplify" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.simplify</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form" />
+        <field name="arch" type="xml">
+            <!-- Corporate lease/tax fields don't apply to a repair shop's customer vehicles. -->
+            <xpath expr="//page[@name='page_tax_info']" position="replace" />
+
+            <!-- No New Request -&gt; Registered lease workflow here; kept on the
+                 model (core create()/write() references to it no-op safely) but
+                 hidden everywhere in the UI. -->
+            <field name="state_id" position="replace" />
+
+            <!-- Driver assignment doesn't apply to customer vehicles. Every
+                 field in this group stays on the model since some of them
+                 (active, vehicle_type, company_id, future_driver_id) back
+                 invisible= conditions and the "Apply New Driver" button
+                 elsewhere on this form. -->
+            <!-- Odoo forbids matching on the translated "string" attribute,
+                 so these groups are targeted via a stable field inside them
+                 instead. -->
+            <xpath expr="//field[@name='driver_id']/parent::group" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Vehicle group: keep only vin_sn, hide the rest, then relocate
+                 the whole (now vin_sn-only) group up under the tags row. Tag
+                 it with a stable name first so later steps don't depend on the
+                 "Vehicle" label we're about to strip. -->
+            <xpath expr="//field[@name='vin_sn']/parent::group" position="attributes">
+                <attribute name="name">vin_group</attribute>
+            </xpath>
+            <xpath expr="//group[@name='vin_group']/field[@name='category_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='vin_group']/field[@name='order_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='vin_group']/field[@name='acquisition_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='vin_group']/field[@name='write_off_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='vin_group']/label[@for='odometer']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='vin_group']/div[hasclass('o_row', 'o_hr_narrow_field')]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='vin_group']/field[@name='manager_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='vin_group']/field[@name='location']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- "Chassis Number" is European usage; this is a US shop. A VIN
+                 is a fixed 17 characters, so it doesn't need a field that
+                 stretches to the width of the group's table cell like a
+                 regular char field does by default. -->
+            <xpath expr="//group[@name='vin_group']/field[@name='vin_sn']" position="attributes">
+                <attribute name="string">VIN</attribute>
+                <attribute name="class">oe_inline</attribute>
+            </xpath>
+            <xpath expr="//group[@name='vin_group']" position="attributes">
+                <attribute name="string"></attribute>
+                <!-- Sits right after the title block, which has no bottom
+                     margin of its own, so this group needs its own top margin
+                     to avoid crowding the tags row above it. -->
+                <attribute name="class">mt-3</attribute>
+            </xpath>
+            <!-- Placed after the whole oe_title block, not inside it: oe_title
+                 uses tight, title-specific CSS with no field spacing, which
+                 squashed vin_sn against the tags row when it was inserted there
+                 directly. -->
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <xpath expr="//group[@name='vin_group']" position="move" />
+            </xpath>
+
+            <!-- Engine group on the Model tab: a repair shop only cares about
+                 fuel type and power for service purposes, not the rest of the
+                 European emissions/lease fields. -->
+            <xpath expr="//label[@for='power']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('o_row')][field[@name='power']]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='vehicle_range']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('o_row')][field[@name='vehicle_range']]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='co2']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[@name='co2']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <field name="co2_standard" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <!-- VIN Specifications page (added by shop_vehicle_vin) shows
+                 decoded data as readonly; the shop wants to be able to correct
+                 it by hand when the decoder gets something wrong. None of
+                 these are compute fields, so this is UI-only. -->
+            <field name="vin_body_class" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_drive_type" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_engine_cylinders" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_engine_configuration" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_engine_displacement_l" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_engine_manufacturer" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_gvwr" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_manufacturer" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_plant_country" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_series" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_transmission_speeds" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_transmission_style" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_trim" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+            <field name="vin_decoded_on" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+
+            <!-- Stat buttons that don't apply to a repair shop's customer
+                 vehicles ("Repairs", from repair_fleet_vehicle, stays). -->
+            <xpath expr="//button[@name='action_open_employee']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <button name="open_assignation_logs" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-book']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-wrench'][contains(@invisible,'none')]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-wrench'][contains(@invisible,'overdue')]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-wrench'][contains(@invisible,'today')]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-tachometer']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_view_inspection']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_view_tree_simplify" model="ir.ui.view">
+        <field name="name">fleet.vehicle.list.simplify</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree" />
+        <field name="arch" type="xml">
+            <field name="state_id" position="replace" />
+            <field name="vin_sn" position="attributes">
+                <attribute name="string">VIN</attribute>
+            </field>
+            <field name="acquisition_date" position="replace" />
+            <field name="tag_ids" position="replace" />
+            <!-- These are already invisible="1" in core, but that only blanks
+                 the cell per row: it doesn't drop the column, so the header
+                 ("Has Contracts to renew" / "Has Contracts Overdue") still
+                 shows up empty. column_invisible actually removes the column.
+                 They can't be deleted outright: the list's decoration-warning/
+                 decoration-danger attributes depend on their values. -->
+            <field name="contract_renewal_due_soon" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="contract_renewal_overdue" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_view_pivot_simplify" model="ir.ui.view">
+        <field name="name">fleet.vehicle.pivot.simplify</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_pivot" />
+        <field name="arch" type="xml">
+            <field name="state_id" position="replace" />
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_view_search_simplify" model="ir.ui.view">
+        <field name="name">fleet.vehicle.search.simplify</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_search" />
+        <field name="arch" type="xml">
+            <field name="state_id" position="replace" />
+            <filter name="groupby_status" position="replace" />
+            <!-- This is the field selected by default (the "Vehicle" chip) when
+                 someone types into the search bar and hits Enter without picking
+                 a specific field from the dropdown: which is how most people
+                 actually use the search bar. Broadening its filter_domain to OR
+                 across every text/selection/many2one field on the vehicle means
+                 that default action alone covers VIN, owner, driver, and the
+                 rest, not just name/license plate. Numeric, date and boolean
+                 fields are left out: ilike doesn't apply to them the same way,
+                 and they're better suited to Add Custom Filter or the explicit
+                 per-field chips added below. -->
+            <field name="name" position="attributes">
+                <attribute name="filter_domain">[
+                    '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|',
+                    '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|',
+                    '|',
+                    ('name', 'ilike', self),
+                    ('license_plate', 'ilike', self),
+                    ('unit_number', 'ilike', self),
+                    ('vin_sn', 'ilike', self),
+                    ('color', 'ilike', self),
+                    ('model_year', 'ilike', self),
+                    ('fuel_type', 'ilike', self),
+                    ('owner_id', 'ilike', self),
+                    ('driver_id', 'ilike', self),
+                    ('future_driver_id', 'ilike', self),
+                    ('mobility_card', 'ilike', self),
+                    ('transmission', 'ilike', self),
+                    ('power_unit', 'ilike', self),
+                    ('odometer_unit', 'ilike', self),
+                    ('frame_type', 'ilike', self),
+                    ('vin_decode_note', 'ilike', self),
+                    ('vin_engine_configuration', 'ilike', self),
+                    ('vin_engine_manufacturer', 'ilike', self),
+                    ('vin_drive_type', 'ilike', self),
+                    ('vin_transmission_style', 'ilike', self),
+                    ('vin_body_class', 'ilike', self),
+                    ('vin_series', 'ilike', self),
+                    ('vin_trim', 'ilike', self),
+                    ('vin_gvwr', 'ilike', self),
+                    ('vin_manufacturer', 'ilike', self),
+                    ('vin_plant_country', 'ilike', self),
+                ]</attribute>
+            </field>
+            <!-- Every field that actually shows on the vehicle form, so any
+                 of them can be typed into the search bar. description (Html)
+                 and vehicle_properties are left out: Html isn't a supported
+                 search type, and vehicle_properties is already searchable via
+                 its own widget in the base view. -->
+            <field name="license_plate" position="after">
+                <field name="vin_sn" string="VIN" />
+                <field name="color" />
+                <field name="fuel_type" />
+                <field name="model_year" />
+                <field name="owner_id" />
+                <field name="driver_id" />
+                <field name="future_driver_id" />
+                <!-- mobility_card is already added after license_plate by hr_fleet's own search-view inherit. -->
+                <field name="next_assignation_date" />
+                <field name="odometer" />
+                <field name="odometer_unit" />
+                <field name="vin_decode_note" />
+                <field name="transmission" />
+                <field name="seats" />
+                <field name="doors" />
+                <field name="trailer_hook" />
+                <field name="frame_type" />
+                <field name="frame_size" />
+                <field name="electric_assistance" />
+                <field name="power_unit" />
+                <field name="horsepower" />
+                <field name="plan_to_change_car" />
+                <field name="plan_to_change_bike" />
+                <field name="vin_engine_displacement_l" />
+                <field name="vin_engine_cylinders" />
+                <field name="vin_engine_configuration" />
+                <field name="vin_engine_manufacturer" />
+                <field name="vin_drive_type" />
+                <field name="vin_transmission_style" />
+                <field name="vin_transmission_speeds" />
+                <field name="vin_body_class" />
+                <field name="vin_series" />
+                <field name="vin_trim" />
+                <field name="vin_gvwr" />
+                <field name="vin_manufacturer" />
+                <field name="vin_plant_country" />
+                <field name="vin_decoded_on" />
+            </field>
+        </field>
+    </record>
+
+    <!-- Kanban view is left as-is; it's simply no longer reachable since
+         "kanban" is dropped from the action's view_mode below. List becomes
+         the default. -->
+    <record id="fleet.fleet_vehicle_action" model="ir.actions.act_window">
+        <field name="view_mode">list,form,pivot,activity</field>
+    </record>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <menuitem
+        id="menu_shop_my_jobs"
+        name="My Jobs"
+        parent="repair.menu_repair_order"
+        action="action_shop_my_jobs"
+        groups="stock.group_stock_user"
+        sequence="11"
+    />
+    <menuitem
+        id="menu_shop_schedule_board"
+        name="Shop Schedule"
+        parent="repair.menu_repair_order"
+        action="action_shop_schedule_board"
+        groups="resource_booking.group_user"
+        sequence="12"
+    />
+</odoo>

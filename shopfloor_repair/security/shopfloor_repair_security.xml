@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!--
+        fleet_vehicle_inspection grants create/write on inspections to Fleet
+        *Manager* only; Officers and (via shop_inspection) stock users get
+        read. That models a company fleet, where inspecting is an admin act.
+        In a repair shop the technician is the one holding the flashlight, so
+        they need to create the inspection and grade its lines.
+
+        A dedicated group rather than widening stock.group_stock_user: ACLs
+        are OR'ed across groups, so this is purely additive, and a parts clerk
+        with stock rights still cannot author an inspection. Grant it to every
+        technician who uses the shop floor app.
+    -->
+    <record id="group_shop_technician" model="res.groups">
+        <field name="name">Shop Floor Technician</field>
+        <field name="category_id" ref="base.module_category_inventory_inventory" />
+        <field name="comment">Record inspections, consume parts and log time
+            from the shop floor app.</field>
+    </record>
+
+    <!--
+        The same company-fleet assumption repair_fleet_vehicle already had to
+        undo for fleet.vehicle, repeated one model down:
+        fleet_rule_inspection_visibility_user restricts Officers to
+        inspections of vehicles where they are the driver. Customer vehicles
+        have no staff driver, so a technician can read *nothing* — the
+        inspection is created successfully and then vanishes from
+        repair.order.inspection_ids, which reads as data loss rather than as
+        an access problem.
+
+        Record rules are OR'ed only across groups the user actually has, so a
+        group carrying no rule cannot widen anything: the permissive rule has
+        to be attached to this group explicitly. Scoped to the allowed
+        companies rather than [(1, '=', 1)], because the shop runs more than
+        one company and OCA ships no multi-company rule here.
+    -->
+    <record id="rule_inspection_shop_technician" model="ir.rule">
+        <field name="name">Shop: technicians see all inspections</field>
+        <field name="model_id" ref="fleet_vehicle_inspection.model_fleet_vehicle_inspection" />
+        <field name="groups" eval="[Command.link(ref('group_shop_technician'))]" />
+        <field
+            name="domain_force"
+        >[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="rule_inspection_line_shop_technician" model="ir.rule">
+        <field name="name">Shop: technicians see all inspection lines</field>
+        <field
+            name="model_id"
+            ref="fleet_vehicle_inspection.model_fleet_vehicle_inspection_line"
+        />
+        <field name="groups" eval="[Command.link(ref('group_shop_technician'))]" />
+        <field
+            name="domain_force"
+        >[('inspection_id.company_id', 'in', company_ids + [False])]</field>
+    </record>
+</odoo>

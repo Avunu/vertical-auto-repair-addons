@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="shop_service_job_view_form" model="ir.ui.view">
+        <field name="name">shop.service.job.form</field>
+        <field name="model">shop.service.job</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        title="Archived"
+                        bg_color="text-bg-danger"
+                        invisible="active"
+                    />
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1><field name="name" placeholder="e.g. Front Brake Job" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="active" invisible="1" />
+                            <field name="pricing" widget="radio" />
+                            <field
+                                name="price_fixed"
+                                invisible="pricing != 'fixed'"
+                                required="pricing == 'fixed'"
+                            />
+                            <field name="price_total" />
+                            <field name="product_id" />
+                        </group>
+                        <group>
+                            <field name="labor_product_id" />
+                            <field name="labor_hours" widget="float_time" />
+                            <field name="company_id" groups="base.group_multi_company" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="parts" string="Parts">
+                            <field name="part_line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="quantity" />
+                                    <field name="company_id" column_invisible="1" />
+                                </list>
+                            </field>
+                        </page>
+                        <page name="description" string="Customer Description">
+                            <field
+                                name="customer_description"
+                                placeholder="What the customer reads on the quote line…"
+                            />
+                        </page>
+                        <page name="actions" string="Recommended Actions">
+                            <field name="action_ids">
+                                <list>
+                                    <field name="name" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="shop_service_job_view_list" model="ir.ui.view">
+        <field name="name">shop.service.job.list</field>
+        <field name="model">shop.service.job</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="pricing" />
+                <field name="price_total" />
+                <field name="labor_product_id" optional="show" />
+                <field name="labor_hours" optional="show" widget="float_time" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
+            </list>
+        </field>
+    </record>
+    <record id="shop_service_job_view_search" model="ir.ui.view">
+        <field name="name">shop.service.job.search</field>
+        <field name="model">shop.service.job</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <filter
+                    string="Archived"
+                    name="inactive"
+                    domain="[('active', '=', False)]"
+                />
+            </search>
+        </field>
+    </record>
+    <record id="shop_service_job_act_window" model="ir.actions.act_window">
+        <field name="name">Service Jobs</field>
+        <field name="res_model">shop.service.job</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem
+        id="shop_service_job_menu"
+        name="Service Jobs"
+        parent="repair.repair_menu_config"
+        action="shop_service_job_act_window"
+        sequence="3"
+    />
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright 2026 Avunu LLC (avu.nu)
+    License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <template
+        id="report_repairorder_workflow"
+        inherit_id="repair.report_repairorder"
+    >
+        <!-- Only print the Parts section when the order has parts. -->
+        <xpath expr="//h2[normalize-space()='Parts']" position="attributes">
+            <attribute name="t-if">o.move_ids</attribute>
+        </xpath>
+        <xpath expr="(//table[hasclass('o_main_table')])[1]" position="attributes">
+            <attribute name="t-if">o.move_ids</attribute>
+        </xpath>
+        <!-- Service quantity is time (hours), which customers don't need to see. -->
+        <xpath
+            expr="//t[@t-if='o.repair_service_ids']//thead//th[hasclass('text-end')]"
+            position="replace"
+        />
+        <xpath
+            expr="//tr[@t-foreach='o.repair_service_ids']/td[hasclass('text-end')]"
+            position="replace"
+        />
+    </template>
+</odoo>

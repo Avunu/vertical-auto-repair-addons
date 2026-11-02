@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!--
+        One menu item, deliberately. The technician picks a job once and the
+        job_detail state is the hub for time, parts and inspections; four menu
+        items would mean re-selecting the job for every action.
+    -->
+    <record id="shopfloor_menu_my_jobs" model="shopfloor.menu">
+        <field name="name">My Jobs</field>
+        <field name="sequence">10</field>
+        <field name="profile_id" ref="shopfloor_profile_technician" />
+        <field name="scenario_id" ref="shopfloor_scenario_repair_job" />
+    </record>
+</odoo>

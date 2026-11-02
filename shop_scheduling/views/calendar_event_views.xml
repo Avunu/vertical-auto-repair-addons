@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!-- The grid appointments are placed on, opened by
+         resource.booking.action_schedule(). Kept as a primary view of its own
+         so it only applies where appointments are placed, never to the
+         Calendar app: the stock view keeps the lower priority and stays the
+         default everywhere else. -->
+    <record id="calendar_event_view_calendar_shop" model="ir.ui.view">
+        <field name="name">calendar.event.calendar.shop (in shop_scheduling)</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_calendar" />
+        <field name="mode">primary</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <calendar position="attributes">
+                <!-- The stock view declares no mode, so its scale falls back
+                     to whatever this browser session last used. A click in
+                     month scale creates an all-day event, which fits no work
+                     interval and so can never book a technician. -->
+                <attribute name="mode">week</attribute>
+                <attribute name="scales">day,week</attribute>
+                <!-- Dropping all_day removes the all-day row from the grid,
+                     so the same click cannot happen inside week scale. -->
+                <attribute name="all_day" />
+            </calendar>
+        </field>
+    </record>
+</odoo>
