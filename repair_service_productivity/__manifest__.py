@@ -5,7 +5,7 @@
     "summary": "Attribute Services-tab Invoiced/Estimated/Actual time to "
     "employees in the Timesheets app's Billable Time report, and compare "
     "attendance against invoiced time",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
     "website": "https://github.com/Avunu/vertical-auto-repair-addons",
@@ -14,6 +14,9 @@
         "repair_service_workflow",
         "sale_timesheet",
         "hr_attendance",
+        # The report's view selects sheet_id, the column hr_timesheet_sheet
+        # adds to timesheets.analysis.report.
+        "hr_timesheet_sheet",
     ],
     "data": [
         "views/timesheets_analysis_views.xml",
