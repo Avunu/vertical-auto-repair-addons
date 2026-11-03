@@ -7,7 +7,7 @@
     "stage of the job lifecycle.",
     # 1.1.0 logs the seeded hours against the repair order itself and points
     # the repair timer at the Shop Labor project.
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
     "website": "https://github.com/Avunu/vertical-auto-repair-addons",
@@ -30,6 +30,9 @@
         # labor project the seeded timesheets and the timer both need.
         "repair_timesheet_time_control",
         "purchase_stock",
+        # Its demo data creates USA Demo Company, the company the scenario is
+        # seeded into (post_init_hook refuses a database without it).
+        "l10n_us_gaap",
     ],
     "data": [
         "data/ir_actions_server.xml",
