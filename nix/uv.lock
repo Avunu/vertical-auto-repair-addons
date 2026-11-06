@@ -1815,16 +1815,13 @@ wheels = [
 [[package]]
 name = "odoo-addon-auth-oidc"
 version = "18.0.1.1.0"
-source = { directory = "../.odoo-nix/modules/server-auth/auth_oidc" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "odoo" },
     { name = "python-jose" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "odoo", specifier = "==18.0.*" },
-    { name = "python-jose" },
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f5/02/6c3b4642f84dbbdce7a1d525b35c3a275fc7a5a3e1849cb3fc7df3017d4d/odoo_addon_auth_oidc-18.0.1.1.0-py3-none-any.whl", hash = "sha256:51f9c53bbfd7f73d8f80ab9cf77cd2ed8f76fecaa3e3792f036c971954ac5ce0", size = 176818, upload-time = "2025-10-31T09:33:35.261Z" },
 ]
 
 [[package]]
@@ -1841,28 +1838,40 @@ wheels = [
 [[package]]
 name = "odoo-addon-base-import-pdf-by-template"
 version = "18.0.1.2.1"
-source = { directory = "../.odoo-nix/modules/edi/base_import_pdf_by_template" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "odoo" },
     { name = "pypdf" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/06/14/16c2dc3068c24fea19feb46c1c222c291a3aef6933c7c7b8699e887365d7/odoo_addon_base_import_pdf_by_template-18.0.1.2.1-py3-none-any.whl", hash = "sha256:3425768941d21bec7365cc393bcc2dc87a5dc60a9c27f89fa79501bdc1b1bbdf", size = 81829, upload-time = "2026-09-03T09:48:29.99Z" },
+]
+
+[[package]]
+name = "odoo-addon-base-import-pdf-by-template-engine"
+version = "18.0.1.1.0"
+source = { directory = "../.odoo-nix/modules/edi-addons/base_import_pdf_by_template_engine" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-base-import-pdf-by-template" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "odoo", specifier = "==18.0.*" },
-    { name = "pypdf" },
+    { name = "odoo-addon-base-import-pdf-by-template", specifier = "==18.0.*" },
 ]
 
 [[package]]
 name = "odoo-addon-base-repair-config"
-version = "18.0.1.0.0"
-source = { directory = "../.odoo-nix/modules/repair/base_repair_config" }
+version = "18.0.1.0.0.4"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "odoo" },
 ]
-
-[package.metadata]
-requires-dist = [{ name = "odoo", specifier = "==18.0.*" }]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5e/f3/ffa5764661618f1dd0592b7193376c468c50f3b9c6e1c4e43c9d1ee58efc/odoo_addon_base_repair_config-18.0.1.0.0.4-py3-none-any.whl", hash = "sha256:aec638af4b539bc57ea4e25391bbce3964bfd69f279055511584e914a85b7d33", size = 33668, upload-time = "2026-07-03T03:59:13.224Z" },
+]
 
 [[package]]
 name = "odoo-addon-base-rest"
@@ -1902,20 +1911,15 @@ wheels = [
 [[package]]
 name = "odoo-addon-edi-core-oca"
 version = "18.0.1.10.0"
-source = { directory = "../.odoo-nix/modules/edi-framework/edi_core_oca" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "odoo" },
     { name = "odoo-addon-base-edi" },
     { name = "openupgradelib" },
     { name = "pyyaml" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "odoo", specifier = "==18.0.*" },
-    { name = "odoo-addon-base-edi", specifier = "==18.0.*" },
-    { name = "openupgradelib" },
-    { name = "pyyaml" },
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4f/1d/0a7caabd1259b391ee2861f51d5024fb15344140c4e62ad9844828006bc4/odoo_addon_edi_core_oca-18.0.1.10.0-py3-none-any.whl", hash = "sha256:dde3ace7ca057234e68a15ed94fb7af32a36cc05ee1961fea81c7a0708fc9c56", size = 167043, upload-time = "2026-10-16T08:27:48.52Z" },
 ]
 
 [[package]]
@@ -1933,6 +1937,21 @@ requires-dist = [
     { name = "odoo", specifier = "==18.0.*" },
     { name = "odoo-addon-edi-core-oca", specifier = "==18.0.*" },
     { name = "odoo-addon-edi-record-metadata-oca", specifier = "==18.0.*" },
+]
+
+[[package]]
+name = "odoo-addon-edi-purchase-order-import"
+version = "18.0.1.0.0"
+source = { directory = "../.odoo-nix/modules/edi-addons/edi_purchase_order_import" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-import-from-email" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "odoo", specifier = "==18.0.*" },
+    { name = "odoo-addon-import-from-email", specifier = "==18.0.*" },
 ]
 
 [[package]]
@@ -1986,14 +2005,14 @@ requires-dist = [
 
 [[package]]
 name = "odoo-addon-fleet-vehicle-ownership"
-version = "18.0.1.0.0"
-source = { directory = "../.odoo-nix/modules/fleet/fleet_vehicle_ownership" }
+version = "18.0.1.0.0.4"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "odoo" },
 ]
-
-[package.metadata]
-requires-dist = [{ name = "odoo", specifier = "==18.0.*" }]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/41/a0/85ac7754cc6804c81265eabf7821e15ed3ec3646c008f7e007fe573d252b/odoo_addon_fleet_vehicle_ownership-18.0.1.0.0.4-py3-none-any.whl", hash = "sha256:af39d90a17929bc773855fd93ed89243680a5866dfb37625a4f1cf0e9afa778f", size = 30649, upload-time = "2026-03-05T03:01:52.772Z" },
+]
 
 [[package]]
 name = "odoo-addon-hr-timesheet-sheet"
@@ -2008,6 +2027,25 @@ dependencies = [
 requires-dist = [
     { name = "odoo", specifier = "==18.0.*" },
     { name = "odoo-addon-web-widget-x2many-2d-matrix", specifier = "==18.0.*" },
+]
+
+[[package]]
+name = "odoo-addon-import-from-email"
+version = "18.0.1.0.0"
+source = { directory = "../.odoo-nix/modules/edi-addons/import_from_email" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-base-import-pdf-by-template" },
+    { name = "odoo-addon-base-import-pdf-by-template-engine" },
+    { name = "odoo-addon-edi-core-oca" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "odoo", specifier = "==18.0.*" },
+    { name = "odoo-addon-base-import-pdf-by-template", specifier = "==18.0.*" },
+    { name = "odoo-addon-base-import-pdf-by-template-engine", specifier = "==18.0.*" },
+    { name = "odoo-addon-edi-core-oca", specifier = "==18.0.*" },
 ]
 
 [[package]]
@@ -2035,13 +2073,13 @@ requires-dist = [{ name = "odoo", specifier = "==18.0.*" }]
 [[package]]
 name = "odoo-addon-project-timesheet-time-control"
 version = "18.0.1.0.7"
-source = { directory = "../.odoo-nix/modules/project/project_timesheet_time_control" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "odoo" },
 ]
-
-[package.metadata]
-requires-dist = [{ name = "odoo", specifier = "==18.0.*" }]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/36/f0/16e0e2da47fd9f1309d90c8860e2feedaf8ba0db02ea5c4b15378fb06047/odoo_addon_project_timesheet_time_control-18.0.1.0.7-py3-none-any.whl", hash = "sha256:a3f1ecd91af3ba8f9b535cfab02e1074f617ed354a7182e3cb38bbd8bf441e84", size = 167453, upload-time = "2026-05-29T15:20:23.446Z" },
+]
 
 [[package]]
 name = "odoo-addon-queue-job"
@@ -2059,9 +2097,52 @@ requires-dist = [
 ]
 
 [[package]]
+name = "odoo-addon-repair-fleet-vehicle"
+version = "18.0.1.1.1"
+source = { directory = "../.odoo-nix/modules/repair-addons/repair_fleet_vehicle" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-fleet-vehicle-ownership" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "odoo", specifier = "==18.0.*" },
+    { name = "odoo-addon-fleet-vehicle-ownership", specifier = "==18.0.*" },
+]
+
+[[package]]
 name = "odoo-addon-repair-order-template"
 version = "18.0.1.0.1"
-source = { directory = "../.odoo-nix/modules/repair/repair_order_template" }
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "odoo" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3c/03/0f52924ae4990d84251d45fe02e708fb1260a722fc75371a161b97eed4f5/odoo_addon_repair_order_template-18.0.1.0.1-py3-none-any.whl", hash = "sha256:c29ac0f5cb545ee1e2442bfced01baecfe355c61c615480e862fe4c158bf0b66", size = 31167, upload-time = "2025-11-17T17:26:34.82Z" },
+]
+
+[[package]]
+name = "odoo-addon-repair-order-template-service"
+version = "18.0.1.0.0"
+source = { directory = "../.odoo-nix/modules/repair-addons/repair_order_template_service" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-repair-order-template" },
+    { name = "odoo-addon-repair-service" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "odoo", specifier = "==18.0.*" },
+    { name = "odoo-addon-repair-order-template", specifier = "==18.0.*" },
+    { name = "odoo-addon-repair-service", specifier = "==18.0.*" },
+]
+
+[[package]]
+name = "odoo-addon-repair-purchase-order-parts"
+version = "18.0.2.0.0"
+source = { directory = "../.odoo-nix/modules/repair-addons/repair_purchase_order_parts" }
 dependencies = [
     { name = "odoo" },
 ]
@@ -2096,6 +2177,32 @@ dependencies = [
 requires-dist = [{ name = "odoo", specifier = "==18.0.*" }]
 
 [[package]]
+name = "odoo-addon-repair-service-so-sync"
+version = "18.0.1.0.0"
+source = { directory = "../.odoo-nix/modules/repair-addons/repair_service_so_sync" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-repair-service" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "odoo", specifier = "==18.0.*" },
+    { name = "odoo-addon-repair-service", specifier = "==18.0.*" },
+]
+
+[[package]]
+name = "odoo-addon-repair-stage"
+version = "18.0.1.0.0"
+source = { directory = "../.odoo-nix/modules/repair-addons/repair_stage" }
+dependencies = [
+    { name = "odoo" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "odoo", specifier = "==18.0.*" }]
+
+[[package]]
 name = "odoo-addon-repair-timesheet"
 version = "18.0.1.0.0"
 source = { directory = "../.odoo-nix/modules/repair/repair_timesheet" }
@@ -2105,6 +2212,25 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [{ name = "odoo", specifier = "==18.0.*" }]
+
+[[package]]
+name = "odoo-addon-repair-timesheet-time-control"
+version = "18.0.1.0.0"
+source = { directory = "../.odoo-nix/modules/repair-addons/repair_timesheet_time_control" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-base-repair-config" },
+    { name = "odoo-addon-project-timesheet-time-control" },
+    { name = "odoo-addon-repair-timesheet" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "odoo", specifier = "==18.0.*" },
+    { name = "odoo-addon-base-repair-config", specifier = "==18.0.*" },
+    { name = "odoo-addon-project-timesheet-time-control", specifier = "==18.0.*" },
+    { name = "odoo-addon-repair-timesheet", specifier = "==18.0.*" },
+]
 
 [[package]]
 name = "odoo-addon-resource-booking"
@@ -2126,13 +2252,39 @@ requires-dist = [
 [[package]]
 name = "odoo-addon-server-environment"
 version = "18.0.1.1.5"
-source = { directory = "../.odoo-nix/modules/server-env/server_environment" }
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "odoo" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/ec/08ed4f463c2f8cf9b836f8fafb7ad3c4d0f61237471718824742eb70113d/odoo_addon_server_environment-18.0.1.1.5-py3-none-any.whl", hash = "sha256:a054346ee364c24ca1fc4abd90f35cd5b0d5c5a372165d8abf9c445d5596405e", size = 215672, upload-time = "2026-09-30T06:48:56.021Z" },
+]
+
+[[package]]
+name = "odoo-addon-shop-vehicle-catalog"
+version = "18.0.1.0.0"
+source = { directory = "../.odoo-nix/modules/fleet-addons/shop_vehicle_catalog" }
 dependencies = [
     { name = "odoo" },
 ]
 
 [package.metadata]
 requires-dist = [{ name = "odoo", specifier = "==18.0.*" }]
+
+[[package]]
+name = "odoo-addon-shop-vehicle-vin"
+version = "18.0.1.0.0"
+source = { directory = "../.odoo-nix/modules/fleet-addons/shop_vehicle_vin" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-shop-vehicle-catalog" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "odoo", specifier = "==18.0.*" },
+    { name = "odoo-addon-shop-vehicle-catalog", specifier = "==18.0.*" },
+]
 
 [[package]]
 name = "odoo-addon-shopfloor-base"
@@ -2188,6 +2340,42 @@ requires-dist = [
 ]
 
 [[package]]
+name = "odoo-addon-shopfloor-mobile-base-auth-oauth"
+version = "18.0.1.0.2"
+source = { directory = "../.odoo-nix/modules/shopfloor-app-addons/shopfloor_mobile_base_auth_oauth" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-auth-oidc" },
+    { name = "odoo-addon-server-environment" },
+    { name = "odoo-addon-shopfloor-mobile-base" },
+    { name = "odoo-addon-shopfloor-mobile-base-auth-api-key" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "odoo", specifier = "==18.0.*" },
+    { name = "odoo-addon-auth-oidc", specifier = "==18.0.*" },
+    { name = "odoo-addon-server-environment", specifier = "==18.0.*" },
+    { name = "odoo-addon-shopfloor-mobile-base", specifier = "==18.0.*" },
+    { name = "odoo-addon-shopfloor-mobile-base-auth-api-key", specifier = "==18.0.*" },
+]
+
+[[package]]
+name = "odoo-addon-shopfloor-mobile-camera-scan"
+version = "18.0.1.0.0"
+source = { directory = "../.odoo-nix/modules/shopfloor-app-addons/shopfloor_mobile_camera_scan" }
+dependencies = [
+    { name = "odoo" },
+    { name = "odoo-addon-shopfloor-mobile-base" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "odoo", specifier = "==18.0.*" },
+    { name = "odoo-addon-shopfloor-mobile-base", specifier = "==18.0.*" },
+]
+
+[[package]]
 name = "odoo-addon-web-calendar-slot-duration"
 version = "18.0.1.0.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -2207,6 +2395,15 @@ dependencies = [
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ef/97/242343ef53c492bfbad0832dfcf6b424ea3284f7842a3abda6ba69f46f54/odoo_addon_web_widget_x2many_2d_matrix-18.0.2.1.0.2-py3-none-any.whl", hash = "sha256:2520410853e61bcf9ed0470a15c64625281a73f2615965556f14fb3e4d3c4495", size = 68797, upload-time = "2026-06-07T04:39:07.287Z" },
+]
+
+[[package]]
+name = "odoo-test-helper"
+version = "2.1.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f0/1b/7ca965615b44711cefe2e6d6311f35bb27ee8b60d4bccad1ef40d6863683/odoo_test_helper-2.1.3.tar.gz", hash = "sha256:58ab156fb4d4f10dce680a0043e4d0c86d60bbfaaaa53f425e30564d2f15f043", size = 11474, upload-time = "2026-02-20T09:57:47.957Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f3/70/7102b14aac1afed2ede8f90374bf747b8525a80b629d321395b94e24987d/odoo_test_helper-2.1.3-py3-none-any.whl", hash = "sha256:8c40c8a01c7fcb59d8fbfcdbee83412bdaac3e24700f70daefa43ddd4b4146a0", size = 14326, upload-time = "2026-02-20T09:57:46.776Z" },
 ]
 
 [[package]]
@@ -2938,6 +3135,20 @@ wheels = [
 ]
 
 [[package]]
+name = "responses"
+version = "0.26.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyyaml" },
+    { name = "requests" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9f/47/f216a33221db8eff328987661cf18371afee89c62a62b434b963d6b509c9/responses-0.26.3.tar.gz", hash = "sha256:b0c11ca8131b8b227b8d5108e6ed39772222bd5aab030ed430e8f99057c4c409", size = 86335, upload-time = "2026-08-26T19:17:24.373Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6d/86/ca7958de70cb0752350575e98229368a3a2f746a2942034b3364e17312bb/responses-0.26.3-py3-none-any.whl", hash = "sha256:74474f799334ac4f37d93b6437ecc3bb1bb5c77a8d31780a338643be2dce0af8", size = 36289, upload-time = "2026-08-26T19:17:23.176Z" },
+]
+
+[[package]]
 name = "rjsmin"
 version = "1.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3000,31 +3211,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/da/8a/22b7beea3ee0d44b1916c0c1cb0ee3af23b700b6da9f04991899d0c555d4/rsa-4.9.1.tar.gz", hash = "sha256:e7bdbfdb5497da4c07dfd35530e1a902659db6ff241e39d9953cad06ebd0ae75", size = 29034, upload-time = "2025-04-16T09:51:18.218Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/64/8d/0133e4eb4beed9e425d9a98ed6e081a55d195481b7632472be1af08d2f6b/rsa-4.9.1-py3-none-any.whl", hash = "sha256:68635866661c6836b8d39430f97a996acbd61bfa49406748ea243539fe239762", size = 34696, upload-time = "2025-04-16T09:51:17.142Z" },
-]
-
-[[package]]
-name = "ruff"
-version = "0.17.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/59/73/81f140c4edd9cc323de5478e6bbd3bbcfae9a82692df1a258de8cec6a6d2/ruff-0.17.3.tar.gz", hash = "sha256:a57049c8addb3662073859bb55a7ad35aa54f8a7c9ed268911d1333c5aadaaa9", size = 5339444, upload-time = "2026-10-27T00:34:05.914Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/8c/083365310c4e79c842f25bf5a842facbd9b0c0ec336f96dffa5074fe723d/ruff-0.17.3-py3-none-linux_armv6l.whl", hash = "sha256:ab86b84cd9d05e56d329742c0cabdcbe2d1d56c98f4a04aab9b5b66196febfb4", size = 10216522, upload-time = "2026-10-27T00:33:29.822Z" },
-    { url = "https://files.pythonhosted.org/packages/72/26/4b2edf31cfebe9605d8f6ed8f1d6f376d3a53d4c9a123e62661c64c440f0/ruff-0.17.3-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:e407b4a6852853a9a2cdce96963e94ad9775578bb44e7561a0f2829f3cc04b11", size = 10217786, upload-time = "2026-10-27T00:33:33.949Z" },
-    { url = "https://files.pythonhosted.org/packages/a2/7e/537aba4b7f54397a374d2f6a6fc93e9c8015e18553f31a4a7b7dbced48b5/ruff-0.17.3-py3-none-macosx_11_0_arm64.whl", hash = "sha256:b75cc113b3aca388933d8296b667b1ac401a80317ea3074c9b0a66541199da29", size = 9440362, upload-time = "2026-10-27T00:33:35.784Z" },
-    { url = "https://files.pythonhosted.org/packages/3d/66/283e39734f66c8a5ebaa93c22eb7b7515779a0b1d5a5c0ad20e05c0edb41/ruff-0.17.3-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ab5fa7ed5ce18554ea69d850ad162cbaa0c85fc47c08d83a569f806681c9a6ad", size = 10094281, upload-time = "2026-10-27T00:33:38.216Z" },
-    { url = "https://files.pythonhosted.org/packages/21/4c/1ffc768497bd025a32c72152771e40c0b99bddc5cc6e4f50c7949a395346/ruff-0.17.3-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:c673c170e27834d1262e3a9c1e97bdc9b9c3b180c63d89173ce69747232474c1", size = 10022543, upload-time = "2026-10-27T00:33:40.181Z" },
-    { url = "https://files.pythonhosted.org/packages/73/c3/f90db547301080fcb82c92abf914c8bd57b89911d9b65a6c4cc6b52d0635/ruff-0.17.3-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:6a754c0341bc9ca151b7b335988b3263921c08859f84ca219b70cee825571b6f", size = 10683921, upload-time = "2026-10-27T00:33:42.182Z" },
-    { url = "https://files.pythonhosted.org/packages/e5/98/92d4a8a26c6c96cf1a5b34dd59036d8a71e52d650aab065c58867e964e63/ruff-0.17.3-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:4590b9d86c0b1543ebb09094254e191cd43fe8edaf330baa035aab03da251532", size = 11373408, upload-time = "2026-10-27T00:33:44.19Z" },
-    { url = "https://files.pythonhosted.org/packages/43/02/1f24d2e3064c9753926deeb901afa57777b37ee46799b09ddd7aee6e5145/ruff-0.17.3-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:bbde18beccd98c29a227c63c99022e3443b99258e08326df6425dfe0443705ef", size = 10977469, upload-time = "2026-10-27T00:33:46.179Z" },
-    { url = "https://files.pythonhosted.org/packages/f0/20/fecedea2209f574ab92033b344e01a7f0c2dc76c6d6d19a14c9f8141173f/ruff-0.17.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7fa4b0f931cdbcb8a52044f370a3eb429fb42eb88807b0e800fcaa98dd42b24e", size = 10577491, upload-time = "2026-10-27T00:33:48.233Z" },
-    { url = "https://files.pythonhosted.org/packages/33/36/b93fdf0bc6f84f0cd487aadfb0354deb40013669ea35ac3d26855de1e959/ruff-0.17.3-py3-none-manylinux_2_31_riscv64.whl", hash = "sha256:39405f341deec934b4289634324ad695f72df2970f9121582872eaf5b722f0f5", size = 10608748, upload-time = "2026-10-27T00:33:50.284Z" },
-    { url = "https://files.pythonhosted.org/packages/5d/b7/7d3f5f14145daead1efb0b9a8289ed1daa100f419d60774375951723ce00/ruff-0.17.3-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:68074094f55ca3d29ab19491f640282f7a84061c4c7977aa5094b968ca457e9a", size = 10075057, upload-time = "2026-10-27T00:33:52.074Z" },
-    { url = "https://files.pythonhosted.org/packages/b0/ed/93ff7a5909ee56e2bd4b982deae9e0efb2724417874a90c9e41ad66c6dd7/ruff-0.17.3-py3-none-musllinux_1_2_armv7l.whl", hash = "sha256:27bb571ac78fef178fe5118d2827df95c2aae74a48fff2b15f6acd03af5ff5bb", size = 10022431, upload-time = "2026-10-27T00:33:54.061Z" },
-    { url = "https://files.pythonhosted.org/packages/9b/07/a83b9eeec8c1c3c0e4eda15f06c3a91001bfd2687ea2f07b750719bf9712/ruff-0.17.3-py3-none-musllinux_1_2_i686.whl", hash = "sha256:029c37cbd3de48ca37aa12117bead2d065f15da17d66bf84e0d4274013705db2", size = 10394903, upload-time = "2026-10-27T00:33:56.158Z" },
-    { url = "https://files.pythonhosted.org/packages/af/b2/05c39857c2526fcbebe46ad93a8dc97424656dfef14d3ef933abe1ffd331/ruff-0.17.3-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:692fdb46d0fd9c71e380947dc5fc72f2c3f881073bc1f739e4579376231affbe", size = 10799780, upload-time = "2026-10-27T00:33:58.204Z" },
-    { url = "https://files.pythonhosted.org/packages/ec/d9/47171a16739eb7a353936b31c20cf54340531e68c9af7d72fd7a784e235d/ruff-0.17.3-py3-none-win32.whl", hash = "sha256:46539cb031b01fd29ae0a02142483c46640b233ee12bb1c1b690bffa1555d5ca", size = 9908481, upload-time = "2026-10-27T00:34:00.087Z" },
-    { url = "https://files.pythonhosted.org/packages/d0/a0/f08c1631bfd81faa6a90eaf70c37c786c11bed2046302b56bb506c25e1a0/ruff-0.17.3-py3-none-win_amd64.whl", hash = "sha256:56b8ffb3f3b3cbccb8b76b71b38261b7ed982ef5d20f5b447b1b61a7f4949b24", size = 10341333, upload-time = "2026-10-27T00:34:02.099Z" },
-    { url = "https://files.pythonhosted.org/packages/99/d5/4ad4ed31413c301430918e70d3d38ae6f097af0766cb9ab8c9d502b2a4d6/ruff-0.17.3-py3-none-win_arm64.whl", hash = "sha256:81fce74bcd6be0e9da7c67c7553fd0f1f12964a2052cd728ef917b937a5ca1d9", size = 9854332, upload-time = "2026-10-27T00:34:03.847Z" },
 ]
 
 [[package]]
@@ -3143,29 +3329,32 @@ version = "0"
 source = { virtual = "." }
 dependencies = [
     { name = "odoo" },
-    { name = "odoo-addon-auth-oidc" },
-    { name = "odoo-addon-base-import-pdf-by-template" },
-    { name = "odoo-addon-base-repair-config" },
     { name = "odoo-addon-base-rest" },
-    { name = "odoo-addon-edi-core-oca" },
     { name = "odoo-addon-edi-purchase-oca" },
+    { name = "odoo-addon-edi-purchase-order-import" },
     { name = "odoo-addon-fleet-vehicle-inspection" },
     { name = "odoo-addon-fleet-vehicle-inspection-template" },
-    { name = "odoo-addon-fleet-vehicle-ownership" },
     { name = "odoo-addon-hr-timesheet-sheet" },
     { name = "odoo-addon-jsonifier" },
     { name = "odoo-addon-l10n-us-gaap" },
-    { name = "odoo-addon-project-timesheet-time-control" },
     { name = "odoo-addon-queue-job" },
-    { name = "odoo-addon-repair-order-template" },
+    { name = "odoo-addon-repair-fleet-vehicle" },
+    { name = "odoo-addon-repair-order-template-service" },
+    { name = "odoo-addon-repair-purchase-order-parts" },
     { name = "odoo-addon-repair-scheduled-date-calendar-view" },
     { name = "odoo-addon-repair-service" },
+    { name = "odoo-addon-repair-service-so-sync" },
+    { name = "odoo-addon-repair-stage" },
     { name = "odoo-addon-repair-timesheet" },
+    { name = "odoo-addon-repair-timesheet-time-control" },
     { name = "odoo-addon-resource-booking" },
-    { name = "odoo-addon-server-environment" },
+    { name = "odoo-addon-shop-vehicle-catalog" },
+    { name = "odoo-addon-shop-vehicle-vin" },
     { name = "odoo-addon-shopfloor-base" },
     { name = "odoo-addon-shopfloor-mobile-base" },
     { name = "odoo-addon-shopfloor-mobile-base-auth-api-key" },
+    { name = "odoo-addon-shopfloor-mobile-base-auth-oauth" },
+    { name = "odoo-addon-shopfloor-mobile-camera-scan" },
     { name = "packaging" },
     { name = "typesafe-sdk" },
 ]
@@ -3174,7 +3363,10 @@ dependencies = [
 dev = [
     { name = "debugpy" },
     { name = "freezegun" },
-    { name = "ruff" },
+    { name = "odoo-addon-base-import-pdf-by-template-engine" },
+    { name = "odoo-addon-import-from-email" },
+    { name = "odoo-test-helper" },
+    { name = "responses" },
     { name = "watchdog" },
     { name = "websocket-client" },
 ]
@@ -3182,29 +3374,32 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "odoo", directory = "../.odoo-nix/odoo" },
-    { name = "odoo-addon-auth-oidc", directory = "../.odoo-nix/modules/server-auth/auth_oidc" },
-    { name = "odoo-addon-base-import-pdf-by-template", directory = "../.odoo-nix/modules/edi/base_import_pdf_by_template" },
-    { name = "odoo-addon-base-repair-config", directory = "../.odoo-nix/modules/repair/base_repair_config" },
     { name = "odoo-addon-base-rest", directory = "../.odoo-nix/modules/rest-framework/base_rest" },
-    { name = "odoo-addon-edi-core-oca", directory = "../.odoo-nix/modules/edi-framework/edi_core_oca" },
     { name = "odoo-addon-edi-purchase-oca", directory = "../.odoo-nix/modules/edi-framework/edi_purchase_oca" },
+    { name = "odoo-addon-edi-purchase-order-import", directory = "../.odoo-nix/modules/edi-addons/edi_purchase_order_import" },
     { name = "odoo-addon-fleet-vehicle-inspection", directory = "../.odoo-nix/modules/fleet/fleet_vehicle_inspection" },
     { name = "odoo-addon-fleet-vehicle-inspection-template", directory = "../.odoo-nix/modules/fleet/fleet_vehicle_inspection_template" },
-    { name = "odoo-addon-fleet-vehicle-ownership", directory = "../.odoo-nix/modules/fleet/fleet_vehicle_ownership" },
     { name = "odoo-addon-hr-timesheet-sheet", directory = "../.odoo-nix/modules/timesheet/hr_timesheet_sheet" },
     { name = "odoo-addon-jsonifier", directory = "../.odoo-nix/modules/server-tools/jsonifier" },
     { name = "odoo-addon-l10n-us-gaap", directory = "../.odoo-nix/modules/l10n-usa/l10n_us_gaap" },
-    { name = "odoo-addon-project-timesheet-time-control", directory = "../.odoo-nix/modules/project/project_timesheet_time_control" },
     { name = "odoo-addon-queue-job", directory = "../.odoo-nix/modules/queue/queue_job" },
-    { name = "odoo-addon-repair-order-template", directory = "../.odoo-nix/modules/repair/repair_order_template" },
+    { name = "odoo-addon-repair-fleet-vehicle", directory = "../.odoo-nix/modules/repair-addons/repair_fleet_vehicle" },
+    { name = "odoo-addon-repair-order-template-service", directory = "../.odoo-nix/modules/repair-addons/repair_order_template_service" },
+    { name = "odoo-addon-repair-purchase-order-parts", directory = "../.odoo-nix/modules/repair-addons/repair_purchase_order_parts" },
     { name = "odoo-addon-repair-scheduled-date-calendar-view", directory = "../.odoo-nix/modules/repair/repair_scheduled_date_calendar_view" },
     { name = "odoo-addon-repair-service", directory = "../.odoo-nix/modules/repair/repair_service" },
+    { name = "odoo-addon-repair-service-so-sync", directory = "../.odoo-nix/modules/repair-addons/repair_service_so_sync" },
+    { name = "odoo-addon-repair-stage", directory = "../.odoo-nix/modules/repair-addons/repair_stage" },
     { name = "odoo-addon-repair-timesheet", directory = "../.odoo-nix/modules/repair/repair_timesheet" },
+    { name = "odoo-addon-repair-timesheet-time-control", directory = "../.odoo-nix/modules/repair-addons/repair_timesheet_time_control" },
     { name = "odoo-addon-resource-booking", directory = "../.odoo-nix/modules/calendar/resource_booking" },
-    { name = "odoo-addon-server-environment", directory = "../.odoo-nix/modules/server-env/server_environment" },
+    { name = "odoo-addon-shop-vehicle-catalog", directory = "../.odoo-nix/modules/fleet-addons/shop_vehicle_catalog" },
+    { name = "odoo-addon-shop-vehicle-vin", directory = "../.odoo-nix/modules/fleet-addons/shop_vehicle_vin" },
     { name = "odoo-addon-shopfloor-base", directory = "../.odoo-nix/modules/shopfloor-app/shopfloor_base" },
     { name = "odoo-addon-shopfloor-mobile-base", directory = "../.odoo-nix/modules/shopfloor-app/shopfloor_mobile_base" },
     { name = "odoo-addon-shopfloor-mobile-base-auth-api-key", directory = "../.odoo-nix/modules/shopfloor-app/shopfloor_mobile_base_auth_api_key" },
+    { name = "odoo-addon-shopfloor-mobile-base-auth-oauth", directory = "../.odoo-nix/modules/shopfloor-app-addons/shopfloor_mobile_base_auth_oauth" },
+    { name = "odoo-addon-shopfloor-mobile-camera-scan", directory = "../.odoo-nix/modules/shopfloor-app-addons/shopfloor_mobile_camera_scan" },
     { name = "packaging" },
     { name = "typesafe-sdk" },
 ]
@@ -3213,7 +3408,10 @@ requires-dist = [
 dev = [
     { name = "debugpy" },
     { name = "freezegun" },
-    { name = "ruff" },
+    { name = "odoo-addon-base-import-pdf-by-template-engine", directory = "../.odoo-nix/modules/edi-addons/base_import_pdf_by_template_engine" },
+    { name = "odoo-addon-import-from-email", directory = "../.odoo-nix/modules/edi-addons/import_from_email" },
+    { name = "odoo-test-helper" },
+    { name = "responses" },
     { name = "watchdog" },
     { name = "websocket-client" },
 ]

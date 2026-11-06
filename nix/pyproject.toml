@@ -17,29 +17,32 @@ dependencies = [
     # >>> odoo-nix: install set (managed from modules.txt) >>>
     "odoo",
     "packaging",
+    "odoo-addon-shop_vehicle_vin",
     "odoo-addon-fleet_vehicle_inspection",
     "odoo-addon-fleet_vehicle_inspection_template",
-    "odoo-addon-fleet_vehicle_ownership",
-    "odoo-addon-base_import_pdf_by_template",
-    "odoo-addon-edi_core_oca",
+    "odoo-addon-repair_fleet_vehicle",
+    "odoo-addon-repair_purchase_order_parts",
+    "odoo-addon-edi_purchase_order_import",
     "odoo-addon-edi_purchase_oca",
     "odoo-addon-queue_job",
+    "odoo-addon-repair_service_so_sync",
+    "odoo-addon-repair_timesheet_time_control",
     "odoo-addon-repair_service",
-    "odoo-addon-repair_timesheet",
-    "odoo-addon-project_timesheet_time_control",
-    "odoo-addon-base_repair_config",
     "odoo-addon-repair_scheduled_date_calendar_view",
     "odoo-addon-resource_booking",
     "odoo-addon-hr_timesheet_sheet",
-    "odoo-addon-repair_order_template",
+    "odoo-addon-repair_order_template_service",
+    "odoo-addon-shop_vehicle_catalog",
     "odoo-addon-l10n_us_gaap",
     "odoo-addon-shopfloor_base",
     "odoo-addon-jsonifier",
     "odoo-addon-base_rest",
+    "odoo-addon-repair_timesheet",
+    "odoo-addon-repair_stage",
     "odoo-addon-shopfloor_mobile_base",
     "odoo-addon-shopfloor_mobile_base_auth_api_key",
-    "odoo-addon-auth_oidc",
-    "odoo-addon-server_environment",
+    "odoo-addon-shopfloor_mobile_base_auth_oauth",
+    "odoo-addon-shopfloor_mobile_camera_scan",
     "typesafe_sdk",
     # <<< odoo-nix: install set <<<
 ]
@@ -49,13 +52,20 @@ dependencies = [
 # relock leaves this block alone.
 dev = [
     "debugpy",
-    "ruff",
     # Odoo's --dev=reload watcher needs a filesystem watcher it does not declare.
     "watchdog",
     # Odoo's test runner imports freezegun, and browser tours need
     # websocket-client (a missing one skips every tour silently).
     "freezegun",
     "websocket-client",
+    # Tests of OCA addons in the closure import these (edi_core_oca, auth_oidc), and the
+    # test loader imports every installed addon's tests.
+    "odoo-test-helper",
+    "responses",
+    # Sibling Avunu addons reached only through another packaged addon: uv applies
+    # [tool.uv.sources] to direct requirements, and these aren't on PyPI.
+    "odoo-addon-base_import_pdf_by_template_engine",
+    "odoo-addon-import_from_email",
 ]
 
 [tool.uv]
@@ -129,6 +139,7 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-base_import_async" = { path = "../.odoo-nix/modules/queue/base_import_async" }
     "odoo-addon-base_import_pdf_by_template" = { path = "../.odoo-nix/modules/edi/base_import_pdf_by_template" }
     "odoo-addon-base_import_pdf_by_template_account" = { path = "../.odoo-nix/modules/edi/base_import_pdf_by_template_account" }
+    "odoo-addon-base_import_pdf_by_template_engine" = { path = "../.odoo-nix/modules/edi-addons/base_import_pdf_by_template_engine" }
     "odoo-addon-base_m2m_custom_field" = { path = "../.odoo-nix/modules/server-tools/base_m2m_custom_field" }
     "odoo-addon-base_model_restrict_update" = { path = "../.odoo-nix/modules/server-tools/base_model_restrict_update" }
     "odoo-addon-base_multi_image" = { path = "../.odoo-nix/modules/server-tools/base_multi_image" }
@@ -180,12 +191,14 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-edi_exchange_record_file_manager" = { path = "../.odoo-nix/modules/edi-framework/edi_exchange_record_file_manager" }
     "odoo-addon-edi_exchange_template_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_exchange_template_oca" }
     "odoo-addon-edi_exchange_template_party_data" = { path = "../.odoo-nix/modules/edi-framework/edi_exchange_template_party_data" }
+    "odoo-addon-edi_import_router" = { path = "../.odoo-nix/modules/edi-addons/edi_import_router" }
     "odoo-addon-edi_notification_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_notification_oca" }
     "odoo-addon-edi_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_oca" }
     "odoo-addon-edi_party_data_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_party_data_oca" }
     "odoo-addon-edi_party_helper_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_party_helper_oca" }
     "odoo-addon-edi_product_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_product_oca" }
     "odoo-addon-edi_purchase_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_purchase_oca" }
+    "odoo-addon-edi_purchase_order_import" = { path = "../.odoo-nix/modules/edi-addons/edi_purchase_order_import" }
     "odoo-addon-edi_purchase_ubl_output_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_purchase_ubl_output_oca" }
     "odoo-addon-edi_queue_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_queue_oca" }
     "odoo-addon-edi_record_metadata_oca" = { path = "../.odoo-nix/modules/edi-framework/edi_record_metadata_oca" }
@@ -272,6 +285,11 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-html_text" = { path = "../.odoo-nix/modules/server-tools/html_text" }
     "odoo-addon-iap_alternative_provider" = { path = "../.odoo-nix/modules/server-tools/iap_alternative_provider" }
     "odoo-addon-impersonate_login" = { path = "../.odoo-nix/modules/server-auth/impersonate_login" }
+    "odoo-addon-import_create_missing" = { path = "../.odoo-nix/modules/edi-addons/import_create_missing" }
+    "odoo-addon-import_create_missing_xberg" = { path = "../.odoo-nix/modules/edi-addons/import_create_missing_xberg" }
+    "odoo-addon-import_from_email" = { path = "../.odoo-nix/modules/edi-addons/import_from_email" }
+    "odoo-addon-import_preview" = { path = "../.odoo-nix/modules/edi-addons/import_preview" }
+    "odoo-addon-import_via_xberg" = { path = "../.odoo-nix/modules/edi-addons/import_via_xberg" }
     "odoo-addon-jsonifier" = { path = "../.odoo-nix/modules/server-tools/jsonifier" }
     "odoo-addon-l10n_us_account_routing" = { path = "../.odoo-nix/modules/l10n-usa/l10n_us_account_routing" }
     "odoo-addon-l10n_us_base_county" = { path = "../.odoo-nix/modules/l10n-usa/l10n_us_base_county" }
@@ -378,18 +396,24 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-queue_job_subscribe" = { path = "../.odoo-nix/modules/queue/queue_job_subscribe" }
     "odoo-addon-repair_analytic" = { path = "../.odoo-nix/modules/repair/repair_analytic" }
     "odoo-addon-repair_analytic_timesheet" = { path = "../.odoo-nix/modules/repair/repair_analytic_timesheet" }
+    "odoo-addon-repair_fleet_vehicle" = { path = "../.odoo-nix/modules/repair-addons/repair_fleet_vehicle" }
     "odoo-addon-repair_order_group" = { path = "../.odoo-nix/modules/repair/repair_order_group" }
     "odoo-addon-repair_order_group_services" = { path = "../.odoo-nix/modules/repair/repair_order_group_services" }
     "odoo-addon-repair_order_line_sequence" = { path = "../.odoo-nix/modules/repair/repair_order_line_sequence" }
     "odoo-addon-repair_order_product_by_lot" = { path = "../.odoo-nix/modules/repair/repair_order_product_by_lot" }
     "odoo-addon-repair_order_template" = { path = "../.odoo-nix/modules/repair/repair_order_template" }
+    "odoo-addon-repair_order_template_service" = { path = "../.odoo-nix/modules/repair-addons/repair_order_template_service" }
     "odoo-addon-repair_picking_after_done" = { path = "../.odoo-nix/modules/repair/repair_picking_after_done" }
+    "odoo-addon-repair_purchase_order_parts" = { path = "../.odoo-nix/modules/repair-addons/repair_purchase_order_parts" }
     "odoo-addon-repair_quality_control" = { path = "../.odoo-nix/modules/repair/repair_quality_control" }
     "odoo-addon-repair_refurbish" = { path = "../.odoo-nix/modules/repair/repair_refurbish" }
     "odoo-addon-repair_scheduled_date_calendar_view" = { path = "../.odoo-nix/modules/repair/repair_scheduled_date_calendar_view" }
     "odoo-addon-repair_service" = { path = "../.odoo-nix/modules/repair/repair_service" }
+    "odoo-addon-repair_service_so_sync" = { path = "../.odoo-nix/modules/repair-addons/repair_service_so_sync" }
+    "odoo-addon-repair_stage" = { path = "../.odoo-nix/modules/repair-addons/repair_stage" }
     "odoo-addon-repair_stock" = { path = "../.odoo-nix/modules/repair/repair_stock" }
     "odoo-addon-repair_timesheet" = { path = "../.odoo-nix/modules/repair/repair_timesheet" }
+    "odoo-addon-repair_timesheet_time_control" = { path = "../.odoo-nix/modules/repair-addons/repair_timesheet_time_control" }
     "odoo-addon-repair_type" = { path = "../.odoo-nix/modules/repair/repair_type" }
     "odoo-addon-repair_type_product_destination" = { path = "../.odoo-nix/modules/repair/repair_type_product_destination" }
     "odoo-addon-resource_booking" = { path = "../.odoo-nix/modules/calendar/resource_booking" }
@@ -422,10 +446,15 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-server_environment_data_encryption" = { path = "../.odoo-nix/modules/server-env/server_environment_data_encryption" }
     "odoo-addon-server_environment_ir_config_parameter" = { path = "../.odoo-nix/modules/server-env/server_environment_ir_config_parameter" }
     "odoo-addon-session_db" = { path = "../.odoo-nix/modules/server-tools/session_db" }
+    "odoo-addon-shop_vehicle_catalog" = { path = "../.odoo-nix/modules/fleet-addons/shop_vehicle_catalog" }
+    "odoo-addon-shop_vehicle_vin" = { path = "../.odoo-nix/modules/fleet-addons/shop_vehicle_vin" }
     "odoo-addon-shopfloor_base" = { path = "../.odoo-nix/modules/shopfloor-app/shopfloor_base" }
     "odoo-addon-shopfloor_example" = { path = "../.odoo-nix/modules/shopfloor-app/shopfloor_example" }
     "odoo-addon-shopfloor_mobile_base" = { path = "../.odoo-nix/modules/shopfloor-app/shopfloor_mobile_base" }
     "odoo-addon-shopfloor_mobile_base_auth_api_key" = { path = "../.odoo-nix/modules/shopfloor-app/shopfloor_mobile_base_auth_api_key" }
+    "odoo-addon-shopfloor_mobile_base_auth_oauth" = { path = "../.odoo-nix/modules/shopfloor-app-addons/shopfloor_mobile_base_auth_oauth" }
+    "odoo-addon-shopfloor_mobile_base_theme_carbon" = { path = "../.odoo-nix/modules/shopfloor-app-addons/shopfloor_mobile_base_theme_carbon" }
+    "odoo-addon-shopfloor_mobile_camera_scan" = { path = "../.odoo-nix/modules/shopfloor-app-addons/shopfloor_mobile_camera_scan" }
     "odoo-addon-shopfloor_rest_log" = { path = "../.odoo-nix/modules/shopfloor-app/shopfloor_rest_log" }
     "odoo-addon-shopfloor_workstation" = { path = "../.odoo-nix/modules/shopfloor-app/shopfloor_workstation" }
     "odoo-addon-shopfloor_workstation_label_printer" = { path = "../.odoo-nix/modules/shopfloor-app/shopfloor_workstation_label_printer" }
@@ -486,6 +515,7 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-web_session_auto_close" = { path = "../.odoo-nix/modules/web/web_session_auto_close" }
     "odoo-addon-web_sort_menu" = { path = "../.odoo-nix/modules/web/web_sort_menu" }
     "odoo-addon-web_systray_button_init_action" = { path = "../.odoo-nix/modules/web/web_systray_button_init_action" }
+    "odoo-addon-web_theme_carbon" = { path = "../.odoo-nix/modules/web-addons/web_theme_carbon" }
     "odoo-addon-web_theme_classic" = { path = "../.odoo-nix/modules/web/web_theme_classic" }
     "odoo-addon-web_time_range_menu_custom" = { path = "../.odoo-nix/modules/web/web_time_range_menu_custom" }
     "odoo-addon-web_timeline" = { path = "../.odoo-nix/modules/web/web_timeline" }
@@ -529,32 +559,52 @@ packages = []
 # >>> odoo-nix: sdist build deps (managed) >>>
 "docopt" = ["setuptools"]
 "odoo" = ["setuptools"]
-"odoo-addon-auth-oidc" = ["setuptools"]
-"odoo-addon-base-import-pdf-by-template" = ["setuptools"]
-"odoo-addon-base-repair-config" = ["setuptools"]
+"odoo-addon-base-import-pdf-by-template-engine" = ["setuptools"]
 "odoo-addon-base-rest" = ["setuptools"]
-"odoo-addon-edi-core-oca" = ["setuptools"]
 "odoo-addon-edi-purchase-oca" = ["setuptools"]
+"odoo-addon-edi-purchase-order-import" = ["setuptools"]
 "odoo-addon-fleet-vehicle-inspection" = ["setuptools"]
 "odoo-addon-fleet-vehicle-inspection-template" = ["setuptools"]
-"odoo-addon-fleet-vehicle-ownership" = ["setuptools"]
 "odoo-addon-hr-timesheet-sheet" = ["setuptools"]
+"odoo-addon-import-from-email" = ["setuptools"]
 "odoo-addon-jsonifier" = ["setuptools"]
 "odoo-addon-l10n-us-gaap" = ["setuptools"]
-"odoo-addon-project-timesheet-time-control" = ["setuptools"]
 "odoo-addon-queue-job" = ["setuptools"]
-"odoo-addon-repair-order-template" = ["setuptools"]
+"odoo-addon-repair-fleet-vehicle" = ["setuptools"]
+"odoo-addon-repair-order-template-service" = ["setuptools"]
+"odoo-addon-repair-purchase-order-parts" = ["setuptools"]
 "odoo-addon-repair-scheduled-date-calendar-view" = ["setuptools"]
 "odoo-addon-repair-service" = ["setuptools"]
+"odoo-addon-repair-service-so-sync" = ["setuptools"]
+"odoo-addon-repair-stage" = ["setuptools"]
 "odoo-addon-repair-timesheet" = ["setuptools"]
+"odoo-addon-repair-timesheet-time-control" = ["setuptools"]
 "odoo-addon-resource-booking" = ["setuptools"]
-"odoo-addon-server-environment" = ["setuptools"]
+"odoo-addon-shop-vehicle-catalog" = ["setuptools"]
+"odoo-addon-shop-vehicle-vin" = ["setuptools"]
 "odoo-addon-shopfloor-base" = ["setuptools"]
 "odoo-addon-shopfloor-mobile-base" = ["setuptools"]
 "odoo-addon-shopfloor-mobile-base-auth-api-key" = ["setuptools"]
+"odoo-addon-shopfloor-mobile-base-auth-oauth" = ["setuptools"]
+"odoo-addon-shopfloor-mobile-camera-scan" = ["setuptools"]
 "ofxparse" = ["setuptools"]
 "pyquerystring" = ["setuptools"]
 "python-ldap" = ["setuptools"]
 "rjsmin" = ["setuptools"]
 "vobject" = ["setuptools"]
 # <<< odoo-nix: sdist build deps (managed) <<<
+
+[tool.odoo-nix]
+schema = 1
+profile = "github:Avunu/odoo-standards-profile/v1"
+
+[tool.odoo-nix.icons]
+src-icon = "assets/icons/vertical-auto-repair-addons.png"
+
+# repair_purchase_order_match depends on muk_mcp from muk-it/odoo-modules, which has no Python packages, so a whool-packaged addon here can't resolve.
+[tool.odoo-nix.packaging]
+enable = false
+
+# check_templates.mjs is a Node development script (an ES module), not addon code loaded by Odoo.
+[tool.odoo-nix.js-xml]
+exclude = ["shopfloor_repair_mobile/static/check_templates.mjs"]
