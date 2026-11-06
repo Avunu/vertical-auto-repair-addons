@@ -76,18 +76,32 @@ Each module's `__manifest__.py` is the source of truth. Besides Odoo core module
 | `shop_estimate` | `repair_service_so_sync` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_inspection` (this repository) | none |
 | `shop_scheduling` | `repair_service` and `repair_scheduled_date_calendar_view` ([OCA/repair](https://github.com/OCA/repair)), `resource_booking` ([OCA/calendar](https://github.com/OCA/calendar)), `shop_inspection` (this repository) | none |
 | `repair_service_workflow` | `repair_service_so_sync`, `repair_timesheet_time_control` and `repair_purchase_order_parts` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_scheduling` (this repository) | none |
-| `repair_service_productivity` | `repair_service_workflow` (this repository) | none |
+| `repair_service_productivity` | `hr_timesheet_sheet` ([OCA/timesheet](https://github.com/OCA/timesheet)), `repair_service_workflow` (this repository) | none |
 | `repair_purchase_order_match` | `edi_purchase_oca` ([OCA/edi-framework](https://github.com/OCA/edi-framework)), `queue_job` ([OCA/queue](https://github.com/OCA/queue)), `muk_mcp` ([muk-it/odoo-modules](https://github.com/muk-it/odoo-modules)), `repair_purchase_order_parts` and `repair_fleet_vehicle` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `edi_purchase_order_import` ([Avunu/edi-addons](https://github.com/Avunu/edi-addons)) | `typesafe_sdk` |
 | `shopfloor_repair` | `shopfloor_base` ([OCA/shopfloor-app](https://github.com/OCA/shopfloor-app)), `base_rest` ([OCA/rest-framework](https://github.com/OCA/rest-framework)), `jsonifier` ([OCA/server-tools](https://github.com/OCA/server-tools)), `repair_timesheet` ([OCA/repair](https://github.com/OCA/repair)), `repair_timesheet_time_control`, `repair_fleet_vehicle` and `repair_stage` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `repair_service_workflow`, `shop_inspection` and `shop_scheduling` (this repository) | none |
 | `shopfloor_repair_mobile` | `shopfloor_mobile_base` and `shopfloor_mobile_base_auth_api_key` ([OCA/shopfloor-app](https://github.com/OCA/shopfloor-app)), `shopfloor_mobile_base_auth_oauth` and `shopfloor_mobile_camera_scan` ([Avunu/shopfloor-app-addons](https://github.com/Avunu/shopfloor-app-addons)), `shopfloor_repair` (this repository) | none |
 | `fleet_vehicle_simplify` | `shop_vehicle_vin` ([Avunu/fleet-addons](https://github.com/Avunu/fleet-addons)), `shop_inspection` (this repository) | none |
-| `shop_demo` | `repair_fleet_vehicle`, `repair_order_template_service`, `repair_service_so_sync` and `repair_timesheet_time_control` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_vehicle_catalog` and `shop_vehicle_vin` ([Avunu/fleet-addons](https://github.com/Avunu/fleet-addons)), `shop_inspection`, `shop_inspection_report`, `shop_estimate` and `shop_scheduling` (this repository) | none |
+| `shop_demo` | `l10n_us_gaap` ([OCA/l10n-usa](https://github.com/OCA/l10n-usa)), `repair_fleet_vehicle`, `repair_order_template_service`, `repair_service_so_sync` and `repair_timesheet_time_control` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_vehicle_catalog` and `shop_vehicle_vin` ([Avunu/fleet-addons](https://github.com/Avunu/fleet-addons)), `shop_inspection`, `shop_inspection_report`, `shop_estimate` and `shop_scheduling` (this repository) | none |
 
-`shop_demo` also needs a company named USA Demo Company, and stops with an error if there is none; OCA `l10n_us_gaap` ([OCA/l10n-usa](https://github.com/OCA/l10n-usa)) creates one with its demo data.
+`shop_demo` seeds a company named USA Demo Company, which `l10n_us_gaap`'s demo data creates, and stops with an error if there is none: install it into a database with demo data.
 
 `shop_inspection` and OCA `repair_quality_control` ([OCA/repair](https://github.com/OCA/repair)) both define `repair.order.inspection_ids`, for different models; `shop_demo`'s README describes how cancelling a repair order fails when both are installed.
 
 `shopfloor_repair_mobile` has no build step: its Vue components are plain ES modules. The npm setup in its `static/` directory is a development check only, and production needs no Node; see its README.
+
+## Development
+
+The repository carries its own development environment, built by [odoo-nix](https://github.com/Avunu/odoo-nix) in addons mode. OCB and the repositories these modules depend on are flake inputs pinned in `flake.lock`, and the Python environment is locked in `nix/`. You need Nix with flakes, and optionally direnv.
+
+```sh
+git clone https://github.com/Avunu/vertical-auto-repair-addons.git && cd vertical-auto-repair-addons
+direnv allow                  # or: nix develop --no-pure-eval
+devenv up                     # PostgreSQL, Odoo and Mailpit
+odoo db provision             # a database with every module here installed
+odoo test fleet_vehicle_simplify
+```
+
+After `nix flake update`, or when a module gains a `depends` or a Python requirement, run `odoo project relock` and commit `flake.lock` and `nix/`. A new dependency on another repository also needs its input and an `externalSources` entry in `flake.nix`. See odoo-nix's [A repository of addons](https://github.com/Avunu/odoo-nix/blob/main/docs/scaffolding/addons-repository.md).
 
 ## Tests
 
