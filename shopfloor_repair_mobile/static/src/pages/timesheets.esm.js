@@ -33,17 +33,21 @@ import {page_registry} from "/shopfloor_mobile_base/static/src/services/page_reg
 import {translation_registry} from "/shopfloor_mobile_base/static/src/services/translation_registry.esm.js";
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
-import {sf_root, menu_id_for} from "../services/root.esm.js";
-import {duration_hours, format_duration, format_time_of_day} from "../services/datetime.esm.js";
+import {menu_id_for, sf_root} from "../services/root.esm.js";
+import {
+    duration_hours,
+    format_duration,
+    format_time_of_day,
+} from "../services/datetime.esm.js";
 
 /**
  * @typedef {Object} TimesheetListEntry
  * @property {unknown} id
- * @property {string} [date]
- * @property {string} [date_time]
- * @property {string} [date_time_end]
+ * @property {String} [date]
+ * @property {String} [date_time]
+ * @property {String} [date_time_end]
  * @property {{id?: unknown, name: string}} job
- * @property {string} [job_ref] the repair order number ("WH/RO/00011")
+ * @property {String} [job_ref] the repair order number ("WH/RO/00011")
  * @property {{id?: unknown, name: string}} [service]
  */
 
@@ -53,35 +57,35 @@ import {duration_hours, format_duration, format_time_of_day} from "../services/d
  * they sort and format the same way.
  *
  * @typedef {Object} TimesheetRow
- * @property {string} key
+ * @property {String} key
  * @property {"entry" | "break"} kind
- * @property {string} date_time
+ * @property {String} date_time
  * @property {string | null} date_time_end
  * @property {TimesheetListEntry} [rec] present on `entry` rows only
  * @property {"attendance" | "jobs"} [source] `break` rows: where the break was read from -
  *     the gap between two clocked periods, or the gap between two parts of one job
- * @property {number} [attendance_id] `attendance` breaks: the clocked period the break follows
- * @property {number} [before_id] `jobs` breaks: the timesheet entry before the gap
- * @property {number} [after_id] `jobs` breaks: the timesheet entry after it
- * @property {string} [lower] `break` rows: when the earlier period/part began - the break must start after it
+ * @property {Number} [attendance_id] `attendance` breaks: the clocked period the break follows
+ * @property {Number} [before_id] `jobs` breaks: the timesheet entry before the gap
+ * @property {Number} [after_id] `jobs` breaks: the timesheet entry after it
+ * @property {String} [lower] `break` rows: when the earlier period/part began - the break must start after it
  * @property {string | null} [upper] `break` rows: when the later one ends (null while an attendance period is open) - the break must end before it
  */
 
 /**
  * @typedef {Object} TimesheetGroup
- * @property {string} key
- * @property {string} title
+ * @property {String} key
+ * @property {String} title
  * @property {TimesheetListEntry[]} records
  * @property {AttendanceDay | null} attendance
- * @property {number} job_hours sum of the day's job entries - all of them,
+ * @property {Number} job_hours sum of the day's job entries - all of them,
  *     not just this page's (the server totals it)
  * @property {TimesheetRow[]} rows entries and breaks, latest first
  */
 
 /**
  * @typedef {Object} ErrorMessage
- * @property {string} body
- * @property {string} message_type
+ * @property {String} body
+ * @property {String} message_type
  */
 
 /**
@@ -154,7 +158,9 @@ const MyTimesheets = defineComponent({
                         title: this._format_date(key),
                         records: [],
                         attendance: this.attendance.find((a) => a.date === key) || null,
-                        job_hours: (this.job_hours.find((j) => j.date === key) || {hours: 0}).hours,
+                        job_hours: (
+                            this.job_hours.find((j) => j.date === key) || {hours: 0}
+                        ).hours,
                         rows: [],
                     };
                     groups.push(by_date[key]);
@@ -190,7 +196,9 @@ const MyTimesheets = defineComponent({
                 rec: rec,
             }));
             const periods = group.attendance
-                ? group.attendance.records.slice().sort((a, b) => (a.check_in < b.check_in ? -1 : 1))
+                ? group.attendance.records
+                      .slice()
+                      .sort((a, b) => (a.check_in < b.check_in ? -1 : 1))
                 : [];
             for (let i = 0; i < periods.length - 1; i++) {
                 const left_at = periods[i].check_out;
@@ -229,7 +237,9 @@ const MyTimesheets = defineComponent({
         _job_breaks(group, shown) {
             /** @type {TimesheetRow[]} */
             const breaks = [];
-            const finished = group.records.filter((rec) => rec.date_time && rec.date_time_end);
+            const finished = group.records.filter(
+                (rec) => rec.date_time && rec.date_time_end
+            );
             /** @type {Record<string, TimesheetListEntry[]>} */
             const by_part = {};
             _.each(finished, (/** @type {TimesheetListEntry} */ rec) => {
@@ -237,12 +247,14 @@ const MyTimesheets = defineComponent({
                 (by_part[key] = by_part[key] || []).push(rec);
             });
             _.each(by_part, (/** @type {TimesheetListEntry[]} */ parts) => {
-                parts.sort((a, b) => ((a.date_time || "") < (b.date_time || "") ? -1 : 1));
+                parts.sort((a, b) =>
+                    (a.date_time || "") < (b.date_time || "") ? -1 : 1
+                );
                 for (let i = 0; i < parts.length - 1; i++) {
                     const before = parts[i];
                     const after = parts[i + 1];
-                    const gap_start = /** @type {string} */ (before.date_time_end);
-                    const gap_end = /** @type {string} */ (after.date_time);
+                    const gap_start = /** @type {String} */ (before.date_time_end);
+                    const gap_end = /** @type {String} */ (after.date_time);
                     // Under a minute is rounding, not a break.
                     if (duration_hours(gap_start, gap_end) < 1 / 60) {
                         continue;
@@ -251,14 +263,14 @@ const MyTimesheets = defineComponent({
                         (rec) =>
                             rec !== before &&
                             rec !== after &&
-                            /** @type {string} */ (rec.date_time) < gap_end &&
-                            /** @type {string} */ (rec.date_time_end) > gap_start
+                            /** @type {String} */ (rec.date_time) < gap_end &&
+                            /** @type {String} */ (rec.date_time_end) > gap_start
                     );
                     const already_shown = shown.some(
                         (row) =>
                             row.kind === "break" &&
                             row.date_time < gap_end &&
-                            /** @type {string} */ (row.date_time_end) > gap_start
+                            /** @type {String} */ (row.date_time_end) > gap_start
                     );
                     if (worked_in_gap || already_shown) {
                         continue;
@@ -269,8 +281,8 @@ const MyTimesheets = defineComponent({
                         source: "jobs",
                         date_time: gap_start,
                         date_time_end: gap_end,
-                        before_id: /** @type {number} */ (before.id),
-                        after_id: /** @type {number} */ (after.id),
+                        before_id: /** @type {Number} */ (before.id),
+                        after_id: /** @type {Number} */ (after.id),
                         lower: before.date_time,
                         upper: after.date_time_end,
                     });
@@ -279,8 +291,8 @@ const MyTimesheets = defineComponent({
             return breaks;
         },
         /**
-         * @param {string} iso_date
-         * @returns {string}
+         * @param {String} iso_date
+         * @returns {String}
          */
         _format_date(iso_date) {
             try {
@@ -295,15 +307,15 @@ const MyTimesheets = defineComponent({
             }
         },
         /**
-         * @param {number} hours
-         * @returns {string}
+         * @param {Number} hours
+         * @returns {String}
          */
         format_duration(hours) {
             return format_duration(hours);
         },
         /**
          * @param {string | undefined} value
-         * @returns {string}
+         * @returns {String}
          */
         time_of_day(value) {
             return format_time_of_day(value);
@@ -313,24 +325,28 @@ const MyTimesheets = defineComponent({
         // booked to.
         /**
          * @param {TimesheetListEntry} rec
-         * @returns {string}
+         * @returns {String}
          */
         job_detail(rec) {
-            const service = rec.service ? rec.service.name : this.$t("repair.timesheets.no_service");
+            const service = rec.service
+                ? rec.service.name
+                : this.$t("repair.timesheets.no_service");
             return [rec.job_ref, service].filter((part) => part).join(" · ");
         },
         // A running entry has no end yet, so no meaningful total.
         /**
          * @param {{date_time?: string | null, date_time_end?: string | null}} rec
-         * @returns {string}
+         * @returns {String}
          */
         entry_total(rec) {
             return rec.date_time_end
-                ? format_duration(duration_hours(rec.date_time || undefined, rec.date_time_end))
+                ? format_duration(
+                      duration_hours(rec.date_time || undefined, rec.date_time_end)
+                  )
                 : "—";
         },
         /**
-         * @param {number} [page]
+         * @param {Number} [page]
          * @returns {Promise<void>}
          */
         fetch(page) {
@@ -446,7 +462,11 @@ const MyTimesheets = defineComponent({
                         edit ? "update_job_break" : "delete_job_break",
                     ];
                 }
-                return ["attendance", dialog.record.attendance_id, edit ? "update_break" : "delete_break"];
+                return [
+                    "attendance",
+                    dialog.record.attendance_id,
+                    edit ? "update_break" : "delete_break",
+                ];
             }
             const action = {
                 edit: "update",
@@ -467,7 +487,9 @@ const MyTimesheets = defineComponent({
             const body = _.extend(
                 {},
                 payload,
-                dialog.record.source === "jobs" ? {after_id: dialog.record.after_id} : {}
+                dialog.record.source === "jobs"
+                    ? {after_id: dialog.record.after_id}
+                    : {}
             );
             this.odoo
                 .post(this._endpoint_for(dialog), body)
@@ -494,7 +516,8 @@ const MyTimesheets = defineComponent({
                     // for that time, so the day's total didn't change") explains
                     // something the technician couldn't otherwise see, so it
                     // stays at the top of the page after the dialog closes.
-                    this.error_message = message && message.message_type !== "success" ? message : null;
+                    this.error_message =
+                        message && message.message_type !== "success" ? message : null;
                     this.dialog = null;
                     this.fetch(this.page);
                 })
@@ -502,7 +525,7 @@ const MyTimesheets = defineComponent({
         },
         /**
          * @param {TimesheetGroup} group
-         * @returns {boolean}
+         * @returns {Boolean}
          */
         is_attendance_editable(group) {
             return Boolean(group.attendance && group.attendance.records.length);
@@ -541,7 +564,7 @@ const MyTimesheets = defineComponent({
                 :autofocus="false"
                 v-on:found="on_search"
                 :input_placeholder="$t('repair.timesheets.search_placeholder')"
-                />
+            />
             <p class="empty" v-if="!loading && !records.length">
                 {{ $t('repair.timesheets.empty') }}
             </p>
@@ -555,7 +578,9 @@ const MyTimesheets = defineComponent({
                     <span>{{ $t('repair.timesheets.job') }}</span>
                     <span>{{ $t('repair.timesheets.start') }}</span>
                     <span>{{ $t('repair.timesheets.end') }}</span>
-                    <span class="timesheet-row__num">{{ $t('repair.timesheets.duration') }}</span>
+                    <span class="timesheet-row__num"
+                        >{{ $t('repair.timesheets.duration') }}</span
+                    >
                     <span></span>
                 </div>
                 <template v-for="group in grouped">
@@ -564,12 +589,15 @@ const MyTimesheets = defineComponent({
                         class="timesheet-day"
                         :class="{'timesheet-day--editable': is_attendance_editable(group)}"
                         @click="open_attendance(group)"
-                        >
+                    >
                         <span class="timesheet-day__date">{{ group.title }}</span>
                         <span class="timesheet-day__totals">
                             <span class="timesheet-day__total">
                                 {{ $t('repair.timesheets.shift_time') }}
-                                <strong>{{ format_duration(group.attendance ? group.attendance.hours : 0) }}</strong>
+                                <strong
+                                    >{{ format_duration(group.attendance ?
+                                    group.attendance.hours : 0) }}</strong
+                                >
                             </span>
                             <span class="timesheet-day__total">
                                 {{ $t('repair.timesheets.job_time') }}
@@ -582,29 +610,58 @@ const MyTimesheets = defineComponent({
                         :key="row.key"
                         class="timesheet-row"
                         :class="{'timesheet-row--break': row.kind === 'break'}"
-                        >
+                    >
                         <template v-if="row.kind === 'break'">
                             <div class="timesheet-row__job">
-                                <span class="timesheet-row__plate">{{ $t('repair.timesheets.break') }}</span>
+                                <span class="timesheet-row__plate"
+                                    >{{ $t('repair.timesheets.break') }}</span
+                                >
                             </div>
                             <span>{{ time_of_day(row.date_time) }}</span>
                             <span>{{ time_of_day(row.date_time_end) }}</span>
-                            <span class="timesheet-row__num timesheet-row__duration">{{ entry_total(row) }}</span>
+                            <span class="timesheet-row__num timesheet-row__duration"
+                                >{{ entry_total(row) }}</span
+                            >
                             <span class="timesheet-row__actions">
                                 <v-menu left offset-y>
                                     <template v-slot:activator="{on, attrs}">
-                                        <v-btn icon v-bind="attrs" v-on="on" :title="$t('repair.timesheets.actions')">
+                                        <v-btn
+                                            icon
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            :title="$t('repair.timesheets.actions')"
+                                        >
                                             <v-icon>mdi-dots-vertical</v-icon>
                                         </v-btn>
                                     </template>
                                     <v-list>
-                                        <v-list-item @click="open_action('edit_break', row)">
-                                            <v-list-item-icon><v-icon>mdi-pencil</v-icon></v-list-item-icon>
-                                            <v-list-item-title>{{ $t('repair.timesheets.action.edit') }}</v-list-item-title>
+                                        <v-list-item
+                                            @click="open_action('edit_break', row)"
+                                        >
+                                            <v-list-item-icon
+                                                ><v-icon
+                                                    >mdi-pencil</v-icon
+                                                ></v-list-item-icon
+                                            >
+                                            <v-list-item-title
+                                                >{{ $t('repair.timesheets.action.edit')
+                                                }}</v-list-item-title
+                                            >
                                         </v-list-item>
-                                        <v-list-item class="error--text" @click="open_action('delete_break', row)">
-                                            <v-list-item-icon><v-icon color="error">mdi-delete</v-icon></v-list-item-icon>
-                                            <v-list-item-title>{{ $t('repair.timesheets.action.delete') }}</v-list-item-title>
+                                        <v-list-item
+                                            class="error--text"
+                                            @click="open_action('delete_break', row)"
+                                        >
+                                            <v-list-item-icon
+                                                ><v-icon color="error"
+                                                    >mdi-delete</v-icon
+                                                ></v-list-item-icon
+                                            >
+                                            <v-list-item-title
+                                                >{{
+                                                $t('repair.timesheets.action.delete')
+                                                }}</v-list-item-title
+                                            >
                                         </v-list-item>
                                     </v-list>
                                 </v-menu>
@@ -612,40 +669,98 @@ const MyTimesheets = defineComponent({
                         </template>
                         <template v-else>
                             <div class="timesheet-row__job">
-                                <span class="timesheet-row__plate">{{ row.rec.job.name }}</span>
-                                <span class="timesheet-row__sub">{{ job_detail(row.rec) }}</span>
+                                <span class="timesheet-row__plate"
+                                    >{{ row.rec.job.name }}</span
+                                >
+                                <span class="timesheet-row__sub"
+                                    >{{ job_detail(row.rec) }}</span
+                                >
                             </div>
                             <span>{{ time_of_day(row.rec.date_time) }}</span>
                             <span>
-                                <v-chip v-if="!row.rec.date_time_end" small label color="success">
+                                <v-chip
+                                    v-if="!row.rec.date_time_end"
+                                    small
+                                    label
+                                    color="success"
+                                >
                                     {{ $t('repair.timesheets.running') }}
                                 </v-chip>
-                                <template v-else>{{ time_of_day(row.rec.date_time_end) }}</template>
+                                <template v-else
+                                    >{{ time_of_day(row.rec.date_time_end) }}</template
+                                >
                             </span>
-                            <span class="timesheet-row__num timesheet-row__duration">{{ entry_total(row.rec) }}</span>
+                            <span class="timesheet-row__num timesheet-row__duration"
+                                >{{ entry_total(row.rec) }}</span
+                            >
                             <span class="timesheet-row__actions">
                                 <v-menu left offset-y>
                                     <template v-slot:activator="{on, attrs}">
-                                        <v-btn icon v-bind="attrs" v-on="on" :title="$t('repair.timesheets.actions')">
+                                        <v-btn
+                                            icon
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            :title="$t('repair.timesheets.actions')"
+                                        >
                                             <v-icon>mdi-dots-vertical</v-icon>
                                         </v-btn>
                                     </template>
                                     <v-list>
-                                        <v-list-item @click="open_action('edit', row.rec)">
-                                            <v-list-item-icon><v-icon>mdi-pencil</v-icon></v-list-item-icon>
-                                            <v-list-item-title>{{ $t('repair.timesheets.action.edit') }}</v-list-item-title>
+                                        <v-list-item
+                                            @click="open_action('edit', row.rec)"
+                                        >
+                                            <v-list-item-icon
+                                                ><v-icon
+                                                    >mdi-pencil</v-icon
+                                                ></v-list-item-icon
+                                            >
+                                            <v-list-item-title
+                                                >{{ $t('repair.timesheets.action.edit')
+                                                }}</v-list-item-title
+                                            >
                                         </v-list-item>
-                                        <v-list-item :disabled="!row.rec.date_time_end" @click="open_action('break', row.rec)">
-                                            <v-list-item-icon><v-icon>mdi-coffee</v-icon></v-list-item-icon>
-                                            <v-list-item-title>{{ $t('repair.timesheets.action.break') }}</v-list-item-title>
+                                        <v-list-item
+                                            :disabled="!row.rec.date_time_end"
+                                            @click="open_action('break', row.rec)"
+                                        >
+                                            <v-list-item-icon
+                                                ><v-icon
+                                                    >mdi-coffee</v-icon
+                                                ></v-list-item-icon
+                                            >
+                                            <v-list-item-title
+                                                >{{ $t('repair.timesheets.action.break')
+                                                }}</v-list-item-title
+                                            >
                                         </v-list-item>
-                                        <v-list-item :disabled="!row.rec.date_time_end" @click="open_action('split', row.rec)">
-                                            <v-list-item-icon><v-icon>mdi-call-split</v-icon></v-list-item-icon>
-                                            <v-list-item-title>{{ $t('repair.timesheets.action.split') }}</v-list-item-title>
+                                        <v-list-item
+                                            :disabled="!row.rec.date_time_end"
+                                            @click="open_action('split', row.rec)"
+                                        >
+                                            <v-list-item-icon
+                                                ><v-icon
+                                                    >mdi-call-split</v-icon
+                                                ></v-list-item-icon
+                                            >
+                                            <v-list-item-title
+                                                >{{ $t('repair.timesheets.action.split')
+                                                }}</v-list-item-title
+                                            >
                                         </v-list-item>
-                                        <v-list-item class="error--text" @click="open_action('delete', row.rec)">
-                                            <v-list-item-icon><v-icon color="error">mdi-delete</v-icon></v-list-item-icon>
-                                            <v-list-item-title>{{ $t('repair.timesheets.action.delete') }}</v-list-item-title>
+                                        <v-list-item
+                                            class="error--text"
+                                            @click="open_action('delete', row.rec)"
+                                        >
+                                            <v-list-item-icon
+                                                ><v-icon color="error"
+                                                    >mdi-delete</v-icon
+                                                ></v-list-item-icon
+                                            >
+                                            <v-list-item-title
+                                                >{{
+                                                $t('repair.timesheets.action.delete')
+                                                }}</v-list-item-title
+                                            >
                                         </v-list-item>
                                     </v-list>
                                 </v-menu>
@@ -654,7 +769,10 @@ const MyTimesheets = defineComponent({
                     </div>
                 </template>
             </v-card>
-            <div class="button-list button-vertical-list full" v-if="page * page_size < size || page > 1">
+            <div
+                class="button-list button-vertical-list full"
+                v-if="page * page_size < size || page > 1"
+            >
                 <v-row align="center">
                     <v-col cols="6">
                         <v-btn block :disabled="page <= 1" @click="fetch(page - 1)">
@@ -662,13 +780,22 @@ const MyTimesheets = defineComponent({
                         </v-btn>
                     </v-col>
                     <v-col cols="6">
-                        <v-btn block :disabled="page * page_size >= size" @click="fetch(page + 1)">
+                        <v-btn
+                            block
+                            :disabled="page * page_size >= size"
+                            @click="fetch(page + 1)"
+                        >
                             {{ $t('repair.timesheets.next_page') }}
                         </v-btn>
                     </v-col>
                 </v-row>
             </div>
-            <v-dialog :value="Boolean(dialog)" max-width="480" scrollable @input="close_dialog">
+            <v-dialog
+                :value="Boolean(dialog)"
+                max-width="480"
+                scrollable
+                @input="close_dialog"
+            >
                 <div v-if="dialog" class="timesheet-dialog">
                     <!-- The page's own error banner sits behind the dimmed screen,
                          so a rejected save would look like nothing happened. -->
@@ -681,80 +808,99 @@ const MyTimesheets = defineComponent({
                         :key="make_component_key(['timesheet', 'edit', dialog.record.id])"
                         v-on:save="submit_dialog"
                         v-on:close="close_dialog"
-                        />
+                    />
                     <repair-timesheet-split-form
                         v-else-if="dialog && dialog.mode === 'split'"
                         :record="dialog.record"
                         :key="make_component_key(['timesheet', 'split', dialog.record.id])"
                         v-on:save="submit_dialog"
                         v-on:close="close_dialog"
-                        />
+                    />
                     <repair-timesheet-break-form
                         v-else-if="dialog && dialog.mode === 'break'"
                         :record="dialog.record"
                         :key="make_component_key(['timesheet', 'break', dialog.record.id])"
                         v-on:save="submit_dialog"
                         v-on:close="close_dialog"
-                        />
+                    />
                     <repair-break-edit-form
                         v-else-if="dialog && dialog.mode === 'edit_break'"
                         :record="dialog.record"
                         :key="make_component_key(['break', 'edit', dialog.record.key])"
                         v-on:save="submit_dialog"
                         v-on:close="close_dialog"
-                        />
+                    />
                     <v-card v-else-if="dialog && dialog.mode === 'delete_break'">
-                        <v-card-title>{{ $t('repair.timesheets.delete_break_title') }}</v-card-title>
+                        <v-card-title
+                            >{{ $t('repair.timesheets.delete_break_title')
+                            }}</v-card-title
+                        >
                         <v-card-text>
                             <p>
-                                {{ dialog.record.source === 'jobs'
-                                    ? $t('repair.timesheets.confirm_delete_job_break')
-                                    : $t('repair.timesheets.confirm_delete_break') }}
+                                {{ dialog.record.source === 'jobs' ?
+                                $t('repair.timesheets.confirm_delete_job_break') :
+                                $t('repair.timesheets.confirm_delete_break') }}
                             </p>
                             <strong>
-                                {{ time_of_day(dialog.record.date_time) }} –
-                                {{ time_of_day(dialog.record.date_time_end) }}
-                                ({{ entry_total(dialog.record) }})
+                                {{ time_of_day(dialog.record.date_time) }} – {{
+                                time_of_day(dialog.record.date_time_end) }} ({{
+                                entry_total(dialog.record) }})
                             </strong>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer />
-                            <v-btn text @click="close_dialog">{{ $t('btn.cancel.title') }}</v-btn>
-                            <v-btn color="error" @click="submit_dialog()">{{ $t('btn.delete.title') }}</v-btn>
+                            <v-btn text @click="close_dialog"
+                                >{{ $t('btn.cancel.title') }}</v-btn
+                            >
+                            <v-btn color="error" @click="submit_dialog()"
+                                >{{ $t('btn.delete.title') }}</v-btn
+                            >
                         </v-card-actions>
                     </v-card>
                     <v-card v-else-if="dialog && dialog.mode === 'delete'">
-                        <v-card-title>{{ $t('repair.timesheets.delete_title') }}</v-card-title>
+                        <v-card-title
+                            >{{ $t('repair.timesheets.delete_title') }}</v-card-title
+                        >
                         <v-card-text>
                             <p>{{ $t('repair.timesheets.confirm_delete') }}</p>
                             <strong>
-                                {{ dialog.record.job.name }}:
-                                {{ time_of_day(dialog.record.date_time) }} –
-                                {{ dialog.record.date_time_end ? time_of_day(dialog.record.date_time_end) : $t('repair.timesheets.running') }}
-                                ({{ entry_total(dialog.record) }})
+                                {{ dialog.record.job.name }}: {{
+                                time_of_day(dialog.record.date_time) }} – {{
+                                dialog.record.date_time_end ?
+                                time_of_day(dialog.record.date_time_end) :
+                                $t('repair.timesheets.running') }} ({{
+                                entry_total(dialog.record) }})
                             </strong>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer />
-                            <v-btn text @click="close_dialog">{{ $t('btn.cancel.title') }}</v-btn>
-                            <v-btn color="error" @click="submit_dialog()">{{ $t('btn.delete.title') }}</v-btn>
+                            <v-btn text @click="close_dialog"
+                                >{{ $t('btn.cancel.title') }}</v-btn
+                            >
+                            <v-btn color="error" @click="submit_dialog()"
+                                >{{ $t('btn.delete.title') }}</v-btn
+                            >
                         </v-card-actions>
                     </v-card>
                 </div>
             </v-dialog>
-            <v-dialog :value="Boolean(attendance_detail)" max-width="480" @input="close_attendance">
+            <v-dialog
+                :value="Boolean(attendance_detail)"
+                max-width="480"
+                @input="close_attendance"
+            >
                 <repair-attendance-edit-form
                     v-if="attendance_detail"
                     :day="attendance_detail"
                     :key="make_component_key(['attendance', attendance_detail.date])"
                     v-on:saved="on_attendance_saved"
                     v-on:close="close_attendance"
-                    />
+                />
             </v-dialog>
             <div class="button-list button-vertical-list full">
                 <v-row align="center">
                     <v-col class="text-center" cols="12">
-                        <btn-back/>
+                        <btn-back />
                     </v-col>
                 </v-row>
             </div>
@@ -800,11 +946,12 @@ const T = {
     "repair.timesheets.delete_title": "Delete timesheet",
     "repair.timesheets.confirm_delete": "Delete this timesheet entry?",
     "repair.timesheets.delete_break_title": "Delete break",
-    "repair.timesheets.confirm_delete_break": "Remove this break? The time will count as clocked in.",
+    "repair.timesheets.confirm_delete_break":
+        "Remove this break? The time will count as clocked in.",
     "repair.timesheets.confirm_delete_job_break":
         "Remove this break? The two parts of the timesheet will be joined into one, so this time counts as work.",
     "btn.delete.title": "Delete",
 };
-_.each(T, (/** @type {string} */ value, /** @type {string} */ key) => {
+_.each(T, (/** @type {String} */ value, /** @type {String} */ key) => {
     translation_registry.add("en-US." + key, value);
 });

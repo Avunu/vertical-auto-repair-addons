@@ -24,9 +24,7 @@ class ShopEstimateBuilder(models.TransientModel):
         res = super().default_get(fields_list)
         if self.env.context.get("active_model") != "repair.order":
             return res
-        repair = self.env["repair.order"].browse(
-            self.env.context.get("active_id")
-        )
+        repair = self.env["repair.order"].browse(self.env.context.get("active_id"))
         if not repair:
             return res
         if "repair_id" in fields_list:
@@ -34,8 +32,7 @@ class ShopEstimateBuilder(models.TransientModel):
         if "line_ids" not in fields_list:
             return res
         findings = repair._shop_get_inspection_lines().filtered(
-            lambda line: line.severity in QUOTABLE_SEVERITIES
-            and not line.shop_quoted
+            lambda line: line.severity in QUOTABLE_SEVERITIES and not line.shop_quoted
         )
         commands = []
         for finding in findings:
@@ -60,15 +57,12 @@ class ShopEstimateBuilder(models.TransientModel):
         repair = self.repair_id
         included = self.line_ids.filtered("include")
         if not included:
-            raise UserError(
-                _("Select at least one finding to put on the estimate.")
-            )
+            raise UserError(_("Select at least one finding to put on the estimate."))
         missing_job = included.filtered(lambda line: not line.job_id)
         if missing_job:
             raise UserError(
                 _(
-                    "Assign a service job to the selected findings first: "
-                    "%(items)s",
+                    "Assign a service job to the selected findings first: " "%(items)s",
                     items=", ".join(
                         missing_job.mapped("finding_line_id.inspection_item_id.name")
                     ),
@@ -103,9 +97,7 @@ class ShopEstimateBuilderLine(models.TransientModel):
     wizard_id = fields.Many2one(
         "shop.estimate.builder", required=True, ondelete="cascade"
     )
-    finding_line_id = fields.Many2one(
-        "fleet.vehicle.inspection.line", required=True
-    )
+    finding_line_id = fields.Many2one("fleet.vehicle.inspection.line", required=True)
     item_name = fields.Char(
         related="finding_line_id.inspection_item_id.name", string="Item"
     )
@@ -113,9 +105,7 @@ class ShopEstimateBuilderLine(models.TransientModel):
     condition_ids = fields.Many2many(
         related="finding_line_id.condition_ids", string="Conditions"
     )
-    notes = fields.Char(
-        related="finding_line_id.result_description", string="Notes"
-    )
+    notes = fields.Char(related="finding_line_id.result_description", string="Notes")
     include = fields.Boolean(default=True)
     must_do = fields.Boolean(
         help="Quoted as a firm order line. Unchecked findings become "
@@ -137,9 +127,7 @@ class ShopEstimateBuilderLine(models.TransientModel):
         finding = self.finding_line_id
         job = self.job_id
         parts = [job.customer_description or job.name]
-        parts.append(
-            _("Finding: %(item)s", item=finding.inspection_item_id.name)
-        )
+        parts.append(_("Finding: %(item)s", item=finding.inspection_item_id.name))
         if finding.condition_ids:
             parts.append(
                 _(

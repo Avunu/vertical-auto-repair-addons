@@ -13,9 +13,10 @@ class RepairOrder(models.Model):
     _inherit = ["repair.order", "portal.mixin"]
 
     def _compute_access_url(self):
-        super()._compute_access_url()
+        res = super()._compute_access_url()
         for repair in self:
             repair.access_url = f"/my/inspections/{repair.id}"
+        return res
 
     def _shop_report_inspections(self):
         """Inspections shown on the customer report."""
@@ -38,7 +39,7 @@ class RepairOrder(models.Model):
         sections = []
         for severity in REPORT_SEVERITY_ORDER:
             severity_lines = lines.filtered(
-                lambda line: line.severity == severity
+                lambda line, severity=severity: line.severity == severity
             ).sorted(lambda line: (line.category_id.sequence, line.sequence))
             if not severity_lines:
                 continue
@@ -47,9 +48,7 @@ class RepairOrder(models.Model):
                 if categories and categories[-1]["category"] == line.category_id:
                     categories[-1]["lines"] |= line
                 else:
-                    categories.append(
-                        {"category": line.category_id, "lines": line}
-                    )
+                    categories.append({"category": line.category_id, "lines": line})
             sections.append(
                 {
                     "severity": severity,

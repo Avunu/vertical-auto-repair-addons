@@ -13,7 +13,7 @@
  *
  * @param {TemplateStringsArray} strings
  * @param {...unknown} values
- * @returns {string}
+ * @returns {String}
  */
 export function html(strings, ...values) {
     return String.raw({raw: strings}, ...values);

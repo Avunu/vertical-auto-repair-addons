@@ -8,73 +8,73 @@ import {RepairPartRecord} from "../components/parts_types";
 import {RepairServiceRecord} from "../components/repair_service_types";
 import {CatalogCategory, CatalogRecord} from "../components/catalog_types";
 import {
-    InspectionRecord,
-    InspectionTemplate,
-    InspectionLine,
-    InspectionLineChoices,
+  InspectionRecord,
+  InspectionTemplate,
+  InspectionLine,
+  InspectionLineChoices,
 } from "../components/inspection_types";
 
 export interface JobHubTimerState extends RepairTimerState {
-    job_name: string;
+  job_name: string;
 }
 
 export interface JobHubRecord extends RepairJobRecord {
-    timer: JobHubTimerState;
+  timer: JobHubTimerState;
 }
 
 export interface ClientOptions {
-    allow_repair_end: boolean;
-    require_photo_on_fail: boolean;
+  allow_repair_end: boolean;
+  require_photo_on_fail: boolean;
 }
 
 export interface ScannedBarcode {
-    text: string;
+  text: string;
 }
 
 /** Loose shapes for each state's `state.data` payload - see repair_job's REST endpoints. */
 export interface JobListData {
-    records: RepairJobRecord[];
+  records: RepairJobRecord[];
 }
 export interface JobDetailData {
-    record: JobHubRecord;
-    options?: ClientOptions;
+  record: JobHubRecord;
+  options?: ClientOptions;
 }
 export interface PartsData {
-    record: RepairJobRecord;
-    job: {id: unknown; name: string};
-    parts: RepairPartRecord[];
+  record: RepairJobRecord;
+  job: {id: unknown; name: string};
+  parts: RepairPartRecord[];
 }
 export interface ServicesData {
-    job: {id: unknown; name: string};
-    records: RepairServiceRecord[];
-    notes: string;
+  job: {id: unknown; name: string};
+  records: RepairServiceRecord[];
+  notes: string;
 }
 export interface PartDetailData {
-    record: RepairPartRecord;
+  record: RepairPartRecord;
 }
 export interface CatalogSearchData {
-    records: CatalogRecord[];
-    categories: CatalogCategory[];
-    size: number;
-    page: number;
-    page_size: number;
+  records: CatalogRecord[];
+  categories: CatalogCategory[];
+  size: number;
+  page: number;
+  page_size: number;
 }
 export interface CatalogDetailData {
-    record: CatalogRecord;
+  record: CatalogRecord;
 }
 export interface InspectionListData {
-    job: {id: unknown; name: string};
-    records: InspectionRecord[];
-    templates: InspectionTemplate[];
-    default_odometer: number;
-    odometer_unit: string;
+  job: {id: unknown; name: string};
+  records: InspectionRecord[];
+  templates: InspectionTemplate[];
+  default_odometer: number;
+  odometer_unit: string;
 }
 export interface InspectionLinesData {
-    record: InspectionRecord;
-    lines: InspectionLine[];
+  record: InspectionRecord;
+  lines: InspectionLine[];
 }
 export interface InspectionLineDetailData {
-    record: InspectionLine;
-    inspection: {id: unknown};
-    choices: InspectionLineChoices;
+  record: InspectionLine;
+  inspection: {id: unknown};
+  choices: InspectionLineChoices;
 }

@@ -18,21 +18,32 @@
  * route change, so a tick counter kept in its own component state would
  * reset to 0 (and visibly rewind the display) on every navigation.
  */
+
+/* global Vue */
+
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
-import {timer_store, job_elapsed_seconds, format_elapsed} from "../services/timer_store.esm.js";
+import {
+    format_elapsed,
+    job_elapsed_seconds,
+    timer_store,
+} from "../services/timer_store.esm.js";
 
 const JobTimerCompact = defineComponent({
     computed: {
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         running() {
-            return Boolean(timer_store.current_job_timer && timer_store.current_job_timer.running);
+            return Boolean(
+                timer_store.current_job_timer && timer_store.current_job_timer.running
+            );
         },
-        /** @returns {string} */
+        /** @returns {String} */
         job_name() {
-            return timer_store.current_job_timer ? timer_store.current_job_timer.job_name : "";
+            return timer_store.current_job_timer
+                ? timer_store.current_job_timer.job_name
+                : "";
         },
-        /** @returns {string} */
+        /** @returns {String} */
         display() {
             return format_elapsed(job_elapsed_seconds());
         },

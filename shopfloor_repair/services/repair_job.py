@@ -12,9 +12,10 @@ from markupsafe import Markup, escape
 from odoo import Command, fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.osv import expression
+from odoo.tools import str2bool
 
 from odoo.addons.base_rest import restapi
-from odoo.addons.base_rest.components.service import to_bool, to_int
+from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import Component
 from odoo.addons.shop_inspection.models.fleet_vehicle_inspection_line import (
     SEVERITY_SELECTION,
@@ -123,9 +124,7 @@ class ShopfloorRepairJob(Component):
             next_state="part_detail", data=data, message=message, popup=popup
         )
 
-    def _response_for_catalog_search(
-        self, repair, products, size, page, message=None
-    ):
+    def _response_for_catalog_search(self, repair, products, size, page, message=None):
         data = {
             "job": self.data.repair_job(repair),
             "records": self.data.catalog_products(products),
@@ -154,14 +153,10 @@ class ShopfloorRepairJob(Component):
                 {"id": tmpl.id, "name": tmpl.display_name}
                 for tmpl in self._inspection_templates()
             ],
-            "default_odometer": repair.odometer_in
-            or repair.vehicle_id.odometer
-            or 0.0,
+            "default_odometer": repair.odometer_in or repair.vehicle_id.odometer or 0.0,
             "odometer_unit": repair.vehicle_odometer_unit or "",
         }
-        return self._response(
-            next_state="inspection_list", data=data, message=message
-        )
+        return self._response(next_state="inspection_list", data=data, message=message)
 
     def _response_for_inspection_lines(self, inspection, message=None):
         lines = inspection.inspection_line_ids.sorted(
@@ -177,9 +172,7 @@ class ShopfloorRepairJob(Component):
             "job": self.data.repair_job(inspection.repair_id),
             "lines": self.data.inspection_lines(lines),
         }
-        return self._response(
-            next_state="inspection_lines", data=data, message=message
-        )
+        return self._response(next_state="inspection_lines", data=data, message=message)
 
     def _response_for_inspection_line_detail(self, line, message=None):
         data = {
@@ -301,7 +294,8 @@ class ShopfloorRepairJob(Component):
     # Endpoints -- jobs
     # ------------------------------------------------------------------
 
-    @restapi.method([(["/jobs"], "GET")],
+    @restapi.method(
+        [(["/jobs"], "GET")],
         input_param=restapi.CerberusValidator("jobs"),
         output_param=restapi.CerberusValidator("jobs"),
     )
@@ -309,7 +303,8 @@ class ShopfloorRepairJob(Component):
         """List the repair orders assigned to the technician."""
         return self._response_for_job_list()
 
-    @restapi.method([(["/scan/<string:identifier>"], "GET")],
+    @restapi.method(
+        [(["/scan/<string:identifier>"], "GET")],
         input_param=restapi.CerberusValidator("scan"),
         output_param=restapi.CerberusValidator("scan"),
     )
@@ -320,7 +315,8 @@ class ShopfloorRepairJob(Component):
             return self._response_for_job_list(message=self.msg_store.job_not_found())
         return self._response_for_job_detail(repair)
 
-    @restapi.method([(["/job/<int:repair_id>"], "GET")],
+    @restapi.method(
+        [(["/job/<int:repair_id>"], "GET")],
         input_param=restapi.CerberusValidator("job"),
         output_param=restapi.CerberusValidator("job"),
     )
@@ -333,7 +329,8 @@ class ShopfloorRepairJob(Component):
             )
         return self._response_for_job_detail(repair)
 
-    @restapi.method([(["/job/<int:repair_id>/start_repair"], "POST")],
+    @restapi.method(
+        [(["/job/<int:repair_id>/start_repair"], "POST")],
         input_param=restapi.CerberusValidator("start_repair"),
         output_param=restapi.CerberusValidator("start_repair"),
     )
@@ -366,7 +363,8 @@ class ShopfloorRepairJob(Component):
             repair, message=message or self.msg_store.repair_started(repair)
         )
 
-    @restapi.method([(["/job/<int:repair_id>/finish"], "POST")],
+    @restapi.method(
+        [(["/job/<int:repair_id>/finish"], "POST")],
         input_param=restapi.CerberusValidator("finish"),
         output_param=restapi.CerberusValidator("finish"),
     )
@@ -417,9 +415,7 @@ class ShopfloorRepairJob(Component):
         if repair is not None:
             domain = expression.AND([domain, [("repair_order_id", "=", repair.id)]])
         if service is not None:
-            domain = expression.AND(
-                [domain, [("repair_service_id", "=", service.id)]]
-            )
+            domain = expression.AND([domain, [("repair_service_id", "=", service.id)]])
         return AAL.search(domain)
 
     def _stop_running_timers(self, lines):
@@ -466,7 +462,9 @@ class ShopfloorRepairJob(Component):
 
     def _prepare_timer_vals(self, repair, service, start):
         return {
-            "name": f"{repair._timesheet_default_description()} — {service.display_name}",
+            "name": (
+                f"{repair._timesheet_default_description()} — {service.display_name}"
+            ),
             "project_id": repair._timesheet_default_project().id,
             "employee_id": self.env.user.employee_id.id,
             "user_id": self.env.user.id,
@@ -602,9 +600,7 @@ class ShopfloorRepairJob(Component):
         job_line = self._running_timer_lines()[:1]
         current_job = None
         if job_line and job_line.repair_service_id:
-            current_job = self.data.service_timer(
-                job_line.repair_service_id, job_line
-            )
+            current_job = self.data.service_timer(job_line.repair_service_id, job_line)
         return {
             "running": running,
             "started_at": (
@@ -614,7 +610,8 @@ class ShopfloorRepairJob(Component):
             "current_job": current_job,
         }
 
-    @restapi.method([(["/shift_timer"], "GET")],
+    @restapi.method(
+        [(["/shift_timer"], "GET")],
         input_param=restapi.CerberusValidator("shift_timer"),
         output_param=restapi.CerberusValidator("shift_timer"),
     )
@@ -622,7 +619,8 @@ class ShopfloorRepairJob(Component):
         """Polled by the app's header to show a running "Day:" timer."""
         return self._response(data={"shift_timer": self._shift_timer_data()})
 
-    @restapi.method([(["/clock_toggle"], "POST")],
+    @restapi.method(
+        [(["/clock_toggle"], "POST")],
         input_param=restapi.CerberusValidator("clock_toggle"),
         output_param=restapi.CerberusValidator("clock_toggle"),
     )
@@ -650,7 +648,8 @@ class ShopfloorRepairJob(Component):
     # Endpoints -- services
     # ------------------------------------------------------------------
 
-    @restapi.method([(["/job/<int:repair_id>/services"], "GET")],
+    @restapi.method(
+        [(["/job/<int:repair_id>/services"], "GET")],
         input_param=restapi.CerberusValidator("services"),
         output_param=restapi.CerberusValidator("services"),
     )
@@ -663,7 +662,8 @@ class ShopfloorRepairJob(Component):
             )
         return self._response_for_services(repair)
 
-    @restapi.method([(["/job/<int:repair_id>/add_note"], "POST")],
+    @restapi.method(
+        [(["/job/<int:repair_id>/add_note"], "POST")],
         input_param=restapi.CerberusValidator("add_note"),
         output_param=restapi.CerberusValidator("add_note"),
     )
@@ -688,15 +688,13 @@ class ShopfloorRepairJob(Component):
         error = self._call_or_error(lambda: self._add_note(repair, note))
         if error:
             return self._response_for_services(repair, message=error)
-        return self._response_for_services(
-            repair, message=self.msg_store.note_added()
-        )
+        return self._response_for_services(repair, message=self.msg_store.note_added())
 
     def _add_note(self, repair, note):
         user = self.env.user
-        stamp = fields.Datetime.context_timestamp(
-            user, fields.Datetime.now()
-        ).strftime("%Y-%m-%d %-I:%M %p")
+        stamp = fields.Datetime.context_timestamp(user, fields.Datetime.now()).strftime(
+            "%Y-%m-%d %-I:%M %p"
+        )
         body = Markup("<strong>[%s]</strong> %s<br/>%s") % (
             user.display_name,
             stamp,
@@ -719,7 +717,8 @@ class ShopfloorRepairJob(Component):
     # Endpoints -- parts
     # ------------------------------------------------------------------
 
-    @restapi.method([(["/job/<int:repair_id>/parts"], "GET")],
+    @restapi.method(
+        [(["/job/<int:repair_id>/parts"], "GET")],
         input_param=restapi.CerberusValidator("parts"),
         output_param=restapi.CerberusValidator("parts"),
     )
@@ -732,7 +731,8 @@ class ShopfloorRepairJob(Component):
             )
         return self._response_for_parts(repair)
 
-    @restapi.method([(["/job/<int:repair_id>/scan_part"], "POST")],
+    @restapi.method(
+        [(["/job/<int:repair_id>/scan_part"], "POST")],
         input_param=restapi.CerberusValidator("scan_part"),
         output_param=restapi.CerberusValidator("scan_part"),
     )
@@ -756,16 +756,15 @@ class ShopfloorRepairJob(Component):
             return self._response_for_parts(
                 repair, message=self.msg_store.part_not_found()
             )
-        move = self._job_parts(repair).filtered(
-            lambda m: m.product_id == product
-        )[:1]
+        move = self._job_parts(repair).filtered(lambda m: m.product_id == product)[:1]
         if move:
             return self._response_for_part_detail(move)
         return self._response_for_catalog_detail(
             repair, product, message=self.msg_store.part_not_on_job(product)
         )
 
-    @restapi.method([(["/part/<int:move_id>/set_quantity"], "POST")],
+    @restapi.method(
+        [(["/part/<int:move_id>/set_quantity"], "POST")],
         input_param=restapi.CerberusValidator("set_quantity"),
         output_param=restapi.CerberusValidator("set_quantity"),
     )
@@ -810,7 +809,8 @@ class ShopfloorRepairJob(Component):
             move.repair_id, message=self.msg_store.part_quantity_updated(move)
         )
 
-    @restapi.method([(["/part/<int:move_id>/consume_all"], "POST")],
+    @restapi.method(
+        [(["/part/<int:move_id>/consume_all"], "POST")],
         input_param=restapi.CerberusValidator("consume_all"),
         output_param=restapi.CerberusValidator("consume_all"),
     )
@@ -839,7 +839,8 @@ class ShopfloorRepairJob(Component):
             move.repair_id, message=self.msg_store.part_quantity_updated(move)
         )
 
-    @restapi.method([(["/part/<int:move_id>/reset"], "POST")],
+    @restapi.method(
+        [(["/part/<int:move_id>/reset"], "POST")],
         input_param=restapi.CerberusValidator("reset_part"),
         output_param=restapi.CerberusValidator("reset_part"),
     )
@@ -918,7 +919,8 @@ class ShopfloorRepairJob(Component):
     def _catalog_categories(self):
         return self.env["product.category"].search([], limit=200)
 
-    @restapi.method([(["/catalog/categories"], "GET")],
+    @restapi.method(
+        [(["/catalog/categories"], "GET")],
         input_param=restapi.CerberusValidator("catalog_categories"),
         output_param=restapi.CerberusValidator("catalog_categories"),
     )
@@ -933,7 +935,8 @@ class ShopfloorRepairJob(Component):
             }
         )
 
-    @restapi.method([(["/job/<int:repair_id>/catalog"], "GET")],
+    @restapi.method(
+        [(["/job/<int:repair_id>/catalog"], "GET")],
         input_param=restapi.CerberusValidator("catalog"),
         output_param=restapi.CerberusValidator("catalog"),
     )
@@ -954,7 +957,8 @@ class ShopfloorRepairJob(Component):
         )
         return self._response_for_catalog_search(repair, products, size, page)
 
-    @restapi.method([(["/job/<int:repair_id>/add_part"], "POST")],
+    @restapi.method(
+        [(["/job/<int:repair_id>/add_part"], "POST")],
         input_param=restapi.CerberusValidator("add_part"),
         output_param=restapi.CerberusValidator("add_part"),
     )
@@ -1004,9 +1008,7 @@ class ShopfloorRepairJob(Component):
         self._notify_part_added(repair, move)
         if consume_now and product.tracking == "none":
             self._set_move_quantity(move, quantity)
-        return self._response_for_parts(
-            repair, message=self.msg_store.part_added(move)
-        )
+        return self._response_for_parts(repair, message=self.msg_store.part_added(move))
 
     def _prepare_added_part_vals(self, repair, product, quantity):
         return {
@@ -1053,14 +1055,10 @@ class ShopfloorRepairJob(Component):
         return self.env["fleet.vehicle.inspection.template"].search([])
 
     def _get_inspection(self, inspection_id):
-        return (
-            self.env["fleet.vehicle.inspection"].browse(inspection_id).exists()
-        )
+        return self.env["fleet.vehicle.inspection"].browse(inspection_id).exists()
 
     def _get_inspection_line(self, line_id):
-        return (
-            self.env["fleet.vehicle.inspection.line"].browse(line_id).exists()
-        )
+        return self.env["fleet.vehicle.inspection.line"].browse(line_id).exists()
 
     def _inspection_choices(self, line):
         """Everything the grading form needs to render without a second call.
@@ -1084,7 +1082,8 @@ class ShopfloorRepairJob(Component):
             "actions": [{"id": rec.id, "name": rec.name} for rec in actions],
         }
 
-    @restapi.method([(["/job/<int:repair_id>/inspections"], "GET")],
+    @restapi.method(
+        [(["/job/<int:repair_id>/inspections"], "GET")],
         input_param=restapi.CerberusValidator("inspections"),
         output_param=restapi.CerberusValidator("inspections"),
     )
@@ -1121,9 +1120,7 @@ class ShopfloorRepairJob(Component):
                 repair, message=self.msg_store.inspection_odometer_required()
             )
         template = (
-            self.env["fleet.vehicle.inspection.template"]
-            .browse(template_id)
-            .exists()
+            self.env["fleet.vehicle.inspection.template"].browse(template_id).exists()
         )
         if not template:
             return self._response_for_inspection_list(
@@ -1157,7 +1154,9 @@ class ShopfloorRepairJob(Component):
                 "service_advisor_id": repair.service_advisor_id.id,
             }
         )
-        inspection.write({"inspection_line_ids": self._template_line_commands(template)})
+        inspection.write(
+            {"inspection_line_ids": self._template_line_commands(template)}
+        )
         return inspection
 
     def _template_line_commands(self, template):
@@ -1177,7 +1176,8 @@ class ShopfloorRepairJob(Component):
             commands.append(Command.create(vals))
         return commands
 
-    @restapi.method([(["/inspection/<int:inspection_id>"], "GET")],
+    @restapi.method(
+        [(["/inspection/<int:inspection_id>"], "GET")],
         input_param=restapi.CerberusValidator("inspection"),
         output_param=restapi.CerberusValidator("inspection"),
     )
@@ -1482,7 +1482,7 @@ class ShopfloorRepairJobValidator(Component):
             "repair_id": {"coerce": to_int, "required": True, "type": "integer"},
             "product_id": {"coerce": to_int, "required": True, "type": "integer"},
             "quantity": {"coerce": float, "required": False, "type": "float"},
-            "consume_now": {"coerce": to_bool, "required": False, "type": "boolean"},
+            "consume_now": {"coerce": str2bool, "required": False, "type": "boolean"},
         }
 
     def inspections(self):
@@ -1573,9 +1573,7 @@ class ShopfloorRepairJobValidatorResponse(Component):
             },
             "services": {
                 "job": self.schemas._schema_dict_of(self.schemas.repair_job()),
-                "records": self.schemas._schema_list_of(
-                    self.schemas.repair_service()
-                ),
+                "records": self.schemas._schema_list_of(self.schemas.repair_service()),
                 "notes": {"type": "string", "required": True},
             },
             "parts": {
@@ -1588,9 +1586,7 @@ class ShopfloorRepairJobValidatorResponse(Component):
             },
             "catalog_search": {
                 "job": self.schemas._schema_dict_of(self.schemas.repair_job()),
-                "records": self.schemas._schema_list_of(
-                    self.schemas.catalog_product()
-                ),
+                "records": self.schemas._schema_list_of(self.schemas.catalog_product()),
                 "size": {"type": "integer", "required": True},
                 "page": {"type": "integer", "required": True},
                 "page_size": {"type": "integer", "required": True},
@@ -1600,9 +1596,7 @@ class ShopfloorRepairJobValidatorResponse(Component):
             },
             "catalog_detail": {
                 "job": self.schemas._schema_dict_of(self.schemas.repair_job()),
-                "record": self.schemas._schema_dict_of(
-                    self.schemas.catalog_product()
-                ),
+                "record": self.schemas._schema_dict_of(self.schemas.catalog_product()),
             },
             "inspection_list": {
                 "job": self.schemas._schema_dict_of(self.schemas.repair_job()),
@@ -1616,17 +1610,11 @@ class ShopfloorRepairJobValidatorResponse(Component):
             "inspection_lines": {
                 "record": self.schemas._schema_dict_of(self.schemas.inspection()),
                 "job": self.schemas._schema_dict_of(self.schemas.repair_job()),
-                "lines": self.schemas._schema_list_of(
-                    self.schemas.inspection_line()
-                ),
+                "lines": self.schemas._schema_list_of(self.schemas.inspection_line()),
             },
             "inspection_line_detail": {
-                "record": self.schemas._schema_dict_of(
-                    self.schemas.inspection_line()
-                ),
-                "inspection": self.schemas._schema_dict_of(
-                    self.schemas.inspection()
-                ),
+                "record": self.schemas._schema_dict_of(self.schemas.inspection_line()),
+                "inspection": self.schemas._schema_dict_of(self.schemas.inspection()),
                 "job": self.schemas._schema_dict_of(self.schemas.repair_job()),
                 "choices": self.schemas._schema_dict_of(
                     self.schemas.inspection_choices()
@@ -1685,11 +1673,7 @@ class ShopfloorRepairJobValidatorResponse(Component):
 
     def catalog_categories(self):
         return self._response_schema(
-            {
-                "categories": self.schemas._schema_list_of(
-                    self.schemas._simple_record()
-                )
-            }
+            {"categories": self.schemas._schema_list_of(self.schemas._simple_record())}
         )
 
     def catalog(self):

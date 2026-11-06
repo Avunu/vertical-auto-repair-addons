@@ -23,6 +23,9 @@
  * CSS instead (css/repair_job.css, `.nav-items { display: none; }`), per
  * an explicit ask to keep this styled one instead of the base one.
  */
+
+/* global Vue */
+
 /** @import {NavItem} from "../services/nav_items.esm.js" */
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
@@ -48,7 +51,10 @@ const NavItemsExtra = defineComponent({
         <div :class="tag_name">
             <v-list-item :to="{name: 'home'}" link active-class="'v-item-active" exact>
                 <v-list-item-content>
-                    <v-list-item-title><v-icon>mdi-home-outline</v-icon> {{ $t('repair.jobs.home') }}</v-list-item-title>
+                    <v-list-item-title
+                        ><v-icon>mdi-home-outline</v-icon> {{ $t('repair.jobs.home')
+                        }}</v-list-item-title
+                    >
                 </v-list-item-content>
             </v-list-item>
             <v-list-item
@@ -58,9 +64,12 @@ const NavItemsExtra = defineComponent({
                 link
                 active-class="'v-item-active"
                 exact
-                >
+            >
                 <v-list-item-content>
-                    <v-list-item-title><v-icon>{{ item.icon }}</v-icon> {{ item.name}}</v-list-item-title>
+                    <v-list-item-title
+                        ><v-icon>{{ item.icon }}</v-icon> {{
+                        item.name}}</v-list-item-title
+                    >
                 </v-list-item-content>
             </v-list-item>
         </div>

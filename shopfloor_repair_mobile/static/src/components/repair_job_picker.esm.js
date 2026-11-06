@@ -17,6 +17,9 @@
  * (so `v-model` works). Picking a different job resets the service to
  * "Unassigned", because the old service belongs to the old job.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {TimesheetJobChoice, JobPickerValue} from "./timesheet_types" */
 import {translation_registry} from "/shopfloor_mobile_base/static/src/services/translation_registry.esm.js";
@@ -34,7 +37,10 @@ const NO_SERVICE = 0;
 
 const RepairJobPicker = defineComponent({
     props: {
-        jobs: {type: /** @type {PropType<TimesheetJobChoice[]>} */ (Array), required: true},
+        jobs: {
+            type: /** @type {PropType<TimesheetJobChoice[]>} */ (Array),
+            required: true,
+        },
         value: {type: /** @type {PropType<JobPickerValue>} */ (Object), required: true},
     },
     computed: {
@@ -42,7 +48,7 @@ const RepairJobPicker = defineComponent({
         selected_job() {
             return this.jobs.find((job) => job.id === this.value.job_id);
         },
-        /** @returns {number} */
+        /** @returns {Number} */
         selected_service() {
             return this.value.service_id || NO_SERVICE;
         },
@@ -50,7 +56,7 @@ const RepairJobPicker = defineComponent({
     methods: {
         /**
          * @param {TimesheetJobChoice} job
-         * @returns {string}
+         * @returns {String}
          */
         job_subtitle(job) {
             return [job.customer, job.ref]
@@ -85,35 +91,48 @@ const RepairJobPicker = defineComponent({
     },
     template: html`
         <div class="repair-job-picker">
-            <div class="repair-job-picker__label">{{ $t('repair.timesheets.job') }}</div>
+            <div class="repair-job-picker__label">
+                {{ $t('repair.timesheets.job') }}
+            </div>
             <v-list dense outlined class="repair-job-picker__list">
                 <v-list-item-group
                     :value="value.job_id"
                     mandatory
                     active-class="repair-job-picker__item--active"
                     @change="select_job"
-                    >
+                >
                     <v-list-item v-for="job in jobs" :key="job.id" :value="job.id">
                         <v-list-item-content>
                             <v-list-item-title>{{ job.name }}</v-list-item-title>
-                            <v-list-item-subtitle>{{ job_subtitle(job) }}</v-list-item-subtitle>
+                            <v-list-item-subtitle
+                                >{{ job_subtitle(job) }}</v-list-item-subtitle
+                            >
                         </v-list-item-content>
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
             <template v-if="selected_job">
-                <div class="repair-job-picker__label">{{ $t('repair.timesheets.service') }}</div>
+                <div class="repair-job-picker__label">
+                    {{ $t('repair.timesheets.service') }}
+                </div>
                 <v-list dense outlined class="repair-job-picker__list">
                     <v-list-item-group
                         :value="selected_service"
                         mandatory
                         active-class="repair-job-picker__item--active"
                         @change="select_service"
-                        >
+                    >
                         <v-list-item :value="0">
-                            <v-list-item-title>{{ $t('repair.timesheets.no_service') }}</v-list-item-title>
+                            <v-list-item-title
+                                >{{ $t('repair.timesheets.no_service')
+                                }}</v-list-item-title
+                            >
                         </v-list-item>
-                        <v-list-item v-for="service in selected_job.services" :key="service.id" :value="service.id">
+                        <v-list-item
+                            v-for="service in selected_job.services"
+                            :key="service.id"
+                            :value="service.id"
+                        >
                             <v-list-item-title>{{ service.name }}</v-list-item-title>
                         </v-list-item>
                     </v-list-item-group>

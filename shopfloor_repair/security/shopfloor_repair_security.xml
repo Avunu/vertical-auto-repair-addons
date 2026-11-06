@@ -39,11 +39,12 @@
     -->
     <record id="rule_inspection_shop_technician" model="ir.rule">
         <field name="name">Shop: technicians see all inspections</field>
-        <field name="model_id" ref="fleet_vehicle_inspection.model_fleet_vehicle_inspection" />
-        <field name="groups" eval="[Command.link(ref('group_shop_technician'))]" />
         <field
-            name="domain_force"
-        >[('company_id', 'in', company_ids + [False])]</field>
+            name="model_id"
+            ref="fleet_vehicle_inspection.model_fleet_vehicle_inspection"
+        />
+        <field name="groups" eval="[Command.link(ref('group_shop_technician'))]" />
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
     </record>
 
     <record id="rule_inspection_line_shop_technician" model="ir.rule">

@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 
 
 class ShopfloorRepairTimesheet(Component):
-    """"My Timesheets": a technician's own repair-job time entries.
+    """ "My Timesheets": a technician's own repair-job time entries.
 
     A flat, searchable, editable list - not a scenario/state machine like
     ``shopfloor.repair.job``, so this is its own service rather than more
@@ -115,7 +115,8 @@ class ShopfloorRepairTimesheet(Component):
         for attendance in attendances:
             by_date[attendance.check_in.date()] |= attendance
         return [
-            self.data.attendance_day(date, recs) for date, recs in sorted(by_date.items())
+            self.data.attendance_day(date, recs)
+            for date, recs in sorted(by_date.items())
         ]
 
     def _job_hours_by_date(self, records):
@@ -199,12 +200,16 @@ class ShopfloorRepairTimesheet(Component):
 
     def _response_for_attendance_day(self, attendance, message=None):
         date = attendance.check_in.date()
-        siblings = self.env["hr.attendance"].sudo().search(
-            [
-                ("employee_id", "=", attendance.employee_id.id),
-                ("check_in", ">=", f"{date} 00:00:00"),
-                ("check_in", "<=", f"{date} 23:59:59"),
-            ]
+        siblings = (
+            self.env["hr.attendance"]
+            .sudo()
+            .search(
+                [
+                    ("employee_id", "=", attendance.employee_id.id),
+                    ("check_in", ">=", f"{date} 00:00:00"),
+                    ("check_in", "<=", f"{date} 23:59:59"),
+                ]
+            )
         )
         return self._response(
             data={"attendance_day": self.data.attendance_day(date, siblings)},
@@ -215,7 +220,8 @@ class ShopfloorRepairTimesheet(Component):
     # Endpoints
     # ------------------------------------------------------------------
 
-    @restapi.method([(["/timesheets"], "GET")],
+    @restapi.method(
+        [(["/timesheets"], "GET")],
         input_param=restapi.CerberusValidator("timesheets"),
         output_param=restapi.CerberusValidator("timesheets"),
     )
@@ -231,7 +237,8 @@ class ShopfloorRepairTimesheet(Component):
         )
         return self._response_for_timesheets(records, size, page)
 
-    @restapi.method([(["/timesheet/<int:line_id>"], "GET")],
+    @restapi.method(
+        [(["/timesheet/<int:line_id>"], "GET")],
         input_param=restapi.CerberusValidator("timesheet"),
         output_param=restapi.CerberusValidator("timesheet"),
     )
@@ -242,7 +249,8 @@ class ShopfloorRepairTimesheet(Component):
             return self._response(message=self.msg_store.generic_record_not_found())
         return self._response_for_timesheet_detail(line)
 
-    @restapi.method([(["/timesheet/<int:line_id>/update"], "POST")],
+    @restapi.method(
+        [(["/timesheet/<int:line_id>/update"], "POST")],
         input_param=restapi.CerberusValidator("update_timesheet"),
         output_param=restapi.CerberusValidator("update_timesheet"),
     )
@@ -304,7 +312,8 @@ class ShopfloorRepairTimesheet(Component):
             line, message=self.msg_store.timesheet_updated(line)
         )
 
-    @restapi.method([(["/timesheet/<int:line_id>/delete"], "POST")],
+    @restapi.method(
+        [(["/timesheet/<int:line_id>/delete"], "POST")],
         input_param=restapi.CerberusValidator("delete_timesheet"),
         output_param=restapi.CerberusValidator("delete_timesheet"),
     )
@@ -324,7 +333,8 @@ class ShopfloorRepairTimesheet(Component):
             return self._response(message=error)
         return self._response(message=self.msg_store.timesheet_deleted())
 
-    @restapi.method([(["/timesheet/<int:line_id>/split"], "POST")],
+    @restapi.method(
+        [(["/timesheet/<int:line_id>/split"], "POST")],
         input_param=restapi.CerberusValidator("split_timesheet"),
         output_param=restapi.CerberusValidator("split_timesheet"),
     )
@@ -395,7 +405,8 @@ class ShopfloorRepairTimesheet(Component):
             message=self.msg_store.timesheet_split(self.data.job_label(job))
         )
 
-    @restapi.method([(["/timesheet/<int:line_id>/add_break"], "POST")],
+    @restapi.method(
+        [(["/timesheet/<int:line_id>/add_break"], "POST")],
         input_param=restapi.CerberusValidator("add_break"),
         output_param=restapi.CerberusValidator("add_break"),
     )
@@ -425,12 +436,13 @@ class ShopfloorRepairTimesheet(Component):
         start, end = line.date_time, line.date_time_end
         gap_start = fields.Datetime.to_datetime(break_start)
         gap_end = fields.Datetime.to_datetime(break_end)
-        if not end or not gap_start or not gap_end or not (
-            start < gap_start < gap_end < end
+        if (
+            not end
+            or not gap_start
+            or not gap_end
+            or not (start < gap_start < gap_end < end)
         ):
-            return self._response(
-                message=self.msg_store.timesheet_break_outside_line()
-            )
+            return self._response(message=self.msg_store.timesheet_break_outside_line())
         # sudo + explicit employee match, for the same reason as
         # `_get_attendance()`: technicians can't read hr.attendance directly.
         attendance = (
@@ -498,7 +510,8 @@ class ShopfloorRepairTimesheet(Component):
             )
         )
 
-    @restapi.method([(["/attendance/<int:attendance_id>/update"], "POST")],
+    @restapi.method(
+        [(["/attendance/<int:attendance_id>/update"], "POST")],
         input_param=restapi.CerberusValidator("update_attendance"),
         output_param=restapi.CerberusValidator("update_attendance"),
     )
@@ -566,7 +579,8 @@ class ShopfloorRepairTimesheet(Component):
         # the whole-second time it was meant to equal by a few microseconds.
         return abs((a - b).total_seconds()) < 1
 
-    @restapi.method([(["/attendance/<int:attendance_id>/update_break"], "POST")],
+    @restapi.method(
+        [(["/attendance/<int:attendance_id>/update_break"], "POST")],
         input_param=restapi.CerberusValidator("update_break"),
         output_param=restapi.CerberusValidator("update_break"),
     )
@@ -597,8 +611,10 @@ class ShopfloorRepairTimesheet(Component):
 
         def apply():
             AAL = self.env["account.analytic.line"]
-            window = (min(old_start, new_start) - timedelta(days=1),
-                      max(old_end, new_end) + timedelta(days=1))
+            window = (
+                min(old_start, new_start) - timedelta(days=1),
+                max(old_end, new_end) + timedelta(days=1),
+            )
             lines = AAL.search(
                 [
                     ("employee_id", "=", earlier.employee_id.id),
@@ -612,12 +628,18 @@ class ShopfloorRepairTimesheet(Component):
                 if line_end and self._same_moment(line_end, old_start):
                     # The job time that stopped for the break: stop at the new start.
                     if new_start <= line.date_time:
-                        raise ValidationError(self.msg_store.break_overlaps_job()["body"])
-                    line.write({"unit_amount": line._duration(line.date_time, new_start)})
+                        raise ValidationError(
+                            self.msg_store.break_overlaps_job()["body"]
+                        )
+                    line.write(
+                        {"unit_amount": line._duration(line.date_time, new_start)}
+                    )
                 elif line_end and self._same_moment(line.date_time, old_end):
                     # The job time that resumed after it: resume at the new end.
                     if new_end >= line_end:
-                        raise ValidationError(self.msg_store.break_overlaps_job()["body"])
+                        raise ValidationError(
+                            self.msg_store.break_overlaps_job()["body"]
+                        )
                     line.write(
                         {
                             "date_time": new_end,
@@ -642,7 +664,8 @@ class ShopfloorRepairTimesheet(Component):
             return self._response(message=error)
         return self._response(message=self.msg_store.break_updated())
 
-    @restapi.method([(["/attendance/<int:attendance_id>/delete_break"], "POST")],
+    @restapi.method(
+        [(["/attendance/<int:attendance_id>/delete_break"], "POST")],
         input_param=restapi.CerberusValidator("delete_break"),
         output_param=restapi.CerberusValidator("delete_break"),
     )
@@ -697,7 +720,8 @@ class ShopfloorRepairTimesheet(Component):
         )
         return (before, after) if valid else (AAL.browse(), AAL.browse())
 
-    @restapi.method([(["/timesheet/<int:line_id>/update_job_break"], "POST")],
+    @restapi.method(
+        [(["/timesheet/<int:line_id>/update_job_break"], "POST")],
         input_param=restapi.CerberusValidator("update_job_break"),
         output_param=restapi.CerberusValidator("update_job_break"),
     )
@@ -753,7 +777,8 @@ class ShopfloorRepairTimesheet(Component):
             return self._response(message=error)
         return self._response(message=self.msg_store.break_updated())
 
-    @restapi.method([(["/timesheet/<int:line_id>/delete_job_break"], "POST")],
+    @restapi.method(
+        [(["/timesheet/<int:line_id>/delete_job_break"], "POST")],
         input_param=restapi.CerberusValidator("delete_job_break"),
         output_param=restapi.CerberusValidator("delete_job_break"),
     )
@@ -857,7 +882,9 @@ class ShopfloorRepairTimesheetValidator(Component):
         }
 
     def delete_break(self):
-        return {"attendance_id": {"coerce": to_int, "required": True, "type": "integer"}}
+        return {
+            "attendance_id": {"coerce": to_int, "required": True, "type": "integer"}
+        }
 
     def update_job_break(self):
         return {
@@ -948,5 +975,9 @@ class ShopfloorRepairTimesheetValidatorResponse(Component):
 
     def update_attendance(self):
         return self._response_schema(
-            {"attendance_day": self.schemas._schema_dict_of(self.schemas.attendance_day())}
+            {
+                "attendance_day": self.schemas._schema_dict_of(
+                    self.schemas.attendance_day()
+                )
+            }
         )

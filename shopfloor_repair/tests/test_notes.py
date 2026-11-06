@@ -23,8 +23,16 @@ class TestNotes(RepairJobCase):
 
     def test_note_is_posted_with_the_subtype_to_followers(self):
         subtype = self.env.ref("shopfloor_repair.mt_repair_technician_note")
-        advisor = self.env["res.users"].sudo().create(
-            {"name": "Sam Advisor", "login": "sam.advisor", "email": "sam@example.com"}
+        advisor = (
+            self.env["res.users"]
+            .sudo()
+            .create(
+                {
+                    "name": "Sam Advisor",
+                    "login": "sam.advisor",
+                    "email": "sam@example.com",
+                }
+            )
         )
         self.repair.sudo().message_subscribe(
             partner_ids=advisor.partner_id.ids, subtype_ids=subtype.ids

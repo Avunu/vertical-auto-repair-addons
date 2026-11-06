@@ -13,9 +13,7 @@ class TestCatalog(RepairJobCase):
             "catalog", repair_id=self.repair.id, search="Oil Filter"
         )
         self.assert_next_state(response, "catalog_search")
-        codes = [
-            rec["default_code"] for rec in self.state_data(response)["records"]
-        ]
+        codes = [rec["default_code"] for rec in self.state_data(response)["records"]]
         self.assertIn("OF-200", codes)
 
     def test_catalog_search_by_barcode(self):
@@ -44,9 +42,7 @@ class TestCatalog(RepairJobCase):
         )
         self.assert_no_error(response)
         self.assert_next_state(response, "parts")
-        move = self.repair.move_ids.filtered(
-            lambda m: m.product_id == self.other_part
-        )
+        move = self.repair.move_ids.filtered(lambda m: m.product_id == self.other_part)
         self.assertEqual(len(move), 1)
         self.assertEqual(move.repair_line_type, "add")
         self.assertEqual(move.product_uom_qty, 3.0)
@@ -56,9 +52,7 @@ class TestCatalog(RepairJobCase):
         self._dispatch(
             "add_part", repair_id=self.repair.id, product_id=self.other_part.id
         )
-        move = self.repair.move_ids.filtered(
-            lambda m: m.product_id == self.other_part
-        )
+        move = self.repair.move_ids.filtered(lambda m: m.product_id == self.other_part)
         self.assertEqual(move.shopfloor_added_uid, self.technician)
 
     def test_add_part_works_without_a_technician_email(self):
@@ -84,8 +78,8 @@ class TestCatalog(RepairJobCase):
 
     def test_add_part_syncs_to_the_sale_order(self):
         """Core behaviour we deliberately do NOT suppress."""
-        sale_order = self.env["sale.order"].sudo().create(
-            {"partner_id": self.customer.id}
+        sale_order = (
+            self.env["sale.order"].sudo().create({"partner_id": self.customer.id})
         )
         self.repair.sudo().sale_order_id = sale_order
         self._dispatch(
@@ -94,15 +88,13 @@ class TestCatalog(RepairJobCase):
             product_id=self.other_part.id,
             quantity=2.0,
         )
-        move = self.repair.move_ids.filtered(
-            lambda m: m.product_id == self.other_part
-        )
+        move = self.repair.move_ids.filtered(lambda m: m.product_id == self.other_part)
         self.assertTrue(move.sale_line_id)
         self.assertEqual(move.sale_line_id.order_id, sale_order)
 
     def test_add_part_chatter_mentions_the_quote(self):
-        sale_order = self.env["sale.order"].sudo().create(
-            {"partner_id": self.customer.id}
+        sale_order = (
+            self.env["sale.order"].sudo().create({"partner_id": self.customer.id})
         )
         self.repair.sudo().sale_order_id = sale_order
         self._dispatch(
@@ -118,9 +110,7 @@ class TestCatalog(RepairJobCase):
             quantity=1.0,
             consume_now=True,
         )
-        move = self.repair.move_ids.filtered(
-            lambda m: m.product_id == self.other_part
-        )
+        move = self.repair.move_ids.filtered(lambda m: m.product_id == self.other_part)
         self.assertEqual(move.quantity, 1.0)
         self.assertTrue(move.picked)
 

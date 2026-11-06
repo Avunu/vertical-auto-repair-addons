@@ -4,6 +4,9 @@
  *
  * The one-tap grading control: six big buttons, no dropdown.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
@@ -11,33 +14,36 @@ import {severity_color, severity_icon} from "./severity.esm.js";
 
 /**
  * @typedef {Object} SeverityChoice
- * @property {string} value
- * @property {string} label
+ * @property {String} value
+ * @property {String} label
  */
 
 const SeveritySelector = defineComponent({
     props: {
-        severities: {type: /** @type {PropType<SeverityChoice[]>} */ (Array), default: () => []},
+        severities: {
+            type: /** @type {PropType<SeverityChoice[]>} */ (Array),
+            default: () => [],
+        },
         value: {type: /** @type {PropType<string | null>} */ (String), default: null},
     },
     methods: {
         /**
-         * @param {string} value
-         * @returns {string}
+         * @param {String} value
+         * @returns {String}
          */
         color_for(value) {
             return severity_color(value);
         },
         /**
-         * @param {string} value
-         * @returns {string}
+         * @param {String} value
+         * @returns {String}
          */
         icon_for(value) {
             return severity_icon(value);
         },
         /**
-         * @param {string} value
-         * @returns {boolean}
+         * @param {String} value
+         * @returns {Boolean}
          */
         is_selected(value) {
             return this.value === value;
@@ -54,10 +60,13 @@ const SeveritySelector = defineComponent({
                         class="severity-btn"
                         :class="{'severity-btn--selected': is_selected(sev.value)}"
                         :color="color_for(sev.value)"
-                        @click="$emit('select', sev.value)">
+                        @click="$emit('select', sev.value)"
+                    >
                         <v-icon left>{{ icon_for(sev.value) }}</v-icon>
                         <span class="severity-btn__label">{{ sev.label }}</span>
-                        <v-icon right v-if="is_selected(sev.value)">mdi-check-bold</v-icon>
+                        <v-icon right v-if="is_selected(sev.value)"
+                            >mdi-check-bold</v-icon
+                        >
                     </v-btn>
                 </v-col>
             </v-row>

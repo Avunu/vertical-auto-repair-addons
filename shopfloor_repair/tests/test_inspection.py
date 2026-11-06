@@ -4,6 +4,7 @@
 import base64
 
 from odoo.tests.common import tagged
+from odoo.tools import mute_logger
 
 from .common import RepairJobCase
 
@@ -18,7 +19,7 @@ PNG_1PX = (
 class TestInspection(RepairJobCase):
     @classmethod
     def setUpClassBaseData(cls):
-        super().setUpClassBaseData()
+        res = super().setUpClassBaseData()
         cls.category = (
             cls.env["shop.inspection.category"]
             .sudo()
@@ -66,14 +67,27 @@ class TestInspection(RepairJobCase):
                 {
                     "name": "Brake Check",
                     "inspection_template_line_ids": [
-                        (0, 0, {"inspection_template_item_id": cls.item.id,
-                                "sequence": 10}),
-                        (0, 0, {"inspection_template_item_id": cls.item_2.id,
-                                "sequence": 20}),
+                        (
+                            0,
+                            0,
+                            {
+                                "inspection_template_item_id": cls.item.id,
+                                "sequence": 10,
+                            },
+                        ),
+                        (
+                            0,
+                            0,
+                            {
+                                "inspection_template_item_id": cls.item_2.id,
+                                "sequence": 20,
+                            },
+                        ),
                     ],
                 }
             )
         )
+        return res
 
     def _new_inspection(self, odometer=42000):
         response = self._dispatch(
@@ -88,9 +102,7 @@ class TestInspection(RepairJobCase):
         response = self._dispatch("inspections", repair_id=self.repair.id)
         self.assert_next_state(response, "inspection_list")
         data = self.state_data(response)
-        self.assertIn(
-            self.template.id, [tpl["id"] for tpl in data["templates"]]
-        )
+        self.assertIn(self.template.id, [tpl["id"] for tpl in data["templates"]])
         self.assertEqual(data["default_odometer"], 42000)
 
     def test_inspection_create_loads_the_template(self):
@@ -126,8 +138,12 @@ class TestInspection(RepairJobCase):
         self.assertFalse(self.repair.inspection_ids)
 
     def test_inspection_create_needs_a_vehicle(self):
-        repair = self.env["repair.order"].sudo().create(
-            {"partner_id": self.customer.id, "technician_id": self.technician.id}
+        repair = (
+            self.env["repair.order"]
+            .sudo()
+            .create(
+                {"partner_id": self.customer.id, "technician_id": self.technician.id}
+            )
         )
         response = self._dispatch(
             "inspection_create",
@@ -142,9 +158,7 @@ class TestInspection(RepairJobCase):
         line = self.repair.inspection_ids.inspection_line_ids.filtered(
             lambda ln: ln.inspection_item_id == self.item
         )
-        data = self.state_data(
-            self._dispatch("inspection_line", line_id=line.id)
-        )
+        data = self.state_data(self._dispatch("inspection_line", line_id=line.id))
         self.assertEqual(data["choices"]["conditions"][0]["id"], self.condition.id)
         self.assertEqual(data["choices"]["actions"][0]["id"], self.action.id)
         self.assertEqual(len(data["choices"]["severities"]), 6)
@@ -206,18 +220,17 @@ class TestInspection(RepairJobCase):
     def test_add_photo_rejects_junk(self):
         self._new_inspection()
         line = self.repair.inspection_ids.inspection_line_ids[0]
-        response = self._dispatch(
-            "add_photo", line_id=line.id, image_b64="not base64 at all!!"
-        )
+        with mute_logger("odoo.addons.shopfloor_repair.services.repair_job"):
+            response = self._dispatch(
+                "add_photo", line_id=line.id, image_b64="not base64 at all!!"
+            )
         self.assert_error(response)
         self.assertFalse(line.inspection_line_image_ids)
 
     def test_confirm_blocked_while_items_are_ungraded(self):
         self._new_inspection()
         inspection = self.repair.inspection_ids
-        response = self._dispatch(
-            "confirm_inspection", inspection_id=inspection.id
-        )
+        response = self._dispatch("confirm_inspection", inspection_id=inspection.id)
         self.assert_error(response)
         self.assertIn("2", response["message"]["body"])
         self.assertEqual(inspection.state, "draft")
@@ -227,9 +240,7 @@ class TestInspection(RepairJobCase):
         inspection = self.repair.inspection_ids
         for line in inspection.inspection_line_ids:
             self._dispatch("grade", line_id=line.id, severity="good")
-        response = self._dispatch(
-            "confirm_inspection", inspection_id=inspection.id
-        )
+        response = self._dispatch("confirm_inspection", inspection_id=inspection.id)
         self.assert_no_error(response)
         self.assert_next_state(response, "inspection_list")
         self.assertEqual(inspection.state, "confirmed")

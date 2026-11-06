@@ -8,11 +8,13 @@ import Vue, {ComponentOptions, VueConstructor} from "vue";
 import {BaseRegistry} from "./registry";
 
 export interface PageMetadata {
-    tag: string;
-    icon?: string;
-    display_name?: (instance: Vue, rec: unknown) => string;
-    is_enabled?: (instance: Vue, rec: unknown) => boolean;
-    [key: string]: unknown;
+  tag: string;
+  icon?: string;
+  display_name?: (instance: Vue, rec: unknown) => string;
+  is_enabled?: (instance: Vue, rec: unknown) => boolean;
+  [key: string]: unknown;
 }
 
-export const page_registry: BaseRegistry<VueConstructor | ComponentOptions<any, any, any, any, any>>;
+export const page_registry: BaseRegistry<
+  VueConstructor | ComponentOptions<any, any, any, any, any>
+>;

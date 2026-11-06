@@ -38,9 +38,12 @@ const Home = defineComponent({
                     :key="'home-item-' + item.id"
                     :to="item.to"
                     link
-                    >
+                >
                     <v-list-item-content>
-                        <v-list-item-title><v-icon left>{{ item.icon }}</v-icon> {{ item.name }}</v-list-item-title>
+                        <v-list-item-title
+                            ><v-icon left>{{ item.icon }}</v-icon> {{ item.name
+                            }}</v-list-item-title
+                        >
                     </v-list-item-content>
                 </v-list-item>
             </v-list>

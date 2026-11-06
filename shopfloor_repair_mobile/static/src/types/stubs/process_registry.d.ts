@@ -7,4 +7,6 @@
 import {ComponentOptions, VueConstructor} from "vue";
 import {BaseRegistry} from "./registry";
 
-export const process_registry: BaseRegistry<VueConstructor | ComponentOptions<any, any, any, any, any>>;
+export const process_registry: BaseRegistry<
+  VueConstructor | ComponentOptions<any, any, any, any, any>
+>;

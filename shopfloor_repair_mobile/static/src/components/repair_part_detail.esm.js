@@ -4,6 +4,9 @@
  *
  * Partial quantities and lot entry for one part.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {RepairPartRecord} from "./parts_types" */
 import {defineComponent} from "../services/define_component.esm.js";
@@ -11,7 +14,10 @@ import {html} from "../services/html.esm.js";
 
 const RepairPartDetail = defineComponent({
     props: {
-        record: {type: /** @type {PropType<RepairPartRecord>} */ (Object), required: true},
+        record: {
+            type: /** @type {PropType<RepairPartRecord>} */ (Object),
+            required: true,
+        },
     },
     data() {
         return {
@@ -20,7 +26,7 @@ const RepairPartDetail = defineComponent({
         };
     },
     computed: {
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         needs_lot() {
             return this.record.tracking !== "none";
         },
@@ -35,7 +41,7 @@ const RepairPartDetail = defineComponent({
             this.lot_name = "";
         },
         /**
-         * @param {number} delta
+         * @param {Number} delta
          * @returns {void}
          */
         step(delta) {
@@ -57,14 +63,19 @@ const RepairPartDetail = defineComponent({
                 <v-card-text>
                     <div class="demand">
                         {{ $t('repair.parts.demand') }}:
-                        <strong>{{ record.quantity_demand }} {{ record.uom ? record.uom.name : '' }}</strong>
+                        <strong
+                            >{{ record.quantity_demand }} {{ record.uom ?
+                            record.uom.name : '' }}</strong
+                        >
                     </div>
                     <!--
                         Not input-number-spinner: it parseInt()s its value, and
                         parts are sold in litres and metres as well as in units.
                     -->
                     <div class="qty-stepper">
-                        <v-btn x-large icon @click="step(-1)"><v-icon large>mdi-minus-circle</v-icon></v-btn>
+                        <v-btn x-large icon @click="step(-1)"
+                            ><v-icon large>mdi-minus-circle</v-icon></v-btn
+                        >
                         <v-text-field
                             v-model.number="quantity"
                             type="number"
@@ -72,17 +83,26 @@ const RepairPartDetail = defineComponent({
                             min="0"
                             hide-details
                             class="qty-stepper__field"
-                            :label="$t('repair.parts.used')" />
-                        <v-btn x-large icon @click="step(1)"><v-icon large>mdi-plus-circle</v-icon></v-btn>
+                            :label="$t('repair.parts.used')"
+                        />
+                        <v-btn x-large icon @click="step(1)"
+                            ><v-icon large>mdi-plus-circle</v-icon></v-btn
+                        >
                     </div>
                     <v-text-field
                         v-if="needs_lot"
                         v-model="lot_name"
                         :label="$t('repair.parts.lot')"
                         prepend-icon="mdi-barcode"
-                        clearable />
+                        clearable
+                    />
                     <div class="lots" v-if="record.lots && record.lots.length">
-                        <v-chip small class="mr-1" v-for="lot in record.lots" :key="lot.id">
+                        <v-chip
+                            small
+                            class="mr-1"
+                            v-for="lot in record.lots"
+                            :key="lot.id"
+                        >
                             {{ lot.name }}
                         </v-chip>
                     </div>
@@ -92,14 +112,16 @@ const RepairPartDetail = defineComponent({
                 <v-row align="center">
                     <v-col class="text-center" cols="12">
                         <btn-action action="complete" @click="confirm">
-                            <v-icon left>mdi-check-bold</v-icon>{{ $t('repair.parts.record') }}
+                            <v-icon left>mdi-check-bold</v-icon>{{
+                            $t('repair.parts.record') }}
                         </btn-action>
                     </v-col>
                 </v-row>
                 <v-row align="center" v-if="record.picked">
                     <v-col class="text-center" cols="12">
                         <btn-action action="warn" @click="$emit('reset')">
-                            <v-icon left>mdi-undo-variant</v-icon>{{ $t('repair.parts.reset') }}
+                            <v-icon left>mdi-undo-variant</v-icon>{{
+                            $t('repair.parts.reset') }}
                         </btn-action>
                     </v-col>
                 </v-row>

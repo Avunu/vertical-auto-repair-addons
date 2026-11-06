@@ -127,7 +127,7 @@ class ResourceBooking(models.Model):
         openings = self._shop_next_openings(start=start)
         if openings:
             lines.append(_("These openings are free:"))
-            lines.extend("- %s" % opening for opening in openings)
+            lines.extend(f"- {opening}" for opening in openings)
         else:
             lines.append(
                 _(

@@ -120,7 +120,7 @@ class CalendarEvent(models.Model):
             commands = self.env.context.get("default_resource_booking_ids")
         booking_ids = []
         for command in commands or []:
-            if not isinstance(command, (list, tuple)) or not command:
+            if not isinstance(command, list | tuple) or not command:
                 continue
             if command[0] == fields.Command.SET and len(command) > 2:
                 booking_ids.extend(command[2] or [])

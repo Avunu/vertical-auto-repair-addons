@@ -7,6 +7,7 @@
     <template
         id="report_repairorder_workflow"
         inherit_id="repair.report_repairorder"
+        priority="99"
     >
         <!-- Only print the Parts section when the order has parts. -->
         <xpath expr="//h2[normalize-space()='Parts']" position="attributes">

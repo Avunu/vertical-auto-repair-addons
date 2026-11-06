@@ -81,9 +81,10 @@ class TimesheetsAnalysisReport(models.Model):
         # layered onto this report (via those same extension points)
         # keeps working unmodified; only billable_time/non_billable_time
         # get overridden, and only for repair-linked rows.
-        return """
+        base = super()._table_query
+        return f"""
             WITH base AS (
-                %(base)s
+                {base}
             ),
             repair_invoiced AS (
                 -- Repair orders with at least one invoiced sale order
@@ -302,4 +303,4 @@ class TimesheetsAnalysisReport(models.Model):
                 mrs.estimated_vs_actual AS estimated_vs_actual_time
             FROM manual_repair_service mrs
             LEFT JOIN hr_employee he2 ON he2.id = mrs.employee_id
-        """ % {"base": super()._table_query}
+        """

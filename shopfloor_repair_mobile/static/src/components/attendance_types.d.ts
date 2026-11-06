@@ -4,13 +4,13 @@
  */
 
 export interface AttendanceRecord {
-    id: number;
-    check_in: string;
-    check_out: string | null;
+  id: number;
+  check_in: string;
+  check_out: string | null;
 }
 
 export interface AttendanceDay {
-    date: string;
-    hours: number;
-    records: AttendanceRecord[];
+  date: string;
+  hours: number;
+  records: AttendanceRecord[];
 }

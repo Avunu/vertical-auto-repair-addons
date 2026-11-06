@@ -9,8 +9,13 @@
     >
         <!-- Core sends new records to a "save your changes first" toast,
              because its handler navigates away. The dialog needs no id. -->
-        <xpath expr="//td[hasclass('o_list_record_open_form_view')]" position="attributes">
-            <attribute name="t-on-click.stop">() => props.onOpenFormView(record, true)</attribute>
+        <xpath
+            expr="//td[hasclass('o_list_record_open_form_view')]"
+            position="attributes"
+        >
+            <attribute
+                name="t-on-click.stop"
+            >() => props.onOpenFormView(record, true)</attribute>
         </xpath>
         <xpath
             expr="//td[hasclass('o_list_record_open_form_view')]/button"
