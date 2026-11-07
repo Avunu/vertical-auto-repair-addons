@@ -74,8 +74,8 @@ env["shop.demo.seed"].seed()
 
 To remove the whole scenario, uninstall the module.
 
-The scenario is defined in [models/demo_data.py](models/demo_data.py) — plain tables, no
-Odoo API — and loaded by [models/shop_demo_seed.py](models/shop_demo_seed.py). Add a
+The scenario is defined in [models/demo_data.py](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shop_demo/models/demo_data.py) — plain tables, no
+Odoo API — and loaded by [models/shop_demo_seed.py](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shop_demo/models/shop_demo_seed.py). Add a
 customer, a part or a whole job by editing the tables.
 
 ## Known gaps
