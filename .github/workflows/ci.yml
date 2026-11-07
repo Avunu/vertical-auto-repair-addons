@@ -17,7 +17,7 @@ jobs:
     name: ci
     permissions:
       contents: read
-    uses: Avunu/odoo-nix/.github/workflows/odoo-lint.yml@372d6503e4f6a69d5a861c1b3e1b8c3807e9671b # v2.3.0
+    uses: Avunu/odoo-nix/.github/workflows/odoo-lint.yml@6becbc27e50dfef42f1dcd6bc27d393804b33171 # v2.3.4
     with:
       integration-branch: "develop"
       runs-on: '["self-hosted","nixos"]'
@@ -25,7 +25,7 @@ jobs:
     name: ci
     permissions:
       contents: read
-    uses: Avunu/odoo-nix/.github/workflows/odoo-test.yml@372d6503e4f6a69d5a861c1b3e1b8c3807e9671b # v2.3.0
+    uses: Avunu/odoo-nix/.github/workflows/odoo-test.yml@6becbc27e50dfef42f1dcd6bc27d393804b33171 # v2.3.4
     with:
       integration-branch: "develop"
       runs-on: '["self-hosted","nixos"]'
