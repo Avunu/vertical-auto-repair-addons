@@ -41,7 +41,11 @@
             </xpath>
             <xpath expr="//field[@name='schedule_date']" position="after">
                 <field name="booking_id" readonly="1" invisible="not booking_id" />
-                <field name="book_hours" widget="float_time" invisible="not book_hours" />
+                <field
+                    name="book_hours"
+                    widget="float_time"
+                    invisible="not book_hours"
+                />
             </xpath>
         </field>
     </record>
@@ -115,6 +119,7 @@
         <field name="name">repair.kanban (in shop_scheduling)</field>
         <field name="model">repair.order</field>
         <field name="inherit_id" ref="repair.view_repair_kanban" />
+        <field name="priority">99</field>
         <field name="arch" type="xml">
             <!-- product_id is dead weight here; the vehicle takes its place.
                  vehicle_id displays as Brand/Model/Plate. -->

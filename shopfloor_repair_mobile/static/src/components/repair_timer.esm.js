@@ -9,6 +9,9 @@
  * is stopped (that zero is precisely what marks it as running), so there is
  * nothing on the server to poll for.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {RepairTimerState} from "./timer_widget_types" */
 import {defineComponent} from "../services/define_component.esm.js";
@@ -16,7 +19,10 @@ import {html} from "../services/html.esm.js";
 
 const RepairTimer = defineComponent({
     props: {
-        timer: {type: /** @type {PropType<RepairTimerState>} */ (Object), required: true},
+        timer: {
+            type: /** @type {PropType<RepairTimerState>} */ (Object),
+            required: true,
+        },
     },
     data() {
         return {
@@ -25,11 +31,11 @@ const RepairTimer = defineComponent({
         };
     },
     computed: {
-        /** @returns {number} */
+        /** @returns {Number} */
         elapsed_seconds() {
             return Math.round(this.timer.elapsed_hours * 3600) + this.ticked_seconds;
         },
-        /** @returns {string} */
+        /** @returns {String} */
         elapsed_display() {
             const total = Math.max(this.elapsed_seconds, 0);
             const h = Math.floor(total / 3600);
@@ -74,24 +80,42 @@ const RepairTimer = defineComponent({
         },
     },
     template: html`
-        <v-card class="repair-timer" outlined
-                :class="{'repair-timer--running': timer.running}">
+        <v-card
+            class="repair-timer"
+            outlined
+            :class="{'repair-timer--running': timer.running}"
+        >
             <v-card-text class="repair-timer__body">
                 <div class="repair-timer__readout">
-                    <div class="elapsed" v-if="timer.running">{{ elapsed_display }}</div>
+                    <div class="elapsed" v-if="timer.running">
+                        {{ elapsed_display }}
+                    </div>
                     <div class="elapsed elapsed--idle" v-else>--:--:--</div>
                     <div class="totals">
-                        <span>{{ $t('repair.timer.mine') }}: {{ timer.my_hours.toFixed(2) }} h</span>
-                        <span class="ml-3">{{ $t('repair.timer.total') }}: {{ timer.total_hours.toFixed(2) }} h</span>
+                        <span
+                            >{{ $t('repair.timer.mine') }}: {{ timer.my_hours.toFixed(2)
+                            }} h</span
+                        >
+                        <span class="ml-3"
+                            >{{ $t('repair.timer.total') }}: {{
+                            timer.total_hours.toFixed(2) }} h</span
+                        >
                     </div>
                 </div>
                 <div class="repair-timer__action">
-                    <v-btn x-large block color="error" v-if="timer.running"
-                           @click="$emit('stop')">
-                        <v-icon left>mdi-stop-circle</v-icon>{{ $t('repair.timer.stop') }}
+                    <v-btn
+                        x-large
+                        block
+                        color="error"
+                        v-if="timer.running"
+                        @click="$emit('stop')"
+                    >
+                        <v-icon left>mdi-stop-circle</v-icon>{{ $t('repair.timer.stop')
+                        }}
                     </v-btn>
                     <v-btn x-large block color="success" v-else @click="$emit('start')">
-                        <v-icon left>mdi-play-circle</v-icon>{{ $t('repair.timer.start') }}
+                        <v-icon left>mdi-play-circle</v-icon>{{ $t('repair.timer.start')
+                        }}
                     </v-btn>
                 </div>
             </v-card-text>

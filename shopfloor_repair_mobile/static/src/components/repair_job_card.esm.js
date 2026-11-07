@@ -6,6 +6,9 @@
  * The vehicle description is the biggest thing on it: that is what the
  * technician matches against the car in front of them.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {RepairJobRecord} from "./repair_job_types" */
 import {defineComponent} from "../services/define_component.esm.js";
@@ -14,23 +17,26 @@ import {job_label, job_meta, job_status_label} from "../services/job_label.esm.j
 
 const RepairJobCard = defineComponent({
     props: {
-        record: {type: /** @type {PropType<RepairJobRecord>} */ (Object), required: true},
+        record: {
+            type: /** @type {PropType<RepairJobRecord>} */ (Object),
+            required: true,
+        },
         compact: {type: Boolean, default: false},
     },
     computed: {
-        /** @returns {string} */
+        /** @returns {String} */
         label() {
             return job_label(this.record);
         },
-        /** @returns {string} */
+        /** @returns {String} */
         meta() {
             return job_meta(this.record);
         },
-        /** @returns {string} */
+        /** @returns {String} */
         status_label() {
             return job_status_label(this.record);
         },
-        /** @returns {string} */
+        /** @returns {String} */
         state_color() {
             return this.record.state === "under_repair" ? "success" : "info";
         },

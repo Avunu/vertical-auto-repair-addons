@@ -19,17 +19,26 @@
     <record id="template_check_in" model="fleet.vehicle.inspection.template">
         <field name="name">Check In</field>
     </record>
-    <record id="line_check_in_safety_sticker" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_check_in_safety_sticker"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_check_in" />
         <field name="inspection_template_item_id" ref="item_safety_sticker" />
         <field name="sequence">10</field>
     </record>
-    <record id="line_check_in_oil_sticker" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_check_in_oil_sticker"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_check_in" />
         <field name="inspection_template_item_id" ref="item_oil_sticker" />
         <field name="sequence">20</field>
     </record>
-    <record id="line_check_in_registration" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_check_in_registration"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_check_in" />
         <field name="inspection_template_item_id" ref="item_registration" />
         <field name="sequence">30</field>
@@ -38,17 +47,26 @@
     <record id="template_pre_inspection" model="fleet.vehicle.inspection.template">
         <field name="name">Pre-Inspection / Test Drive</field>
     </record>
-    <record id="line_pre_inspection_test_drive" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_pre_inspection_test_drive"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_pre_inspection" />
         <field name="inspection_template_item_id" ref="item_test_drive" />
         <field name="sequence">10</field>
     </record>
-    <record id="line_pre_inspection_warning_lights" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_pre_inspection_warning_lights"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_pre_inspection" />
         <field name="inspection_template_item_id" ref="item_warning_lights" />
         <field name="sequence">20</field>
     </record>
-    <record id="line_pre_inspection_walk_around" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_pre_inspection_walk_around"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_pre_inspection" />
         <field name="inspection_template_item_id" ref="item_walk_around" />
         <field name="sequence">30</field>
@@ -67,7 +85,10 @@
         <field name="inspection_template_item_id" ref="item_coolant" />
         <field name="sequence">20</field>
     </record>
-    <record id="line_courtesy_engine_oil" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_engine_oil"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_engine_oil" />
         <field name="sequence">30</field>
@@ -77,7 +98,10 @@
         <field name="inspection_template_item_id" ref="item_washers" />
         <field name="sequence">40</field>
     </record>
-    <record id="line_courtesy_air_filter" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_air_filter"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_air_filter" />
         <field name="sequence">50</field>
@@ -92,42 +116,66 @@
         <field name="inspection_template_item_id" ref="item_wipers" />
         <field name="sequence">70</field>
     </record>
-    <record id="line_courtesy_transmission_fluid" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_transmission_fluid"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_transmission_fluid" />
         <field name="sequence">80</field>
     </record>
-    <record id="line_courtesy_power_steering_fluid" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_power_steering_fluid"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_power_steering_fluid" />
         <field name="sequence">90</field>
     </record>
-    <record id="line_courtesy_brake_fluid" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_brake_fluid"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_brake_fluid" />
         <field name="sequence">100</field>
     </record>
-    <record id="line_courtesy_exterior_lights" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_exterior_lights"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_exterior_lights" />
         <field name="sequence">110</field>
     </record>
-    <record id="line_courtesy_struts_shocks" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_struts_shocks"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_struts_shocks" />
         <field name="sequence">120</field>
     </record>
-    <record id="line_courtesy_fluid_leaks" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_fluid_leaks"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_fluid_leaks" />
         <field name="sequence">130</field>
     </record>
-    <record id="line_courtesy_tires_wheels" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_tires_wheels"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_tires_wheels" />
         <field name="sequence">140</field>
     </record>
-    <record id="line_courtesy_engine_compartment" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_courtesy_engine_compartment"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_courtesy" />
         <field name="inspection_template_item_id" ref="item_engine_compartment" />
         <field name="sequence">150</field>
@@ -136,22 +184,34 @@
     <record id="template_state_safety" model="fleet.vehicle.inspection.template">
         <field name="name">State Safety Inspection</field>
     </record>
-    <record id="line_state_safety_body_doors" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_body_doors"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_body_doors" />
         <field name="sequence">10</field>
     </record>
-    <record id="line_state_safety_brake_lining" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_brake_lining"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_brake_lining" />
         <field name="sequence">20</field>
     </record>
-    <record id="line_state_safety_emissions_test" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_emissions_test"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_emissions_test" />
         <field name="sequence">30</field>
     </record>
-    <record id="line_state_safety_road_test" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_road_test"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_road_test" />
         <field name="sequence">40</field>
@@ -161,32 +221,50 @@
         <field name="inspection_template_item_id" ref="item_horn" />
         <field name="sequence">50</field>
     </record>
-    <record id="line_state_safety_windows_glazing" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_windows_glazing"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_windows_glazing" />
         <field name="sequence">60</field>
     </record>
-    <record id="line_state_safety_defroster" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_defroster"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_defroster" />
         <field name="sequence">70</field>
     </record>
-    <record id="line_state_safety_hood_latch" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_hood_latch"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_hood_latch" />
         <field name="sequence">80</field>
     </record>
-    <record id="line_state_safety_steering_suspension" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_steering_suspension"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_steering_suspension" />
         <field name="sequence">90</field>
     </record>
-    <record id="line_state_safety_engine_mounts" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_engine_mounts"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_engine_mounts" />
         <field name="sequence">100</field>
     </record>
-    <record id="line_state_safety_exterior_lights" model="fleet.vehicle.inspection.template.line">
+    <record
+        id="line_state_safety_exterior_lights"
+        model="fleet.vehicle.inspection.template.line"
+    >
         <field name="inspection_template_id" ref="template_state_safety" />
         <field name="inspection_template_item_id" ref="item_exterior_lights" />
         <field name="sequence">110</field>

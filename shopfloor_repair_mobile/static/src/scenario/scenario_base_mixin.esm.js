@@ -9,10 +9,14 @@
  * itself would build a mixin's constructor form internally), it only gives
  * it a typed shape - `ScenarioBaseMixinInterface` - to extend from.
  */
+
+/* global Vue */
+
 /** @import {VueConstructor} from "vue" */
 /** @import {ScenarioBaseMixinInterface} from "./scenario_base_mixin_types" */
 import {ScenarioBaseMixin} from "/shopfloor_mobile_base/static/src/scenario/mixins.esm.js";
 
-export const ScenarioBaseMixinClass = /** @type {VueConstructor<ScenarioBaseMixinInterface>} */ (
-    /** @type {unknown} */ (Vue.extend(/** @type {any} */ (ScenarioBaseMixin)))
-);
+export const ScenarioBaseMixinClass =
+    /** @type {VueConstructor<ScenarioBaseMixinInterface>} */ (
+        /** @type {unknown} */ (Vue.extend(/** @type {any} */ (ScenarioBaseMixin)))
+    );

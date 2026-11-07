@@ -20,9 +20,7 @@ class RepairServiceFinalizeWizard(models.TransientModel):
         res = super().default_get(fields_list)
         if self.env.context.get("active_model") != "repair.order":
             return res
-        repair = self.env["repair.order"].browse(
-            self.env.context.get("active_id")
-        )
+        repair = self.env["repair.order"].browse(self.env.context.get("active_id"))
         if not repair:
             return res
         if "repair_id" in fields_list:
@@ -60,7 +58,5 @@ class RepairServiceFinalizeWizardLine(models.TransientModel):
     product_uom_qty = fields.Float(
         related="service_id.product_uom_qty", readonly=True, string="Invoiced"
     )
-    estimated_time = fields.Float(
-        related="service_id.estimated_time", readonly=True
-    )
+    estimated_time = fields.Float(related="service_id.estimated_time", readonly=True)
     actual_time = fields.Float(related="service_id.actual_time", readonly=True)

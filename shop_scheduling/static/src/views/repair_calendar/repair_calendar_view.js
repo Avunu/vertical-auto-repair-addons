@@ -1,10 +1,10 @@
 // Copyright 2026 Avunu LLC (avu.nu)
 // License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-import { registry } from "@web/core/registry";
-import { CalendarCommonRenderer } from "@web/views/calendar/calendar_common/calendar_common_renderer";
-import { CalendarRenderer } from "@web/views/calendar/calendar_renderer";
-import { calendarView } from "@web/views/calendar/calendar_view";
+import {registry} from "@web/core/registry";
+import {CalendarCommonRenderer} from "@web/views/calendar/calendar_common/calendar_common_renderer";
+import {CalendarRenderer} from "@web/views/calendar/calendar_renderer";
+import {calendarView} from "@web/views/calendar/calendar_view";
 
 /**
  * The repair calendar draws each job as vehicle + customer instead of the

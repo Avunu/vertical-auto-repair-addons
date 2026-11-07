@@ -29,7 +29,9 @@
     <!-- One finding line: condition / recommended action / notes /
          measurements / photos -->
     <template id="inspection_report_line">
-        <div style="border: 1px solid #dee2e6; border-radius: 4px; padding: 8px 12px; margin-top: 8px; page-break-inside: avoid;">
+        <div
+            style="border: 1px solid #dee2e6; border-radius: 4px; padding: 8px 12px; margin-top: 8px; page-break-inside: avoid;"
+        >
             <div style="font-weight: bold;">
                 <span t-field="line.inspection_item_id.name" />
             </div>
@@ -40,9 +42,8 @@
                     >Condition</div>
                     <div>
                         <t t-foreach="line.condition_ids" t-as="condition">
-                            <span t-field="condition.name" /><t
-                                t-if="not condition_last"
-                            >, </t>
+                            <span t-field="condition.name" />
+                            <t t-if="not condition_last">, </t>
                         </t>
                     </div>
                 </div>
@@ -52,9 +53,8 @@
                     >Recommended Action</div>
                     <div>
                         <t t-foreach="line.recommended_action_ids" t-as="action">
-                            <span t-field="action.name" /><t
-                                t-if="not action_last"
-                            >, </t>
+                            <span t-field="action.name" />
+                            <t t-if="not action_last">, </t>
                         </t>
                     </div>
                 </div>
@@ -63,14 +63,19 @@
                 <div
                     style="font-size: 0.75em; color: #6c757d; text-transform: uppercase;"
                 >Notes</div>
-                <div><span t-field="line.result_description" /></div>
+                <div>
+                    <span t-field="line.result_description" />
+                </div>
             </div>
             <t
                 t-set="measurements"
                 t-value="line.measurement_ids.filtered(lambda m: m.value)"
             />
             <div class="mt-1" t-if="measurements">
-                <table class="table table-sm table-borderless" style="width: auto; margin-bottom: 0;">
+                <table
+                    class="table table-sm table-borderless"
+                    style="width: auto; margin-bottom: 0;"
+                >
                     <t t-foreach="measurements" t-as="measurement">
                         <tr>
                             <td style="padding: 0 12px 0 0;">
@@ -85,9 +90,7 @@
                                 <span t-out="measurement.value" />
                                 <span t-field="measurement.uom" />
                             </td>
-                            <td
-                                style="padding: 0; color: #6c757d; font-size: 0.85em;"
-                            >
+                            <td style="padding: 0; color: #6c757d; font-size: 0.85em;">
                                 <t t-if="measurement.spec_min">
                                     min <span t-out="measurement.spec_min" />
                                 </t>
@@ -124,7 +127,8 @@
                     <span t-field="doc.vehicle_id.model_id" />
                 </h2>
                 <div t-if="doc.vehicle_vin">
-                    <strong>VIN:</strong> <span t-field="doc.vehicle_vin" />
+                    <strong>VIN:</strong>
+                    <span t-field="doc.vehicle_vin" />
                 </div>
                 <div t-if="doc.vehicle_license_plate">
                     <strong>Plate:</strong>
@@ -135,16 +139,19 @@
                     <span t-field="doc.vehicle_id.unit_number" />
                 </div>
                 <div t-if="doc.odometer_in">
-                    <strong>Odometer:</strong> <span t-out="doc.odometer_in" />
+                    <strong>Odometer:</strong>
+                    <span t-out="doc.odometer_in" />
                     <span t-field="doc.vehicle_odometer_unit" />
                 </div>
             </div>
             <div class="col-6">
                 <div>
-                    <strong>Repair Order:</strong> <span t-field="doc.name" />
+                    <strong>Repair Order:</strong>
+                    <span t-field="doc.name" />
                 </div>
                 <div t-if="doc.partner_id">
-                    <strong>Customer:</strong> <span t-field="doc.partner_id.name" />
+                    <strong>Customer:</strong>
+                    <span t-field="doc.partner_id.name" />
                 </div>
                 <div t-if="doc.technician_id">
                     <strong>Technician:</strong>
@@ -172,16 +179,12 @@
                 <t t-foreach="section['categories']" t-as="group">
                     <div style="margin-top: 8px;">
                         <strong>
-                            <span
-                                t-out="group['category'].name or 'Other'"
-                            />
+                            <span t-out="group['category'].name or 'Other'" />
                         </strong>
                         <div class="row">
                             <t t-foreach="group['lines']" t-as="line">
                                 <div class="col-6">
-                                    <span
-                                        t-field="line.inspection_item_id.name"
-                                    />
+                                    <span t-field="line.inspection_item_id.name" />
                                 </div>
                             </t>
                         </div>
@@ -197,9 +200,7 @@
                         <span t-out="group['category'].name or 'Other'" />
                     </div>
                     <t t-foreach="group['lines']" t-as="line">
-                        <t
-                            t-call="shop_inspection_report.inspection_report_line"
-                        />
+                        <t t-call="shop_inspection_report.inspection_report_line" />
                     </t>
                 </t>
             </t>
@@ -209,10 +210,7 @@
         <t t-if="appendix_images">
             <div style="page-break-before: always;" />
             <h3 style="margin-top: 16px;">Photos</h3>
-            <t
-                t-foreach="range(0, len(appendix_images), 4)"
-                t-as="chunk_start"
-            >
+            <t t-foreach="range(0, len(appendix_images), 4)" t-as="chunk_start">
                 <div class="row" style="page-break-inside: avoid;">
                     <t
                         t-foreach="appendix_images[chunk_start:chunk_start + 4]"
@@ -226,13 +224,13 @@
                             />
                             <div style="font-size: 0.8em; color: #6c757d;">
                                 <span
-                                    t-field="image.inspection_line_id.inspection_item_id.name"
-                                />
+                                t-field="image.inspection_line_id.inspection_item_id.name"
+                            />
                                 —
                                 <span
-                                    t-field="image.inspection_line_id.inspection_id.date_inspected"
-                                    t-options="{'widget': 'date'}"
-                                />
+                                t-field="image.inspection_line_id.inspection_id.date_inspected"
+                                t-options="{'widget': 'date'}"
+                            />
                             </div>
                         </div>
                     </t>

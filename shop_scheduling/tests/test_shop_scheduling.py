@@ -25,7 +25,7 @@ class TestShopScheduling(TransactionCase):
                         0,
                         0,
                         {
-                            "name": "Day %s" % day,
+                            "name": f"Day {day}",
                             "dayofweek": str(day),
                             "hour_from": 8.0,
                             "hour_to": 18.0,
@@ -87,7 +87,7 @@ class TestShopScheduling(TransactionCase):
             {
                 "name": name,
                 "login": login,
-                "email": "%s@example.com" % login,
+                "email": f"{login}@example.com",
                 "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
             }
         )

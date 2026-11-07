@@ -1,10 +1,10 @@
 // Copyright 2026 Avunu LLC (avu.nu)
 // License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import { _t } from "@web/core/l10n/translation";
-import { patch } from "@web/core/utils/patch";
-import { FormController } from "@web/views/form/form_controller";
+import {ConfirmationDialog} from "@web/core/confirmation_dialog/confirmation_dialog";
+import {_t} from "@web/core/l10n/translation";
+import {patch} from "@web/core/utils/patch";
+import {FormController} from "@web/views/form/form_controller";
 
 /**
  * A service can have an active shop-floor timer running against it while
@@ -43,7 +43,9 @@ patch(FormController.prototype, {
         if (!services) {
             return true;
         }
-        const candidates = services.records.filter((line) => line.dirty && !line.data.accepted);
+        const candidates = services.records.filter(
+            (line) => line.dirty && !line.data.accepted
+        );
         const flagged = await this._repairServiceWorkflowFilterRunning(candidates);
         return this._repairServiceWorkflowConfirmRunningTimers(
             flagged,
@@ -75,7 +77,9 @@ patch(FormController.prototype, {
         if (!services) {
             return true;
         }
-        const flagged = await this._repairServiceWorkflowFilterRunning(services.records);
+        const flagged = await this._repairServiceWorkflowFilterRunning(
+            services.records
+        );
         return this._repairServiceWorkflowConfirmRunningTimers(
             flagged,
             _t("Timer Running"),
@@ -111,7 +115,7 @@ patch(FormController.prototype, {
         return new Promise((resolve) => {
             this.dialogService.add(ConfirmationDialog, {
                 title,
-                body: _t(bodyTemplate, { names }),
+                body: _t(bodyTemplate, {names}),
                 confirm: () => resolve(true),
                 cancel: () => resolve(false),
             });

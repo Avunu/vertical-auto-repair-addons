@@ -14,9 +14,7 @@ class RepairService(models.Model):
         "the order, at which point they are archived instead of billed.",
     )
     active = fields.Boolean(default=True)
-    estimated_time = fields.Float(
-        "Estimated Time", digits="Product Unit of Measure"
-    )
+    estimated_time = fields.Float(digits="Product Unit of Measure")
     analytic_line_ids = fields.One2many(
         "account.analytic.line", "repair_service_id", string="Time Logs"
     )
@@ -56,9 +54,7 @@ class RepairService(models.Model):
     @api.depends("analytic_line_ids.unit_amount")
     def _compute_actual_time(self):
         for service in self:
-            service.actual_time = sum(
-                service.analytic_line_ids.mapped("unit_amount")
-            )
+            service.actual_time = sum(service.analytic_line_ids.mapped("unit_amount"))
 
     @api.depends("actual_time")
     def _compute_product_uom_qty(self):

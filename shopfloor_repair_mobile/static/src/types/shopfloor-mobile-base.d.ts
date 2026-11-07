@@ -18,55 +18,55 @@ import Vue from "vue";
  * these ES modules reference it without an import.
  */
 declare global {
-    const _: any;
+  const _: any;
 }
 
 /** A registered `Vue.observable`-style REST client returned by `$root.getOdoo`. */
 export type OdooRoute = string | unknown[];
 
 export interface OdooClient {
-    get(url: OdooRoute, params?: Record<string, unknown>): Promise<any>;
-    post(url: OdooRoute, data?: Record<string, unknown>): Promise<any>;
+  get(url: OdooRoute, params?: Record<string, unknown>): Promise<any>;
+  post(url: OdooRoute, data?: Record<string, unknown>): Promise<any>;
 }
 
 export interface OdooClientParams {
-    usage: string;
-    headers?: Record<string, string>;
-    // Routes the request through `window.standardFetch` instead of
-    // `window.fetch` (shopfloor_mobile_base's odoo.esm.js), skipping the
-    // `fetchStart`/`fetchEnd` events that drive the app's global loading
-    // indicator - for requests that shouldn't visibly block/flicker the UI.
-    in_background?: boolean;
+  usage: string;
+  headers?: Record<string, string>;
+  // Routes the request through `window.standardFetch` instead of
+  // `window.fetch` (shopfloor_mobile_base's odoo.esm.js), skipping the
+  // `fetchStart`/`fetchEnd` events that drive the app's global loading
+  // indicator - for requests that shouldn't visibly block/flicker the UI.
+  in_background?: boolean;
 }
 
 export interface AppNavItem {
-    id: unknown;
-    name: string;
-    // The process_registry/scenario key this menu entry opens (e.g.
-    // "repair_job") - `shopfloor_base`'s menu.py serializes it as
-    // `scenario_key:scenario`. Used to resolve a `SERVICE-CTX-MENU-ID`
-    // header for REST calls issued outside any scenario route (see
-    // `menu_id_for` in services/root.esm.js).
-    scenario: string;
-    [key: string]: unknown;
+  id: unknown;
+  name: string;
+  // The process_registry/scenario key this menu entry opens (e.g.
+  // "repair_job") - `shopfloor_base`'s menu.py serializes it as
+  // `scenario_key:scenario`. Used to resolve a `SERVICE-CTX-MENU-ID`
+  // header for REST calls issued outside any scenario route (see
+  // `menu_id_for` in services/root.esm.js).
+  scenario: string;
+  [key: string]: unknown;
 }
 
 export interface AppInfo {
-    running_env: string;
-    profile_required: boolean;
-    [key: string]: unknown;
+  running_env: string;
+  profile_required: boolean;
+  [key: string]: unknown;
 }
 
 export interface UserProfile {
-    id: unknown;
-    name: string;
-    [key: string]: unknown;
+  id: unknown;
+  name: string;
+  [key: string]: unknown;
 }
 
 export interface AppUser {
-    id: unknown;
-    name: string;
-    [key: string]: unknown;
+  id: unknown;
+  name: string;
+  [key: string]: unknown;
 }
 
 /**
@@ -75,51 +75,51 @@ export interface AppUser {
  * members actually referenced from this module are declared.
  */
 export interface ShopfloorRoot extends Vue {
-    getOdoo(params: OdooClientParams): OdooClient;
-    getNav(): {app_nav: AppNavItem[]};
-    user: AppUser;
-    profile: UserProfile;
-    profiles: UserProfile[];
-    /** The sync payload (`user_config`) the root keeps in `$storage` as "appconfig". */
-    appconfig: {default_profile_id?: number | null; [key: string]: unknown} | null;
-    has_profile: boolean;
-    authenticated: boolean;
-    /** The signed-in key, kept in browser storage; empty once it has expired. */
-    apikey: string;
-    is_authenticated(): boolean;
-    app_info: AppInfo;
-    loading: boolean;
-    $storage: {
-        get(key: string, default_value?: unknown): unknown;
-        set(key: string, value: unknown): void;
-        remove(key: string): void;
-        keys(): string[];
-    };
-    logout(): void;
-    trigger(event: string, payload?: unknown, force?: boolean): void;
+  getOdoo(params: OdooClientParams): OdooClient;
+  getNav(): {app_nav: AppNavItem[]};
+  user: AppUser;
+  profile: UserProfile;
+  profiles: UserProfile[];
+  /** The sync payload (`user_config`) the root keeps in `$storage` as "appconfig". */
+  appconfig: {default_profile_id?: number | null; [key: string]: unknown} | null;
+  has_profile: boolean;
+  authenticated: boolean;
+  /** The signed-in key, kept in browser storage; empty once it has expired. */
+  apikey: string;
+  is_authenticated(): boolean;
+  app_info: AppInfo;
+  loading: boolean;
+  $storage: {
+    get(key: string, default_value?: unknown): unknown;
+    set(key: string, value: unknown): void;
+    remove(key: string): void;
+    keys(): string[];
+  };
+  logout(): void;
+  trigger(event: string, payload?: unknown, force?: boolean): void;
 }
 
 export interface RouteInfo {
-    name: string | null;
-    params: Record<string, string>;
-    [key: string]: unknown;
+  name: string | null;
+  params: Record<string, string>;
+  [key: string]: unknown;
 }
 
 declare module "vue/types/vue" {
-    interface Vue {
-        $route: RouteInfo;
-        $router: {
-            push(location: string | Record<string, unknown>): Promise<unknown>;
-        };
-        $t(key: string, ...args: unknown[]): string;
-        utils: {
-            display: {
-                format_date_display(value: string): string;
-                [key: string]: (...args: any[]) => any;
-            };
-            [key: string]: any;
-        };
-    }
+  interface Vue {
+    $route: RouteInfo;
+    $router: {
+      push(location: string | Record<string, unknown>): Promise<unknown>;
+    };
+    $t(key: string, ...args: unknown[]): string;
+    utils: {
+      display: {
+        format_date_display(value: string): string;
+        [key: string]: (...args: any[]) => any;
+      };
+      [key: string]: any;
+    };
+  }
 }
 
 /**

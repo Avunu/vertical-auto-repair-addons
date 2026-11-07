@@ -19,8 +19,12 @@ import {page_registry} from "/shopfloor_mobile_base/static/src/services/page_reg
 import {translation_registry} from "/shopfloor_mobile_base/static/src/services/translation_registry.esm.js";
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
-import {timer_store, set_shift_timer, set_current_job_timer} from "../services/timer_store.esm.js";
-import {sf_root, menu_id_for} from "../services/root.esm.js";
+import {
+    set_current_job_timer,
+    set_shift_timer,
+    timer_store,
+} from "../services/timer_store.esm.js";
+import {menu_id_for, sf_root} from "../services/root.esm.js";
 
 translation_registry.add("en-US.repair.clock.title", "Clock");
 translation_registry.add("en-US.repair.clock.clocked_in", "Clocked in");
@@ -43,11 +47,13 @@ const Clock = defineComponent({
         timer() {
             return timer_store.shift_timer;
         },
-        /** @returns {number} */
+        /** @returns {Number} */
         elapsed_seconds() {
-            return Math.round((this.timer.elapsed_hours || 0) * 3600) + this.ticked_seconds;
+            return (
+                Math.round((this.timer.elapsed_hours || 0) * 3600) + this.ticked_seconds
+            );
         },
-        /** @returns {string} */
+        /** @returns {String} */
         elapsed_display() {
             const total = Math.max(this.elapsed_seconds, 0);
             const h = Math.floor(total / 3600);
@@ -131,21 +137,36 @@ const Clock = defineComponent({
     },
     template: html`
         <Screen :screen_info="screen_info">
-            <v-card outlined class="clock-status" :class="{'clock-status--running': timer.running}">
+            <v-card
+                outlined
+                class="clock-status"
+                :class="{'clock-status--running': timer.running}"
+            >
                 <v-card-text class="clock-status__body">
-                    <div class="elapsed" v-if="timer.running">{{ elapsed_display }}</div>
+                    <div class="elapsed" v-if="timer.running">
+                        {{ elapsed_display }}
+                    </div>
                     <div class="elapsed elapsed--idle" v-else>--:--:--</div>
                     <div class="clock-status__label">
-                        {{ timer.running ? $t('repair.clock.clocked_in') : $t('repair.clock.clocked_out') }}
+                        {{ timer.running ? $t('repair.clock.clocked_in') :
+                        $t('repair.clock.clocked_out') }}
                     </div>
                 </v-card-text>
             </v-card>
             <div class="button-list button-vertical-list full mt-3">
                 <v-row align="center">
                     <v-col class="text-center" cols="12">
-                        <btn-action :action="timer.running ? 'warn' : 'complete'" :loading="busy" @click="toggle">
-                            <v-icon left>{{ timer.running ? 'mdi-clock-remove-outline' : 'mdi-clock-check-outline' }}</v-icon>
-                            {{ timer.running ? $t('repair.clock.clock_out') : $t('repair.clock.clock_in') }}
+                        <btn-action
+                            :action="timer.running ? 'warn' : 'complete'"
+                            :loading="busy"
+                            @click="toggle"
+                        >
+                            <v-icon left
+                                >{{ timer.running ? 'mdi-clock-remove-outline' :
+                                'mdi-clock-check-outline' }}</v-icon
+                            >
+                            {{ timer.running ? $t('repair.clock.clock_out') :
+                            $t('repair.clock.clock_in') }}
                         </btn-action>
                     </v-col>
                 </v-row>

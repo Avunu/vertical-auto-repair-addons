@@ -11,19 +11,25 @@
  * a specific pair, never a guess at which segment an aggregate total came
  * from.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {AttendanceDay} from "./attendance_types" */
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
-import {sf_root, menu_id_for} from "../services/root.esm.js";
-import {server_datetime_to_local_input, local_input_to_server_datetime} from "../services/datetime.esm.js";
+import {menu_id_for, sf_root} from "../services/root.esm.js";
+import {
+    local_input_to_server_datetime,
+    server_datetime_to_local_input,
+} from "../services/datetime.esm.js";
 
 /**
  * @typedef {Object} EditableRow
- * @property {number} id
- * @property {string} date_time
- * @property {string} date_time_end
- * @property {boolean} saving
+ * @property {Number} id
+ * @property {String} date_time
+ * @property {String} date_time_end
+ * @property {Boolean} saving
  */
 
 // "2026-01-01 09:00:00" (server, UTC) <-> "2026-01-01T09:00" (local
@@ -34,14 +40,14 @@ import {server_datetime_to_local_input, local_input_to_server_datetime} from "..
 // there always agree.
 /**
  * @param {string | null} value
- * @returns {string}
+ * @returns {String}
  */
 function to_local_input(value) {
     return server_datetime_to_local_input(value);
 }
 
 /**
- * @param {string} value
+ * @param {String} value
  * @returns {string | null}
  */
 function from_local_input(value) {
@@ -69,15 +75,18 @@ const RepairAttendanceEditForm = defineComponent({
         // `_format_date` uses for the card titles, so the dialog's title
         // reads as "which day is this" the same way the card it was opened
         // from already does - "Edit clock-in/out" said nothing about that.
-        /** @returns {string} */
+        /** @returns {String} */
         title() {
             try {
-                return new Date(this.day.date + "T00:00:00").toLocaleDateString(undefined, {
-                    weekday: "short",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                });
+                return new Date(this.day.date + "T00:00:00").toLocaleDateString(
+                    undefined,
+                    {
+                        weekday: "short",
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                    }
+                );
             } catch {
                 return this.day.date;
             }
@@ -86,10 +95,12 @@ const RepairAttendanceEditForm = defineComponent({
     methods: {
         /**
          * @param {EditableRow} row
-         * @returns {boolean}
+         * @returns {Boolean}
          */
         row_valid(row) {
-            return Boolean(row.date_time && row.date_time_end && row.date_time_end > row.date_time);
+            return Boolean(
+                row.date_time && row.date_time_end && row.date_time_end > row.date_time
+            );
         },
         /**
          * @param {EditableRow} row
@@ -137,13 +148,19 @@ const RepairAttendanceEditForm = defineComponent({
                         type="datetime-local"
                         :label="$t('repair.timesheets.start')"
                         v-model="row.date_time"
-                        />
+                    />
                     <v-text-field
                         type="datetime-local"
                         :label="$t('repair.timesheets.end')"
                         v-model="row.date_time_end"
-                        />
-                    <v-btn color="success" block :disabled="!row_valid(row)" :loading="row.saving" @click="save_row(row)">
+                    />
+                    <v-btn
+                        color="success"
+                        block
+                        :disabled="!row_valid(row)"
+                        :loading="row.saving"
+                        @click="save_row(row)"
+                    >
                         {{ $t('btn.save.title') }}
                     </v-btn>
                 </div>

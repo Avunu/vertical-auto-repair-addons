@@ -6,6 +6,9 @@
  * Anything that needs a lot number or a partial quantity goes to the detail
  * screen instead.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {RepairPartRecord} from "./parts_types" */
 import {defineComponent} from "../services/define_component.esm.js";
@@ -13,12 +16,15 @@ import {html} from "../services/html.esm.js";
 
 const RepairPartsList = defineComponent({
     props: {
-        parts: {type: /** @type {PropType<RepairPartRecord[]>} */ (Array), default: () => []},
+        parts: {
+            type: /** @type {PropType<RepairPartRecord[]>} */ (Array),
+            default: () => [],
+        },
     },
     methods: {
         /**
          * @param {RepairPartRecord} part
-         * @returns {string}
+         * @returns {String}
          */
         row_class(part) {
             if (part.picked && part.quantity_done >= part.quantity_demand) {
@@ -30,8 +36,8 @@ const RepairPartsList = defineComponent({
             return "";
         },
         /**
-         * @param {number} value
-         * @returns {string}
+         * @param {Number} value
+         * @returns {String}
          */
         qty(value) {
             return Number(value).toLocaleString(undefined, {
@@ -42,15 +48,22 @@ const RepairPartsList = defineComponent({
     template: html`
         <div class="repair-parts-list">
             <p class="empty" v-if="!parts.length">{{ $t('repair.parts.empty') }}</p>
-            <v-card v-for="part in parts" :key="part.id" outlined
-                    class="part-row" :class="row_class(part)">
+            <v-card
+                v-for="part in parts"
+                :key="part.id"
+                outlined
+                class="part-row"
+                :class="row_class(part)"
+            >
                 <div class="part-row__info" @click="$emit('select', part)">
                     <div class="name">{{ part.product.name }}</div>
                     <div class="meta">
-                        <span v-if="part.product.default_code">{{ part.product.default_code }}</span>
+                        <span v-if="part.product.default_code"
+                            >{{ part.product.default_code }}</span
+                        >
                         <span class="qty">
-                            {{ qty(part.quantity_done) }} / {{ qty(part.quantity_demand) }}
-                            {{ part.uom ? part.uom.name : '' }}
+                            {{ qty(part.quantity_done) }} / {{ qty(part.quantity_demand)
+                            }} {{ part.uom ? part.uom.name : '' }}
                         </span>
                         <v-chip x-small color="info" dark v-if="part.shopfloor_added">
                             {{ $t('repair.parts.added_here') }}
@@ -65,9 +78,14 @@ const RepairPartsList = defineComponent({
                     <v-btn icon large v-if="part.picked" @click="$emit('reset', part)">
                         <v-icon>mdi-undo-variant</v-icon>
                     </v-btn>
-                    <v-btn large color="success" v-if="!part.picked"
-                           @click="$emit('consume-all', part)">
-                        <v-icon left>mdi-check-bold</v-icon>{{ $t('repair.parts.use_all') }}
+                    <v-btn
+                        large
+                        color="success"
+                        v-if="!part.picked"
+                        @click="$emit('consume-all', part)"
+                    >
+                        <v-icon left>mdi-check-bold</v-icon>{{
+                        $t('repair.parts.use_all') }}
                     </v-btn>
                     <v-btn icon large @click="$emit('select', part)">
                         <v-icon>mdi-chevron-right</v-icon>

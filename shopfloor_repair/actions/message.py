@@ -124,9 +124,7 @@ class MessageAction(Component):
     def service_timer_stopped(self, service):
         return {
             "message_type": "success",
-            "body": self.env._(
-                "Timer stopped on %(name)s.", name=service.display_name
-            ),
+            "body": self.env._("Timer stopped on %(name)s.", name=service.display_name),
         }
 
     def service_timer_already_running(self, service):
@@ -374,7 +372,9 @@ class MessageAction(Component):
     def lot_not_found(self, barcode):
         return {
             "message_type": "error",
-            "body": self.env._("No lot or serial number found for %(code)s.", code=barcode),
+            "body": self.env._(
+                "No lot or serial number found for %(code)s.", code=barcode
+            ),
         }
 
     def lot_required(self, product):

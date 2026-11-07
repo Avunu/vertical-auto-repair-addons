@@ -194,8 +194,7 @@ class DataAction(Component):
 
     def repair_services(self, records, running_line=None, **kw):
         return [
-            self.repair_service(rec, running_line=running_line, **kw)
-            for rec in records
+            self.repair_service(rec, running_line=running_line, **kw) for rec in records
         ]
 
     @property
@@ -374,9 +373,7 @@ class DataAction(Component):
             # `display_name` (repair.service's own computed description) is
             # a fine fallback, but the product name is what the technician
             # actually recognises the service line by on the Services tab.
-            result["service"]["name"] = (
-                service.product_id.name or service.display_name
-            )
+            result["service"]["name"] = service.product_id.name or service.display_name
         return result
 
     def repair_timesheets(self, records, **kw):
@@ -402,7 +399,9 @@ class DataAction(Component):
             "id": record.id,
             "check_in": fields.Datetime.to_string(record.check_in),
             "check_out": (
-                fields.Datetime.to_string(record.check_out) if record.check_out else None
+                fields.Datetime.to_string(record.check_out)
+                if record.check_out
+                else None
             ),
         }
 
@@ -441,9 +440,7 @@ class DataAction(Component):
         return {
             "running": bool(line),
             "line_id": line.id or None,
-            "started_at": (
-                fields.Datetime.to_string(line.date_time) if line else None
-            ),
+            "started_at": (fields.Datetime.to_string(line.date_time) if line else None),
             "elapsed_hours": elapsed,
             "my_hours": sum(my_lines.mapped("unit_amount")),
             "total_hours": repair.timesheet_total_hours,
@@ -476,9 +473,7 @@ class DataAction(Component):
         return {
             "running": bool(line),
             "line_id": line.id or None,
-            "started_at": (
-                fields.Datetime.to_string(line.date_time) if line else None
-            ),
+            "started_at": (fields.Datetime.to_string(line.date_time) if line else None),
             "elapsed_hours": elapsed,
             "my_hours": service.actual_time,
             "total_hours": service.actual_time,

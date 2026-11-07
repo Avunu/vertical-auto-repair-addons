@@ -7,8 +7,14 @@
          is one line per job. Falls back to the customer, then the reference,
          for a job with no vehicle. -->
     <t t-name="shop_scheduling.RepairCalendarEvent">
-        <t t-set="customer" t-value="rawRecord.partner_id and rawRecord.partner_id[1]" />
-        <t t-set="vehicle" t-value="rawRecord.shop_vehicle_label or customer or title" />
+        <t
+            t-set="customer"
+            t-value="rawRecord.partner_id and rawRecord.partner_id[1]"
+        />
+        <t
+            t-set="vehicle"
+            t-value="rawRecord.shop_vehicle_label or customer or title"
+        />
         <span
             t-if="!isTimeHidden"
             class="d-none d-lg-inline fc-time fw-normal"

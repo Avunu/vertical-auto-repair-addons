@@ -28,10 +28,11 @@ class PurchaseOrder(models.Model):
         TypeSafe which open repair order it most likely belongs to, in the
         background so a slow request never delays the import itself.
         """
-        super()._edi_confirm_and_notify()
+        res = super()._edi_confirm_and_notify()
         self.with_delay(
             description=_("Match %s to an open repair order", self.name)
         )._repair_auto_link_or_suggest()
+        return res
 
     # ----------------------------------------------------------
     # Matching (PO number)
@@ -55,12 +56,16 @@ class PurchaseOrder(models.Model):
             return self.env["repair.order"]
         # Every repair order number contains its own number's digits, so
         # this narrows the search; the exact comparison is done below.
-        repairs = self.env["repair.order"].search(
-            [
-                ("name", "ilike", str(number)),
-                ("company_id", "=", self.company_id.id),
-            ]
-        ).filtered(lambda repair: self._repair_number_of(repair.name) == number)
+        repairs = (
+            self.env["repair.order"]
+            .search(
+                [
+                    ("name", "ilike", str(number)),
+                    ("company_id", "=", self.company_id.id),
+                ]
+            )
+            .filtered(lambda repair: self._repair_number_of(repair.name) == number)
+        )
         return repairs if len(repairs) == 1 else self.env["repair.order"]
 
     @api.model
@@ -232,7 +237,10 @@ class PurchaseOrder(models.Model):
         else:
             po_intro = _("Linked to repair order %s.", repair._get_html_link())
             repair_intro = _("Linked to purchase order %s.", self._get_html_link())
-        parts = _("Every part on the purchase order was added to the repair order's parts list.")
+        parts = _(
+            "Every part on the purchase order was added to the repair order's parts "
+            "list."
+        )
         moved = Markup("")
         if previous:
             moved = Markup(" {}").format(
@@ -305,9 +313,9 @@ class PurchaseOrder(models.Model):
                     "%(repair)s, but that repair order is %(state)s, so its "
                     "parts were not added.",
                     repair=repair._get_html_link(),
-                    state=dict(repair._fields["state"]._description_selection(self.env))[
-                        repair.state
-                    ].lower(),
+                    state=dict(
+                        repair._fields["state"]._description_selection(self.env)
+                    )[repair.state].lower(),
                 ),
                 self._repair_match_choose_link(),
             ),
@@ -319,9 +327,7 @@ class PurchaseOrder(models.Model):
 
     def _repair_match_confirm_token(self, repair):
         self.ensure_one()
-        return tools.hmac(
-            self.env(su=True), CONFIRM_TOKEN_SCOPE, (self.id, repair.id)
-        )
+        return tools.hmac(self.env(su=True), CONFIRM_TOKEN_SCOPE, (self.id, repair.id))
 
     def _repair_match_confirm_token_valid(self, repair, token):
         self.ensure_one()
@@ -353,9 +359,9 @@ class PurchaseOrder(models.Model):
             f"?purchase_order_id={self.id}&repair_order_id={repair.id}&token={token}"
         )
         confidence_pct = round(confidence * 100)
-        button = Markup('<div><a href="{}" class="btn btn-primary">{}</a></div>').format(
-            confirm_url, _("Confirm Match")
-        )
+        button = Markup(
+            '<div><a href="{}" class="btn btn-primary">{}</a></div>'
+        ).format(confirm_url, _("Confirm Match"))
         # The purchase order's own chatter never links to itself; the
         # repair order's chatter links to the purchase order instead.
         po_message = _(
@@ -372,7 +378,9 @@ class PurchaseOrder(models.Model):
         )
         email_link = self._repair_match_email_link()
         po_body = Markup("<p>") + po_message + Markup("</p>") + email_link + button
-        repair_body = Markup("<p>") + repair_message + Markup("</p>") + email_link + button
+        repair_body = (
+            Markup("<p>") + repair_message + Markup("</p>") + email_link + button
+        )
         partner_root = self.env.ref("base.partner_root")
         partners = self._edi_notify_partners()
         self.message_post(

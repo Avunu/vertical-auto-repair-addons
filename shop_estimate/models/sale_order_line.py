@@ -58,9 +58,7 @@ class SaleOrderLine(models.Model):
                     "product_id": job.labor_product_id.id,
                     "product_uom": job.labor_product_id.uom_id.id,
                     "product_uom_qty": job.labor_hours * qty,
-                    "display_name": _(
-                        "%(job)s (approved job)", job=job.name
-                    ),
+                    "display_name": _("%(job)s (approved job)", job=job.name),
                     "shop_job_sale_line_id": self.id,
                 }
             )

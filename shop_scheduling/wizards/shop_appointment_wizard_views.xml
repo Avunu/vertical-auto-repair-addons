@@ -31,7 +31,11 @@
                         <field name="repair_id" invisible="1" />
                         <field name="openings_searched" invisible="1" />
                         <field name="partner_id" readonly="1" />
-                        <field name="vehicle_id" readonly="1" invisible="not vehicle_id" />
+                        <field
+                            name="vehicle_id"
+                            readonly="1"
+                            invisible="not vehicle_id"
+                        />
                         <field name="type_id" />
                     </group>
                     <group>
@@ -46,7 +50,12 @@
                     (<field name="shop_tz" class="oe_inline" readonly="1" />).
                     Whoever is still free when you take one gets the job.
                 </p>
-                <field name="slot_ids" nolabel="1" readonly="1" invisible="not openings_searched">
+                <field
+                    name="slot_ids"
+                    nolabel="1"
+                    readonly="1"
+                    invisible="not openings_searched"
+                >
                     <list string="Openings" create="false" delete="false" edit="false">
                         <field name="name" string="Opening (shop time)" />
                         <field

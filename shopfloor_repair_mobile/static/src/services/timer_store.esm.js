@@ -35,8 +35,11 @@
  * poll, keeps ticking regardless of which (if any) component is currently
  * mounted to display it.
  */
+
+/* global Vue */
+
 /** @import {TimerState} from "../components/timer_widget_types" */
-import {sf_root, menu_id_for} from "./root.esm.js";
+import {menu_id_for, sf_root} from "./root.esm.js";
 
 /** @typedef {TimerState & {job_name: string}} JobTimer */
 
@@ -44,16 +47,16 @@ import {sf_root, menu_id_for} from "./root.esm.js";
  * @typedef {Object} TimerStore
  * @property {JobTimer | null} current_job_timer
  * @property {TimerState} shift_timer
- * @property {boolean} _shift_polling_started
+ * @property {Boolean} _shift_polling_started
  *   Guards the poll loop so only the *first* app-bar-actions instance
  *   ever starts it - the interval itself isn't tied to that instance's
  *   lifecycle, so it keeps updating `shift_timer` even after that
  *   instance is destroyed by a route change. Later instances just read
  *   the already-current value reactively - no re-poll flicker, no
  *   reset to blank on every navigation.
- * @property {number} _shift_ticked_seconds
- * @property {number} _job_ticked_seconds
- * @property {boolean} _tick_interval_started
+ * @property {Number} _shift_ticked_seconds
+ * @property {Number} _job_ticked_seconds
+ * @property {Boolean} _tick_interval_started
  */
 
 /** @type {TimerStore} */
@@ -95,7 +98,8 @@ ensure_tick_loop();
  */
 export function set_shift_timer(next) {
     const prev = timer_store.shift_timer;
-    const changed = next.started_at !== prev.started_at || next.running !== prev.running;
+    const changed =
+        next.started_at !== prev.started_at || next.running !== prev.running;
     timer_store.shift_timer = next;
     if (changed) {
         timer_store._shift_ticked_seconds = 0;
@@ -112,19 +116,24 @@ export function set_current_job_timer(next) {
     const prev = timer_store.current_job_timer;
     const changed =
         Boolean(next) !== Boolean(prev) ||
-        (next && prev && (next.started_at !== prev.started_at || next.running !== prev.running));
+        (next &&
+            prev &&
+            (next.started_at !== prev.started_at || next.running !== prev.running));
     timer_store.current_job_timer = next;
     if (changed) {
         timer_store._job_ticked_seconds = 0;
     }
 }
 
-/** @returns {number} */
+/** @returns {Number} */
 export function shift_elapsed_seconds() {
-    return Math.round((timer_store.shift_timer.elapsed_hours || 0) * 3600) + timer_store._shift_ticked_seconds;
+    return (
+        Math.round((timer_store.shift_timer.elapsed_hours || 0) * 3600) +
+        timer_store._shift_ticked_seconds
+    );
 }
 
-/** @returns {number} */
+/** @returns {Number} */
 export function job_elapsed_seconds() {
     if (!timer_store.current_job_timer) {
         return 0;
@@ -136,8 +145,8 @@ export function job_elapsed_seconds() {
 }
 
 /**
- * @param {number} total_seconds
- * @returns {string}
+ * @param {Number} total_seconds
+ * @returns {String}
  */
 export function format_elapsed(total_seconds) {
     const total = Math.max(total_seconds, 0);

@@ -122,9 +122,7 @@ class TestShopInspection(TransactionCase):
             self.env["fleet.vehicle.inspection.line"].create(
                 {
                     "inspection_id": inspection.id,
-                    "inspection_item_id": self.env.ref(
-                        f"shop_inspection.{xmlid}"
-                    ).id,
+                    "inspection_item_id": self.env.ref(f"shop_inspection.{xmlid}").id,
                 }
             )
         # 8 tire specs + 1 coolant freeze point, reachable in one grid

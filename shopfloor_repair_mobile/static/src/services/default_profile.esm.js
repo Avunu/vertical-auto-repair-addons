@@ -42,8 +42,13 @@ function apply_default_profile(root, config) {
 
 event_hub.$on(
     "app.sync:update",
-    (/** @type {{root: ShopfloorRoot, sync_data: {data?: {default_profile_id?: number | null}}}} */ payload) => {
-        apply_default_profile(payload.root, payload.sync_data && payload.sync_data.data);
+    (
+        /** @type {{root: ShopfloorRoot, sync_data: {data?: {default_profile_id?: number | null}}}} */ payload
+    ) => {
+        apply_default_profile(
+            payload.root,
+            payload.sync_data && payload.sync_data.data
+        );
     }
 );
 

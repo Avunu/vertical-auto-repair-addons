@@ -9,6 +9,9 @@
  * before upload: a modern tablet camera produces 4-8 MB per shot, and a
  * technician takes a dozen per inspection.
  */
+
+/* global Vue */
+
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
 
@@ -68,20 +71,19 @@ const RepairPhotoCapture = defineComponent({
                     const img = new Image();
                     img.onerror = reject;
                     img.onload = () => {
-                        const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height));
+                        const scale = Math.min(
+                            1,
+                            MAX_EDGE / Math.max(img.width, img.height)
+                        );
                         const canvas = document.createElement("canvas");
                         canvas.width = Math.round(img.width * scale);
                         canvas.height = Math.round(img.height * scale);
-                        /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d")).drawImage(
-                            img,
-                            0,
-                            0,
-                            canvas.width,
-                            canvas.height
-                        );
+                        /** @type {CanvasRenderingContext2D} */ (
+                            canvas.getContext("2d")
+                        ).drawImage(img, 0, 0, canvas.width, canvas.height);
                         resolve(canvas.toDataURL("image/jpeg", JPEG_QUALITY));
                     };
-                    img.src = /** @type {string} */ (reader.result);
+                    img.src = /** @type {String} */ (reader.result);
                 };
                 reader.readAsDataURL(file);
             });
@@ -95,7 +97,8 @@ const RepairPhotoCapture = defineComponent({
                 accept="image/*"
                 capture="environment"
                 class="photo-capture__input"
-                @change="on_file" />
+                @change="on_file"
+            />
             <v-btn x-large block :loading="busy" @click="pick">
                 <v-icon left>mdi-camera</v-icon>
                 {{ $t('repair.inspection.add_photo') }}

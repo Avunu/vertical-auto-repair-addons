@@ -29,10 +29,13 @@
  * change (`Screen` isn't a persistent shell - every top-level page renders
  * its own).
  */
+
+/* global Vue */
+
 /** @import {JobTimer} from "../services/timer_store.esm.js" */
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
-import {timer_store, refresh_shift_timer} from "../services/timer_store.esm.js";
+import {refresh_shift_timer, timer_store} from "../services/timer_store.esm.js";
 
 const AppBarActions = defineComponent({
     data() {
@@ -50,7 +53,7 @@ const AppBarActions = defineComponent({
         // `$options._componentTag` (this file's own `tag_name` above) -
         // exposing a typed computed instead of `this.$route.name` inline is
         // what actually gets the template checked.
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         is_scan_anything() {
             return this.$route.name === "scan_anything";
         },
@@ -96,7 +99,11 @@ const AppBarActions = defineComponent({
                 <job-timer-compact v-if="job_timer" />
                 <shift-timer />
             </div>
-            <v-btn icon @click="$router.push({'name': 'scan_anything'})" :disabled="is_scan_anything">
+            <v-btn
+                icon
+                @click="$router.push({'name': 'scan_anything'})"
+                :disabled="is_scan_anything"
+            >
                 <v-icon>mdi-magnify</v-icon>
             </v-btn>
         </div>

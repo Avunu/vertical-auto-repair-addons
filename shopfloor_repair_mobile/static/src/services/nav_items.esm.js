@@ -18,9 +18,9 @@ translation_registry.add("en-US.repair.clock.clock_out", "Clock Out");
 
 /**
  * @typedef {Object} NavItem
- * @property {string} id
- * @property {string} name
- * @property {string} icon
+ * @property {String} id
+ * @property {String} name
+ * @property {String} icon
  * @property {{name: string, params?: Record<string, unknown>}} to
  */
 
@@ -57,8 +57,12 @@ export function home_nav_items(vm) {
         },
         {
             id: "clock",
-            name: shift_timer.running ? vm.$t("repair.clock.clock_out") : vm.$t("repair.clock.clock_in"),
-            icon: shift_timer.running ? "mdi-clock-remove-outline" : "mdi-clock-check-outline",
+            name: shift_timer.running
+                ? vm.$t("repair.clock.clock_out")
+                : vm.$t("repair.clock.clock_in"),
+            icon: shift_timer.running
+                ? "mdi-clock-remove-outline"
+                : "mdi-clock-check-outline",
             to: {name: "clock"},
         },
     ];

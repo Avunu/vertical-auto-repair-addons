@@ -40,7 +40,11 @@
     <record id="timesheets_analysis_report_graph_inherit_bugfix" model="ir.ui.view">
         <field name="name">timesheets.analysis.report.graph.inherit.bugfix</field>
         <field name="model">timesheets.analysis.report</field>
-        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_graph_inherit" />
+        <field
+            name="inherit_id"
+            ref="sale_timesheet.timesheets_analysis_report_graph_inherit"
+        />
+        <field name="priority">99</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='billable_time']" position="replace" />
             <xpath expr="//field[@name='non_billable_time']" position="replace" />
@@ -48,9 +52,14 @@
     </record>
 
     <record id="timesheets_analysis_report_pivot_employee_inherit" model="ir.ui.view">
-        <field name="name">timesheets.analysis.report.pivot.employee.repair.productivity</field>
+        <field
+            name="name"
+        >timesheets.analysis.report.pivot.employee.repair.productivity</field>
         <field name="model">timesheets.analysis.report</field>
-        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_pivot_inherit" />
+        <field
+            name="inherit_id"
+            ref="sale_timesheet.timesheets_analysis_report_pivot_inherit"
+        />
         <field name="arch" type="xml">
             <!-- `type="measure"` is what makes a field pre-selected when
                  the pivot first loads - inherited from hr_timesheet's own
@@ -61,7 +70,7 @@
                  Measures dropdown; this only changes what's selected by
                  default. -->
             <xpath expr="//field[@name='unit_amount']" position="attributes">
-                <attribute name="type"></attribute>
+                <attribute name="type" />
             </xpath>
             <xpath expr="//field[@name='billable_time']" position="attributes">
                 <attribute name="type">measure</attribute>
@@ -70,14 +79,23 @@
                 <attribute name="type">measure</attribute>
             </xpath>
             <xpath expr="//field[@name='non_billable_time']" position="after">
-                <field name="estimated_vs_actual_time" type="measure" widget="timesheet_uom" />
+                <field
+                    name="estimated_vs_actual_time"
+                    type="measure"
+                    widget="timesheet_uom"
+                />
             </xpath>
         </field>
     </record>
     <record id="timesheets_analysis_report_graph_employee_inherit" model="ir.ui.view">
-        <field name="name">timesheets.analysis.report.graph.employee.repair.productivity</field>
+        <field
+            name="name"
+        >timesheets.analysis.report.graph.employee.repair.productivity</field>
         <field name="model">timesheets.analysis.report</field>
-        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_graph_timesheet_grid" />
+        <field
+            name="inherit_id"
+            ref="sale_timesheet.timesheets_analysis_report_graph_timesheet_grid"
+        />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='non_billable_time']" position="after">
                 <field name="estimated_vs_actual_time" widget="timesheet_uom" />
@@ -89,20 +107,36 @@
          the same billable/non-billable split this module attributes repair
          time onto). These two are standalone views (no inherit_id of their
          own), unlike the pair above. -->
-    <record id="timesheets_analysis_report_pivot_invoice_type_inherit" model="ir.ui.view">
-        <field name="name">timesheets.analysis.report.pivot.invoice_type.repair.productivity</field>
+    <record
+        id="timesheets_analysis_report_pivot_invoice_type_inherit"
+        model="ir.ui.view"
+    >
+        <field
+            name="name"
+        >timesheets.analysis.report.pivot.invoice_type.repair.productivity</field>
         <field name="model">timesheets.analysis.report</field>
-        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_pivot_invoice_type" />
+        <field
+            name="inherit_id"
+            ref="sale_timesheet.timesheets_analysis_report_pivot_invoice_type"
+        />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='non_billable_time']" position="after">
                 <field name="estimated_vs_actual_time" widget="timesheet_uom" />
             </xpath>
         </field>
     </record>
-    <record id="timesheets_analysis_report_graph_invoice_type_inherit" model="ir.ui.view">
-        <field name="name">timesheets.analysis.report.graph.invoice_type.repair.productivity</field>
+    <record
+        id="timesheets_analysis_report_graph_invoice_type_inherit"
+        model="ir.ui.view"
+    >
+        <field
+            name="name"
+        >timesheets.analysis.report.graph.invoice_type.repair.productivity</field>
         <field name="model">timesheets.analysis.report</field>
-        <field name="inherit_id" ref="sale_timesheet.timesheets_analysis_report_graph_invoice_type" />
+        <field
+            name="inherit_id"
+            ref="sale_timesheet.timesheets_analysis_report_graph_invoice_type"
+        />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='non_billable_time']" position="after">
                 <field name="estimated_vs_actual_time" widget="timesheet_uom" />

@@ -32,7 +32,7 @@ export const SEVERITY_ICONS = {
 
 /**
  * @param {string | null} value
- * @returns {string}
+ * @returns {String}
  */
 export function severity_color(value) {
     return SEVERITY_COLORS[/** @type {SeverityValue} */ (value)] || "#bdbdbd";
@@ -40,10 +40,13 @@ export function severity_color(value) {
 
 /**
  * @param {string | null} value
- * @returns {string}
+ * @returns {String}
  */
 export function severity_icon(value) {
-    return SEVERITY_ICONS[/** @type {SeverityValue} */ (value)] || "mdi-help-circle-outline";
+    return (
+        SEVERITY_ICONS[/** @type {SeverityValue} */ (value)] ||
+        "mdi-help-circle-outline"
+    );
 }
 
 /**

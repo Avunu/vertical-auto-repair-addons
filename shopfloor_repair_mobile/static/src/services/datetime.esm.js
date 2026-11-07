@@ -15,9 +15,9 @@
  */
 
 /**
- * @param {number} value
- * @param {number} [length]
- * @returns {string}
+ * @param {Number} value
+ * @param {Number} [length]
+ * @returns {String}
  */
 function pad(value, length = 2) {
     return String(value).padStart(length, "0");
@@ -42,7 +42,7 @@ export function server_datetime_to_date(value) {
  * Format a Date as the naive-UTC string format the server expects.
  *
  * @param {Date} d
- * @returns {string}
+ * @returns {String}
  */
 export function date_to_server_datetime(d) {
     return (
@@ -56,7 +56,7 @@ export function date_to_server_datetime(d) {
  * local wall-clock, minute precision, no seconds/timezone.
  *
  * @param {string | null | undefined} value
- * @returns {string}
+ * @returns {String}
  */
 export function server_datetime_to_local_input(value) {
     const d = server_datetime_to_date(value);
@@ -75,7 +75,7 @@ export function server_datetime_to_local_input(value) {
  * string-argument form) is unambiguously local time per spec, which is
  * exactly what a `datetime-local` value represents.
  *
- * @param {string} value
+ * @param {String} value
  * @returns {string | null}
  */
 export function local_input_to_server_datetime(value) {
@@ -98,7 +98,7 @@ export function local_input_to_server_datetime(value) {
  *
  * @param {string | null | undefined} start
  * @param {string | null | undefined} end
- * @returns {number}
+ * @returns {Number}
  */
 export function duration_hours(start, end) {
     const s = server_datetime_to_date(start);
@@ -117,7 +117,7 @@ export function duration_hours(start, end) {
  *
  * @param {string | null | undefined} start
  * @param {string | null | undefined} end
- * @returns {number}
+ * @returns {Number}
  */
 export function local_input_duration_hours(start, end) {
     return duration_hours(
@@ -129,8 +129,8 @@ export function local_input_duration_hours(start, end) {
 /**
  * 1.25 -> "1h 15m", 2 -> "2h", 0.1 -> "6m".
  *
- * @param {number} hours
- * @returns {string}
+ * @param {Number} hours
+ * @returns {String}
  */
 export function format_duration(hours) {
     const total_minutes = Math.round(hours * 60);
@@ -146,22 +146,22 @@ export function format_duration(hours) {
 }
 
 /**
+ * @param {Date} d
+ * @returns {String}
+ */
+export function format_clock(d) {
+    return d.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+}
+
+/**
  * Time of day only ("3:20 PM"), in the browser's locale and timezone.
  *
  * @param {string | null | undefined} value
- * @returns {string}
+ * @returns {String}
  */
 export function format_time_of_day(value) {
     const d = server_datetime_to_date(value);
     return d ? format_clock(d) : "";
-}
-
-/**
- * @param {Date} d
- * @returns {string}
- */
-export function format_clock(d) {
-    return d.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
 }
 
 /**
@@ -178,7 +178,7 @@ export function local_input_to_date(value) {
  * Date -> `<input type="datetime-local">` value (local wall-clock).
  *
  * @param {Date} d
- * @returns {string}
+ * @returns {String}
  */
 export function date_to_local_input(d) {
     return server_datetime_to_local_input(date_to_server_datetime(d));

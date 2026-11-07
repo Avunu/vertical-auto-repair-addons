@@ -6,6 +6,7 @@
         <field name="name">fleet.vehicle.form.simplify</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form" />
+        <field name="priority">99</field>
         <field name="arch" type="xml">
             <!-- Corporate lease/tax fields don't apply to a repair shop's customer vehicles. -->
             <xpath expr="//page[@name='page_tax_info']" position="replace" />
@@ -23,7 +24,10 @@
             <!-- Odoo forbids matching on the translated "string" attribute,
                  so these groups are targeted via a stable field inside them
                  instead. -->
-            <xpath expr="//field[@name='driver_id']/parent::group" position="attributes">
+            <xpath
+                expr="//field[@name='driver_id']/parent::group"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
 
@@ -34,40 +38,67 @@
             <xpath expr="//field[@name='vin_sn']/parent::group" position="attributes">
                 <attribute name="name">vin_group</attribute>
             </xpath>
-            <xpath expr="//group[@name='vin_group']/field[@name='category_id']" position="attributes">
+            <xpath
+                expr="//group[@name='vin_group']/field[@name='category_id']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//group[@name='vin_group']/field[@name='order_date']" position="attributes">
+            <xpath
+                expr="//group[@name='vin_group']/field[@name='order_date']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//group[@name='vin_group']/field[@name='acquisition_date']" position="attributes">
+            <xpath
+                expr="//group[@name='vin_group']/field[@name='acquisition_date']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//group[@name='vin_group']/field[@name='write_off_date']" position="attributes">
+            <xpath
+                expr="//group[@name='vin_group']/field[@name='write_off_date']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//group[@name='vin_group']/label[@for='odometer']" position="attributes">
+            <xpath
+                expr="//group[@name='vin_group']/label[@for='odometer']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//group[@name='vin_group']/div[hasclass('o_row', 'o_hr_narrow_field')]" position="attributes">
+            <xpath
+                expr="//group[@name='vin_group']/div[hasclass('o_row', 'o_hr_narrow_field')]"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//group[@name='vin_group']/field[@name='manager_id']" position="attributes">
+            <xpath
+                expr="//group[@name='vin_group']/field[@name='manager_id']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//group[@name='vin_group']/field[@name='location']" position="attributes">
+            <xpath
+                expr="//group[@name='vin_group']/field[@name='location']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
             <!-- "Chassis Number" is European usage; this is a US shop. A VIN
                  is a fixed 17 characters, so it doesn't need a field that
                  stretches to the width of the group's table cell like a
                  regular char field does by default. -->
-            <xpath expr="//group[@name='vin_group']/field[@name='vin_sn']" position="attributes">
+            <xpath
+                expr="//group[@name='vin_group']/field[@name='vin_sn']"
+                position="attributes"
+            >
                 <attribute name="string">VIN</attribute>
                 <attribute name="class">oe_inline</attribute>
             </xpath>
             <xpath expr="//group[@name='vin_group']" position="attributes">
-                <attribute name="string"></attribute>
+                <attribute name="string" />
                 <!-- Sits right after the title block, which has no bottom
                      margin of its own, so this group needs its own top margin
                      to avoid crowding the tags row above it. -->
@@ -87,13 +118,19 @@
             <xpath expr="//label[@for='power']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//div[hasclass('o_row')][field[@name='power']]" position="attributes">
+            <xpath
+                expr="//div[hasclass('o_row')][field[@name='power']]"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//label[@for='vehicle_range']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//div[hasclass('o_row')][field[@name='vehicle_range']]" position="attributes">
+            <xpath
+                expr="//div[hasclass('o_row')][field[@name='vehicle_range']]"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//label[@for='co2']" position="attributes">
@@ -161,22 +198,40 @@
             <button name="open_assignation_logs" position="attributes">
                 <attribute name="invisible">1</attribute>
             </button>
-            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-book']" position="attributes">
+            <xpath
+                expr="//button[@name='return_action_to_open'][@icon='fa-book']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-wrench'][contains(@invisible,'none')]" position="attributes">
+            <xpath
+                expr="//button[@name='return_action_to_open'][@icon='fa-wrench'][contains(@invisible,'none')]"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-wrench'][contains(@invisible,'overdue')]" position="attributes">
+            <xpath
+                expr="//button[@name='return_action_to_open'][@icon='fa-wrench'][contains(@invisible,'overdue')]"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-wrench'][contains(@invisible,'today')]" position="attributes">
+            <xpath
+                expr="//button[@name='return_action_to_open'][@icon='fa-wrench'][contains(@invisible,'today')]"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//button[@name='return_action_to_open'][@icon='fa-tachometer']" position="attributes">
+            <xpath
+                expr="//button[@name='return_action_to_open'][@icon='fa-tachometer']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//button[@name='action_view_inspection']" position="attributes">
+            <xpath
+                expr="//button[@name='action_view_inspection']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
         </field>
@@ -186,6 +241,7 @@
         <field name="name">fleet.vehicle.list.simplify</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree" />
+        <field name="priority">99</field>
         <field name="arch" type="xml">
             <field name="state_id" position="replace" />
             <field name="vin_sn" position="attributes">
@@ -212,6 +268,7 @@
         <field name="name">fleet.vehicle.pivot.simplify</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_pivot" />
+        <field name="priority">99</field>
         <field name="arch" type="xml">
             <field name="state_id" position="replace" />
         </field>
@@ -221,6 +278,7 @@
         <field name="name">fleet.vehicle.search.simplify</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_search" />
+        <field name="priority">99</field>
         <field name="arch" type="xml">
             <field name="state_id" position="replace" />
             <filter name="groupby_status" position="replace" />

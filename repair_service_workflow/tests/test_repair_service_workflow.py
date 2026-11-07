@@ -96,7 +96,7 @@ class TestRepairServiceWorkflow(TransactionCase):
         wizard = wizard_model.create(defaults)
         self.assertEqual(len(wizard.service_line_ids), 2)
         line = wizard.service_line_ids.filtered(
-            lambda l: l.product_id == self.labor
+            lambda service: service.product_id == self.labor
         )
         line.accepted = True
         wizard.action_confirm()

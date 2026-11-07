@@ -30,11 +30,7 @@
                 >
                     <!-- Value entry only: the rows are created from the item
                          specs, so no create/delete here. -->
-                    <field
-                        name="measurement_ids"
-                        nolabel="1"
-                        readonly="state!='draft'"
-                    >
+                    <field name="measurement_ids" nolabel="1" readonly="state!='draft'">
                         <list editable="bottom" create="0" delete="0">
                             <field name="line_id" readonly="1" />
                             <field name="name" readonly="1" />
@@ -56,23 +52,23 @@
             <notebook position="before">
                 <group name="shop_severity_summary">
                     <div class="d-flex gap-2 flex-wrap" colspan="2">
-                        <span
-                            class="badge text-bg-primary"
-                        >Today's Services: <field name="count_today" /></span>
-                        <span
-                            class="badge text-bg-success"
-                        >Good: <field name="count_good" /></span>
-                        <span
-                            class="badge text-bg-warning"
-                        >Future: <field name="count_future" /></span>
-                        <span
-                            class="badge text-bg-warning"
-                        >Needs Attention: <field name="count_attention" /></span>
+                        <span class="badge text-bg-primary">Today's Services: <field
+                            name="count_today"
+                        /></span>
+                        <span class="badge text-bg-success">Good: <field
+                            name="count_good"
+                        /></span>
+                        <span class="badge text-bg-warning">Future: <field
+                            name="count_future"
+                        /></span>
+                        <span class="badge text-bg-warning">Needs Attention: <field
+                            name="count_attention"
+                        /></span>
                         <span
                             class="badge text-bg-danger"
                         >Failed State Inspection: <field
-                                name="count_fail_state"
-                            /></span>
+                            name="count_fail_state"
+                        /></span>
                     </div>
                 </group>
             </notebook>
@@ -80,7 +76,9 @@
     </record>
 
     <record id="fleet_vehicle_inspection_line_tree_view" model="ir.ui.view">
-        <field name="name">fleet.vehicle.inspection.line.list (in shop_inspection)</field>
+        <field
+            name="name"
+        >fleet.vehicle.inspection.line.list (in shop_inspection)</field>
         <field name="model">fleet.vehicle.inspection.line</field>
         <field
             name="inherit_id"
@@ -131,7 +129,9 @@
     </record>
 
     <record id="fleet_vehicle_inspection_line_form_view" model="ir.ui.view">
-        <field name="name">fleet.vehicle.inspection.line.form (in shop_inspection)</field>
+        <field
+            name="name"
+        >fleet.vehicle.inspection.line.form (in shop_inspection)</field>
         <field name="model">fleet.vehicle.inspection.line</field>
         <field
             name="inherit_id"
@@ -139,11 +139,7 @@
         />
         <field name="arch" type="xml">
             <xpath expr="//group/field[@name='inspection_item_id']" position="after">
-                <field
-                    name="severity"
-                    widget="radio"
-                    readonly="state!='draft'"
-                />
+                <field name="severity" widget="radio" readonly="state!='draft'" />
                 <field
                     name="condition_ids"
                     widget="many2many_tags"

@@ -15,22 +15,31 @@
  * checks the same rules and also refuses a break that would cut into other job
  * time; this is only so the technician finds out before tapping Save.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {TimesheetRow} from "../pages/timesheets.esm.js" */
 import {translation_registry} from "/shopfloor_mobile_base/static/src/services/translation_registry.esm.js";
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
 import {
-    server_datetime_to_date,
-    server_datetime_to_local_input,
-    local_input_to_date,
     date_to_server_datetime,
     format_duration,
+    local_input_to_date,
+    server_datetime_to_date,
+    server_datetime_to_local_input,
 } from "../services/datetime.esm.js";
 
 translation_registry.add("en-US.repair.timesheets.edit_break_title", "Edit break");
-translation_registry.add("en-US.repair.timesheets.edit_break_invalid", "The break has to start after you clocked in and end before you clocked out again.");
-translation_registry.add("en-US.repair.timesheets.edit_job_break_invalid", "The break has to start after the earlier part of the timesheet begins and end before the later part ends.");
+translation_registry.add(
+    "en-US.repair.timesheets.edit_break_invalid",
+    "The break has to start after you clocked in and end before you clocked out again."
+);
+translation_registry.add(
+    "en-US.repair.timesheets.edit_job_break_invalid",
+    "The break has to start after the earlier part of the timesheet begins and end before the later part ends."
+);
 
 const RepairBreakEditForm = defineComponent({
     props: {
@@ -51,7 +60,7 @@ const RepairBreakEditForm = defineComponent({
         gap_end() {
             return local_input_to_date(this.break_end);
         },
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         valid() {
             const {gap_start, gap_end} = this;
             if (!gap_start || !gap_end || gap_end.getTime() <= gap_start.getTime()) {
@@ -66,7 +75,7 @@ const RepairBreakEditForm = defineComponent({
             );
         },
         // Updates as either time changes; "—" while the break isn't valid.
-        /** @returns {string} */
+        /** @returns {String} */
         total() {
             const {gap_start, gap_end} = this;
             if (!this.valid || !gap_start || !gap_end) {
@@ -95,20 +104,20 @@ const RepairBreakEditForm = defineComponent({
                     type="datetime-local"
                     :label="$t('repair.timesheets.break_start')"
                     v-model="break_start"
-                    />
+                />
                 <v-text-field
                     type="datetime-local"
                     :label="$t('repair.timesheets.break_end')"
                     v-model="break_end"
-                    />
+                />
                 <div class="repair-timesheet-total">
                     <span>{{ $t('repair.timesheets.total') }}</span>
                     <strong>{{ total }}</strong>
                 </div>
                 <p v-if="!valid" class="repair-timesheet-preview__invalid">
-                    {{ record.source === 'jobs'
-                        ? $t('repair.timesheets.edit_job_break_invalid')
-                        : $t('repair.timesheets.edit_break_invalid') }}
+                    {{ record.source === 'jobs' ?
+                    $t('repair.timesheets.edit_job_break_invalid') :
+                    $t('repair.timesheets.edit_break_invalid') }}
                 </p>
             </v-card-text>
             <v-card-actions>

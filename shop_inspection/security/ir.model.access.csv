@@ -18,4 +18,3 @@ fleet_vehicle_inspection_stock_user,fleet.vehicle.inspection stock user,fleet_ve
 fleet_vehicle_inspection_line_stock_user,fleet.vehicle.inspection.line stock user,fleet_vehicle_inspection.model_fleet_vehicle_inspection_line,stock.group_stock_user,1,0,0,0
 fleet_vehicle_inspection_line_image_stock_user,fleet.vehicle.inspection.line.image stock user,fleet_vehicle_inspection.model_fleet_vehicle_inspection_line_image,stock.group_stock_user,1,0,0,0
 fleet_vehicle_inspection_item_stock_user,fleet.vehicle.inspection.item stock user,fleet_vehicle_inspection.model_fleet_vehicle_inspection_item,stock.group_stock_user,1,0,0,0
-

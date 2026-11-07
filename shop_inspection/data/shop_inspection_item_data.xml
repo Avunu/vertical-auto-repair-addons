@@ -6,14 +6,26 @@
     <record id="item_safety_sticker" model="fleet.vehicle.inspection.item">
         <field name="name">State Safety Inspection / Emissions Stickers</field>
         <field name="category_id" ref="category_check_in" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_expired'), ref('condition_missing')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_state_inspection')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_expired'), ref('condition_missing')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_state_inspection')])]"
+        />
     </record>
     <record id="item_oil_sticker" model="fleet.vehicle.inspection.item">
         <field name="name">Oil Change Reminder Sticker</field>
         <field name="category_id" ref="category_check_in" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_due_now'), ref('condition_expired')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_oil_change')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_due_now'), ref('condition_expired')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_oil_change')])]"
+        />
     </record>
     <record id="item_registration" model="fleet.vehicle.inspection.item">
         <field name="name">Registration Verified</field>
@@ -24,26 +36,43 @@
     <record id="item_test_drive" model="fleet.vehicle.inspection.item">
         <field name="name">Test Drive</field>
         <field name="category_id" ref="category_pre_inspection" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_noise_present')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_inspect_cause')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_noise_present')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_inspect_cause')])]"
+        />
     </record>
     <record id="item_warning_lights" model="fleet.vehicle.inspection.item">
         <field name="name">Instrument Cluster - Warning Lights</field>
         <field name="category_id" ref="category_pre_inspection" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_check_engine_light')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_required_testing'), ref('action_test_check_engine')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_check_engine_light')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_required_testing'), ref('action_test_check_engine')])]"
+        />
     </record>
     <record id="item_walk_around" model="fleet.vehicle.inspection.item">
         <field name="name">Walk Around the Vehicle</field>
         <field name="category_id" ref="category_pre_inspection" />
-        <field name="instruction">Photograph existing damage on all sides of the vehicle.</field>
+        <field
+            name="instruction"
+        >Photograph existing damage on all sides of the vehicle.</field>
     </record>
 
     <!-- Courtesy Inspection items -->
     <record id="item_battery" model="fleet.vehicle.inspection.item">
         <field name="name">Battery</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_replace_battery')])]" />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_replace_battery')])]"
+        />
     </record>
     <record id="spec_battery_cca" model="shop.inspection.measurement.spec">
         <field name="item_id" ref="item_battery" />
@@ -53,8 +82,14 @@
     <record id="item_coolant" model="fleet.vehicle.inspection.item">
         <field name="name">Antifreeze / Coolant</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_fluid_dirty'), ref('condition_fluid_low')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_fluid_service'), ref('action_fill_fluid')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_fluid_dirty'), ref('condition_fluid_low')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_fluid_service'), ref('action_fill_fluid')])]"
+        />
     </record>
     <record id="spec_coolant_freeze" model="shop.inspection.measurement.spec">
         <field name="item_id" ref="item_coolant" />
@@ -65,8 +100,14 @@
     <record id="item_engine_oil" model="fleet.vehicle.inspection.item">
         <field name="name">Engine Oil</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_fluid_dirty'), ref('condition_fluid_low')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_oil_change'), ref('action_fill_fluid')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_fluid_dirty'), ref('condition_fluid_low')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_oil_change'), ref('action_fill_fluid')])]"
+        />
     </record>
     <record id="item_washers" model="fleet.vehicle.inspection.item">
         <field name="name">Windshield Washers</field>
@@ -75,62 +116,122 @@
     <record id="item_air_filter" model="fleet.vehicle.inspection.item">
         <field name="name">Engine Air Filter</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_dirty_restricted')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_replace_air_filter')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_dirty_restricted')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_replace_air_filter')])]"
+        />
     </record>
     <record id="item_belts" model="fleet.vehicle.inspection.item">
         <field name="name">Belts</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_torn_cracked')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_replace_belts')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_torn_cracked')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_replace_belts')])]"
+        />
     </record>
     <record id="item_wipers" model="fleet.vehicle.inspection.item">
         <field name="name">Windshield Wipers</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_broken_damaged'), ref('condition_torn_cracked')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_replace_wipers')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_broken_damaged'), ref('condition_torn_cracked')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_replace_wipers')])]"
+        />
     </record>
     <record id="item_transmission_fluid" model="fleet.vehicle.inspection.item">
         <field name="name">Transmission Fluid</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_fluid_low'), ref('condition_fluid_dirty'), ref('condition_leaking_transmission')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_inspect_cause'), ref('action_fluid_service'), ref('action_repair_leaks')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_fluid_low'), ref('condition_fluid_dirty'), ref('condition_leaking_transmission')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_inspect_cause'), ref('action_fluid_service'), ref('action_repair_leaks')])]"
+        />
     </record>
     <record id="item_power_steering_fluid" model="fleet.vehicle.inspection.item">
         <field name="name">Power Steering Fluid</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_fluid_dirty'), ref('condition_fluid_low')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_fluid_service')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_fluid_dirty'), ref('condition_fluid_low')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_fluid_service')])]"
+        />
     </record>
     <record id="item_brake_fluid" model="fleet.vehicle.inspection.item">
         <field name="name">Brake Fluid</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_fluid_dirty'), ref('condition_fluid_moisture')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_fluid_service')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_fluid_dirty'), ref('condition_fluid_moisture')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_fluid_service')])]"
+        />
     </record>
     <record id="item_exterior_lights" model="fleet.vehicle.inspection.item">
         <field name="name">Exterior Lights</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_headlights_cloudy'), ref('condition_broken_damaged')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_headlight_restoration')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_headlights_cloudy'), ref('condition_broken_damaged')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_headlight_restoration')])]"
+        />
     </record>
     <record id="item_struts_shocks" model="fleet.vehicle.inspection.item">
         <field name="name">Strut(s) / Shock(s)</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_leaking'), ref('condition_broken_damaged')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_replace_struts'), ref('action_replace_shocks')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_leaking'), ref('condition_broken_damaged')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_replace_struts'), ref('action_replace_shocks')])]"
+        />
     </record>
     <record id="item_fluid_leaks" model="fleet.vehicle.inspection.item">
         <field name="name">Fluid Leak(s)</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_leaking'), ref('condition_leaking_transmission')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_repair_leaks')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_leaking'), ref('condition_leaking_transmission')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_repair_leaks')])]"
+        />
     </record>
     <record id="item_tires_wheels" model="fleet.vehicle.inspection.item">
         <field name="name">Tires &amp; Wheels</field>
         <field name="category_id" ref="category_courtesy" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_worn_beyond_spec')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_rotate_tires'), ref('action_replace_tires')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_worn_beyond_spec')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_rotate_tires'), ref('action_replace_tires')])]"
+        />
     </record>
     <record id="spec_tread_lf" model="shop.inspection.measurement.spec">
         <field name="item_id" ref="item_tires_wheels" />
@@ -202,13 +303,22 @@
         <field name="name">Body - Doors - Latches - Seat Belts</field>
         <field name="category_id" ref="category_state_safety" />
         <field name="condition_ids" eval="[Command.set([ref('condition_fail')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_inspect_cause')])]" />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_inspect_cause')])]"
+        />
     </record>
     <record id="item_brake_lining" model="fleet.vehicle.inspection.item">
         <field name="name">Brake Lining - Rotors / Drums</field>
         <field name="category_id" ref="category_state_safety" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_worn_beyond_spec')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_replace_brakes')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_worn_beyond_spec')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_replace_brakes')])]"
+        />
     </record>
     <record id="spec_pads_lf" model="shop.inspection.measurement.spec">
         <field name="item_id" ref="item_brake_lining" />
@@ -259,8 +369,14 @@
     <record id="item_emissions_test" model="fleet.vehicle.inspection.item">
         <field name="name">Emissions Test</field>
         <field name="category_id" ref="category_state_safety" />
-        <field name="condition_ids" eval="[Command.set([ref('condition_failed_test')])]" />
-        <field name="recommended_action_ids" eval="[Command.set([ref('action_test_check_engine')])]" />
+        <field
+            name="condition_ids"
+            eval="[Command.set([ref('condition_failed_test')])]"
+        />
+        <field
+            name="recommended_action_ids"
+            eval="[Command.set([ref('action_test_check_engine')])]"
+        />
     </record>
     <record id="item_road_test" model="fleet.vehicle.inspection.item">
         <field name="name">Road Test</field>

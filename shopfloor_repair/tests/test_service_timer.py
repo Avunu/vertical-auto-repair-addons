@@ -37,11 +37,17 @@ class TestServiceTimer(RepairJobCase):
 
     def test_mine_counts_only_my_time_on_a_shared_service(self):
         service = self._service_line(self.repair)
-        other = self.env["res.users"].sudo().create(
-            {"name": "Other Tech", "login": "other.tech"}
+        other = (
+            self.env["res.users"]
+            .sudo()
+            .create({"name": "Other Tech", "login": "other.tech"})
         )
-        other_employee = self.env["hr.employee"].sudo().create(
-            {"name": other.name, "user_id": other.id, "company_id": self.company.id}
+        other_employee = (
+            self.env["hr.employee"]
+            .sudo()
+            .create(
+                {"name": other.name, "user_id": other.id, "company_id": self.company.id}
+            )
         )
         for employee, hours in ((self.employee, 1.0), (other_employee, 2.0)):
             self.env["account.analytic.line"].sudo().create(
@@ -55,9 +61,9 @@ class TestServiceTimer(RepairJobCase):
                     "unit_amount": hours,
                 }
             )
-        records = self.state_data(
-            self._dispatch("services", repair_id=self.repair.id)
-        )["records"]
+        records = self.state_data(self._dispatch("services", repair_id=self.repair.id))[
+            "records"
+        ]
         row = next(rec for rec in records if rec["id"] == service.id)
         self.assertEqual(row["my_time"], 1.0)
         self.assertEqual(row["actual_time"], 3.0)
@@ -138,8 +144,10 @@ class TestServiceTimer(RepairJobCase):
     # -- the day clock starts with the first timer --------------------------
 
     def _attendances(self):
-        return self.env["hr.attendance"].sudo().search(
-            [("employee_id", "=", self.employee.id)]
+        return (
+            self.env["hr.attendance"]
+            .sudo()
+            .search([("employee_id", "=", self.employee.id)])
         )
 
     def test_first_timer_of_the_day_clocks_you_in_and_says_so(self):
@@ -168,4 +176,3 @@ class TestServiceTimer(RepairJobCase):
         self.assertEqual(len(self._attendances()), 1)
         self.assertEqual(response["message"]["message_type"], "success")
         self.assertNotIn("clocked in", response["message"]["body"])
-

@@ -194,21 +194,31 @@ class TestTimesheetActions(RepairJobCase):
         self.assertFalse(line.repair_service_id)
 
     def test_moving_a_line_to_a_job_shared_through_its_appointment_type(self):
-        other = self.env["res.users"].sudo().create(
-            {"name": "Other Tech", "login": "other.tech"}
+        other = (
+            self.env["res.users"]
+            .sudo()
+            .create({"name": "Other Tech", "login": "other.tech"})
         )
         theirs = self._make_repair(technician=other)
-        resource = self.env["resource.resource"].sudo().search(
-            [("user_id", "=", self.technician.id)]
+        resource = (
+            self.env["resource.resource"]
+            .sudo()
+            .search([("user_id", "=", self.technician.id)])
         )
-        combination = self.env["resource.booking.combination"].sudo().create(
-            {"resource_ids": [(6, 0, resource.ids)]}
+        combination = (
+            self.env["resource.booking.combination"]
+            .sudo()
+            .create({"resource_ids": [(6, 0, resource.ids)]})
         )
-        booking_type = self.env["resource.booking.type"].sudo().create(
-            {
-                "name": "Alignment",
-                "combination_rel_ids": [(0, 0, {"combination_id": combination.id})],
-            }
+        booking_type = (
+            self.env["resource.booking.type"]
+            .sudo()
+            .create(
+                {
+                    "name": "Alignment",
+                    "combination_rel_ids": [(0, 0, {"combination_id": combination.id})],
+                }
+            )
         )
         self.env["resource.booking"].sudo().create(
             {
@@ -364,7 +374,8 @@ class TestTimesheetActions(RepairJobCase):
             "repair_timesheet",
             "update_break",
             attendance_id=morning.id,
-            break_start="2026-01-05 08:30:00",  # before the job time that ends the morning
+            # Before the job time that ends the morning.
+            break_start="2026-01-05 08:30:00",
             break_end="2026-01-05 10:30:00",
         )
         self.assert_error(response)
@@ -405,9 +416,7 @@ class TestTimesheetActions(RepairJobCase):
 
     def test_there_is_no_break_after_the_last_period(self):
         only = self._attendance(at(8), at(17))
-        response = self._call(
-            "repair_timesheet", "delete_break", attendance_id=only.id
-        )
+        response = self._call("repair_timesheet", "delete_break", attendance_id=only.id)
         self.assert_error(response)
         self.assertEqual(only.check_out, at(17))
 
@@ -492,9 +501,7 @@ class TestTimesheetActions(RepairJobCase):
         self.assertFalse(self._call("app", "user_config")["data"]["default_profile_id"])
         response = self._call("app", "set_default_profile", profile_id=self.profile.id)
         self.assert_no_error(response)
-        self.assertEqual(
-            self.technician.shopfloor_default_profile_id, self.profile
-        )
+        self.assertEqual(self.technician.shopfloor_default_profile_id, self.profile)
         self.assertEqual(
             self._call("app", "user_config")["data"]["default_profile_id"],
             self.profile.id,

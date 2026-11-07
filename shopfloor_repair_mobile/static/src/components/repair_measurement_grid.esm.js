@@ -8,6 +8,9 @@
  * the field starts blank rather than at zero and is only sent on blur -- one
  * round trip per reading, not one per keystroke.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
@@ -15,19 +18,22 @@ import {html} from "../services/html.esm.js";
 /**
  * @typedef {Object} Measurement
  * @property {unknown} id
- * @property {string} name
- * @property {number} value
- * @property {string} [position]
- * @property {string} [position_label]
- * @property {number} [spec_min]
- * @property {number} [spec_max]
- * @property {string} [uom_label]
- * @property {boolean} [out_of_spec]
+ * @property {String} name
+ * @property {Number} value
+ * @property {String} [position]
+ * @property {String} [position_label]
+ * @property {Number} [spec_min]
+ * @property {Number} [spec_max]
+ * @property {String} [uom_label]
+ * @property {Boolean} [out_of_spec]
  */
 
 const RepairMeasurementGrid = defineComponent({
     props: {
-        measurements: {type: /** @type {PropType<Measurement[]>} */ (Array), default: () => []},
+        measurements: {
+            type: /** @type {PropType<Measurement[]>} */ (Array),
+            default: () => [],
+        },
     },
     data() {
         return {
@@ -52,13 +58,13 @@ const RepairMeasurementGrid = defineComponent({
             /** @type {Record<string, string | number>} */
             const local = {};
             (values || []).forEach((m) => {
-                local[/** @type {string} */ (m.id)] = m.value ? m.value : "";
+                local[/** @type {String} */ (m.id)] = m.value ? m.value : "";
             });
             this.local = local;
         },
         /**
          * @param {Measurement} measurement
-         * @returns {string}
+         * @returns {String}
          */
         label(measurement) {
             const bits = [measurement.name];
@@ -69,7 +75,7 @@ const RepairMeasurementGrid = defineComponent({
         },
         /**
          * @param {Measurement} measurement
-         * @returns {string}
+         * @returns {String}
          */
         spec_hint(measurement) {
             /** @type {string[]} */
@@ -87,7 +93,7 @@ const RepairMeasurementGrid = defineComponent({
          * @returns {void}
          */
         commit(measurement) {
-            const raw = this.local[/** @type {string} */ (measurement.id)];
+            const raw = this.local[/** @type {String} */ (measurement.id)];
             const value = raw === "" || raw === null ? 0 : Number(raw);
             if (Number.isNaN(value) || value === measurement.value) {
                 return;
@@ -97,12 +103,20 @@ const RepairMeasurementGrid = defineComponent({
     },
     template: html`
         <div class="measurement-grid" v-if="measurements.length">
-            <separator-title>{{ $t('repair.inspection.measurements') }}</separator-title>
-            <div class="measurement-row" v-for="m in measurements" :key="m.id"
-                 :class="{'measurement-row--alert': m.out_of_spec}">
+            <separator-title
+                >{{ $t('repair.inspection.measurements') }}</separator-title
+            >
+            <div
+                class="measurement-row"
+                v-for="m in measurements"
+                :key="m.id"
+                :class="{'measurement-row--alert': m.out_of_spec}"
+            >
                 <div class="measurement-row__label">
                     <div class="name">{{ label(m) }}</div>
-                    <div class="spec" v-if="spec_hint(m)">{{ spec_hint(m) }} {{ m.uom_label }}</div>
+                    <div class="spec" v-if="spec_hint(m)">
+                        {{ spec_hint(m) }} {{ m.uom_label }}
+                    </div>
                 </div>
                 <div class="measurement-row__input">
                     <v-text-field
@@ -113,7 +127,8 @@ const RepairMeasurementGrid = defineComponent({
                         :suffix="m.uom_label"
                         :placeholder="$t('repair.inspection.not_measured')"
                         @blur="commit(m)"
-                        @keyup.enter="commit(m)" />
+                        @keyup.enter="commit(m)"
+                    />
                     <v-icon color="error" v-if="m.out_of_spec">mdi-alert-circle</v-icon>
                 </div>
             </div>

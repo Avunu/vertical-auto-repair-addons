@@ -15,16 +15,20 @@ class TestJobList(RepairJobCase):
         self.assertIn(self.repair.id, ids)
 
     def test_jobs_excludes_another_technicians_job(self):
-        other = self.env["res.users"].sudo().create(
-            {"name": "Other Tech", "login": "other.tech"}
+        other = (
+            self.env["res.users"]
+            .sudo()
+            .create({"name": "Other Tech", "login": "other.tech"})
         )
         theirs = self._make_repair(technician=other)
         ids = [rec["id"] for rec in self.state_data(self._dispatch("jobs"))["records"]]
         self.assertNotIn(theirs.id, ids)
 
     def _other_technician(self):
-        user = self.env["res.users"].sudo().create(
-            {"name": "Other Tech", "login": "other.tech"}
+        user = (
+            self.env["res.users"]
+            .sudo()
+            .create({"name": "Other Tech", "login": "other.tech"})
         )
         self.env["hr.employee"].sudo().create(
             {"name": user.name, "user_id": user.id, "company_id": self.company.id}
@@ -34,10 +38,12 @@ class TestJobList(RepairJobCase):
     def _booking_type(self, *users):
         combinations = self.env["resource.booking.combination"].sudo()
         for user in users:
-            resource = self.env["resource.resource"].sudo().search(
-                [("user_id", "=", user.id)]
+            resource = (
+                self.env["resource.resource"].sudo().search([("user_id", "=", user.id)])
             )
-            combinations |= combinations.create({"resource_ids": [(6, 0, resource.ids)]})
+            combinations |= combinations.create(
+                {"resource_ids": [(6, 0, resource.ids)]}
+            )
         return (
             self.env["resource.booking.type"]
             .sudo()
@@ -108,8 +114,12 @@ class TestJobList(RepairJobCase):
         self.assertIn(unassigned.id, ids)
 
     def test_jobs_excludes_done_and_draft(self):
-        draft = self.env["repair.order"].sudo().create(
-            {"partner_id": self.customer.id, "technician_id": self.technician.id}
+        draft = (
+            self.env["repair.order"]
+            .sudo()
+            .create(
+                {"partner_id": self.customer.id, "technician_id": self.technician.id}
+            )
         )
         ids = [rec["id"] for rec in self.state_data(self._dispatch("jobs"))["records"]]
         self.assertNotIn(draft.id, ids)
