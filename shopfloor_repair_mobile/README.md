@@ -4,8 +4,9 @@ The iPad-first technician app: assigned jobs, a work timer, parts consumption wi
 camera scanning, and digital vehicle inspections with severity grading, measurements and
 photos.
 
-The REST services live in [`shopfloor_repair`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/../shopfloor_repair/); this module is the
-Vue frontend plus the `shopfloor.app` record that publishes it.
+The REST services live in
+[`shopfloor_repair`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/../shopfloor_repair/);
+this module is the Vue frontend plus the `shopfloor.app` record that publishes it.
 
 Once installed the app is at **`/shopfloor/app/repair_shop`** and its API at
 `/shopfloor/api/repair_shop/…`.
@@ -62,7 +63,8 @@ there, and nobody types a 40-character secret twice.
 `shopfloor.app._get_services()` returns nothing while Odoo is still building its
 registry — which is exactly when a post-init hook runs. Between them, a fresh install
 would answer 404 on every endpoint until somebody found the "Sync registry" button.
-[`hooks.py`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/hooks.py) handles both.
+[`hooks.py`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/hooks.py)
+handles both.
 
 If routes ever go missing (after restoring a database, say), open the app record and
 press **Sync registry**.
@@ -85,35 +87,36 @@ count surprises you.
 ## Frontend conventions
 
 Vue 2 + Vuetify 2, **no build step**: plain ES modules loaded by
-[`templates/assets.xml`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/templates/assets.xml) at the `new_scenario_hook` marker, with
-`Vue` and `_` (lodash) as globals. No SFCs, no JSX: each component is a
-`Vue.component()` options object whose `template` is a string, compiled in the browser
-by the full Vue build `shopfloor_mobile_base` loads.
-[`static/src/index.esm.js`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/static/src/index.esm.js) is the one entry point; it imports
-components before the scenario so its template can reference them.
+[`templates/assets.xml`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/templates/assets.xml)
+at the `new_scenario_hook` marker, with `Vue` and `_` (lodash) as globals. No SFCs, no
+JSX: each component is a `Vue.component()` options object whose `template` is a string,
+compiled in the browser by the full Vue build `shopfloor_mobile_base` loads.
+[`static/src/index.esm.js`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/static/src/index.esm.js)
+is the one entry point; it imports components before the scenario so its template can
+reference them.
 
 Templates are written as html`...` tagged literals
-([`static/src/services/html.esm.js`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/static/src/services/html.esm.js), which returns the
-text unchanged). The tag is for tooling: VS Code's `bierner.lit-html` extension gives
-HTML highlighting, tag and attribute completion, hovers and auto-closing tags inside any
-html`...` literal. It knows HTML, not Vue: directive values and `{{ }}` are not
-type-checked in the editor.
+([`static/src/services/html.esm.js`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/static/src/services/html.esm.js),
+which returns the text unchanged). The tag is for tooling: VS Code's `bierner.lit-html`
+extension gives HTML highlighting, tag and attribute completion, hovers and auto-closing
+tags inside any html`...` literal. It knows HTML, not Vue: directive values and `{{ }}`
+are not type-checked in the editor.
 
 Types are JSDoc comments, checked (never compiled) by TypeScript, and every template is
 compiled by Vue's own 2.6.12 template compiler — the version the browser runs — which
 reports bad expressions, unclosed tags, a stray `v-else` and so on as `file:line:col`:
 `npm install && npm run typecheck` in `static/`
-([`static/check_templates.mjs`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/static/check_templates.mjs)). That is a development
-check only — nothing in `static/` is generated, and production needs no Node.
-`defineComponent()`
+([`static/check_templates.mjs`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/static/check_templates.mjs)).
+That is a development check only — nothing in `static/` is generated, and production
+needs no Node. `defineComponent()`
 ([`static/src/services/define_component.esm.js`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/static/src/services/define_component.esm.js))
 wraps each options object purely so the checker can see `this`; it returns its argument
 unchanged.
 
 Severity colours live in
-[`static/src/components/severity.esm.js`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/static/src/components/severity.esm.js) and
-deliberately match the customer-facing PDF that `shop_inspection_report` renders — red
-on the tablet and red on the report the customer is holding mean the same thing.
+[`static/src/components/severity.esm.js`](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/shopfloor_repair_mobile/static/src/components/severity.esm.js)
+and deliberately match the customer-facing PDF that `shop_inspection_report` renders —
+red on the tablet and red on the report the customer is holding mean the same thing.
 
 Two small things that are easy to get wrong again:
 
