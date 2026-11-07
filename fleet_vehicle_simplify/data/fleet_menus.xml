@@ -16,7 +16,10 @@
     <record id="fleet.fleet_vehicle_odometer_menu" model="ir.ui.menu">
         <field name="active">False</field>
     </record>
-    <record id="fleet_vehicle_inspection.fleet_vehicle_inspection_menu" model="ir.ui.menu">
+    <record
+        id="fleet_vehicle_inspection.fleet_vehicle_inspection_menu"
+        model="ir.ui.menu"
+    >
         <field name="active">False</field>
     </record>
 
@@ -25,10 +28,16 @@
          menus, which we're also hiding here) or lease-vehicle configuration
          (vehicle status/tags, activity types) tied to the workflow we removed
          from the vehicle form. -->
-    <record id="fleet_vehicle_inspection.fleet_vehicle_inspection_item_menu" model="ir.ui.menu">
+    <record
+        id="fleet_vehicle_inspection.fleet_vehicle_inspection_item_menu"
+        model="ir.ui.menu"
+    >
         <field name="active">False</field>
     </record>
-    <record id="fleet_vehicle_inspection_template.fleet_vehicle_inspection_template_menu" model="ir.ui.menu">
+    <record
+        id="fleet_vehicle_inspection_template.fleet_vehicle_inspection_template_menu"
+        model="ir.ui.menu"
+    >
         <field name="active">False</field>
     </record>
     <record id="shop_inspection.shop_inspection_category_menu" model="ir.ui.menu">

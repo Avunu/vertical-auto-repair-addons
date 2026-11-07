@@ -13,31 +13,40 @@
  * (the same rule the server enforces - this is only so the technician finds
  * out before tapping Save, not instead of the server check).
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {TimesheetListEntry} from "../pages/timesheets.esm.js" */
 import {translation_registry} from "/shopfloor_mobile_base/static/src/services/translation_registry.esm.js";
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
 import {
-    server_datetime_to_date,
-    local_input_to_date,
     date_to_local_input,
     date_to_server_datetime,
     format_clock,
     format_duration,
+    local_input_to_date,
+    server_datetime_to_date,
 } from "../services/datetime.esm.js";
 
 translation_registry.add("en-US.repair.timesheets.break_title", "Add break");
 translation_registry.add("en-US.repair.timesheets.break_start", "Break starts");
 translation_registry.add("en-US.repair.timesheets.break_end", "Break ends");
-translation_registry.add("en-US.repair.timesheets.break_invalid", "The break has to fall inside the timesheet.");
+translation_registry.add(
+    "en-US.repair.timesheets.break_invalid",
+    "The break has to fall inside the timesheet."
+);
 translation_registry.add("en-US.repair.timesheets.entry_range", "Timesheet");
 
 const DEFAULT_BREAK_MINUTES = 15;
 
 const RepairTimesheetBreakForm = defineComponent({
     props: {
-        record: {type: /** @type {PropType<TimesheetListEntry>} */ (Object), required: true},
+        record: {
+            type: /** @type {PropType<TimesheetListEntry>} */ (Object),
+            required: true,
+        },
     },
     data() {
         const start = server_datetime_to_date(this.record.date_time);
@@ -49,7 +58,10 @@ const RepairTimesheetBreakForm = defineComponent({
         let break_end = "";
         if (start && end) {
             const middle = (start.getTime() + end.getTime()) / 2;
-            const length = Math.min(DEFAULT_BREAK_MINUTES * 60000, (end.getTime() - middle) / 2);
+            const length = Math.min(
+                DEFAULT_BREAK_MINUTES * 60000,
+                (end.getTime() - middle) / 2
+            );
             break_start = date_to_local_input(new Date(middle));
             break_end = date_to_local_input(new Date(middle + length));
         }
@@ -72,7 +84,7 @@ const RepairTimesheetBreakForm = defineComponent({
         gap_end() {
             return local_input_to_date(this.break_end);
         },
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         valid() {
             const {entry_start, entry_end, gap_start, gap_end} = this;
             return Boolean(
@@ -86,7 +98,7 @@ const RepairTimesheetBreakForm = defineComponent({
             );
         },
         // Updates as either time changes; "—" while the break isn't valid.
-        /** @returns {string} */
+        /** @returns {String} */
         total() {
             const {gap_start, gap_end} = this;
             if (!this.valid || !gap_start || !gap_end) {
@@ -95,10 +107,12 @@ const RepairTimesheetBreakForm = defineComponent({
             return format_duration((gap_end.getTime() - gap_start.getTime()) / 3600000);
         },
         // "10:50 AM – 5:11 PM": what the break has to fit inside.
-        /** @returns {string} */
+        /** @returns {String} */
         entry_range() {
             const {entry_start, entry_end} = this;
-            return entry_start && entry_end ? `${format_clock(entry_start)} – ${format_clock(entry_end)}` : "";
+            return entry_start && entry_end
+                ? `${format_clock(entry_start)} – ${format_clock(entry_end)}`
+                : "";
         },
     },
     methods: {
@@ -118,18 +132,19 @@ const RepairTimesheetBreakForm = defineComponent({
             <v-card-title>{{ $t('repair.timesheets.break_title') }}</v-card-title>
             <v-card-text>
                 <div class="repair-timesheet-hint">
-                    {{ $t('repair.timesheets.entry_range') }}: <strong>{{ entry_range }}</strong>
+                    {{ $t('repair.timesheets.entry_range') }}:
+                    <strong>{{ entry_range }}</strong>
                 </div>
                 <v-text-field
                     type="datetime-local"
                     :label="$t('repair.timesheets.break_start')"
                     v-model="break_start"
-                    />
+                />
                 <v-text-field
                     type="datetime-local"
                     :label="$t('repair.timesheets.break_end')"
                     v-model="break_end"
-                    />
+                />
                 <div class="repair-timesheet-total">
                     <span>{{ $t('repair.timesheets.total') }}</span>
                     <strong>{{ total }}</strong>

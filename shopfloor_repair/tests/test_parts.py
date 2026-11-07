@@ -28,9 +28,7 @@ class TestParts(RepairJobCase):
         """The whole point: never touch product_uom_qty from the shop floor."""
         move = self.move
         demand_before = move.product_uom_qty
-        response = self._dispatch(
-            "set_quantity", move_id=move.id, quantity=1.0
-        )
+        response = self._dispatch("set_quantity", move_id=move.id, quantity=1.0)
         self.assert_no_error(response)
         self.assertEqual(move.quantity, 1.0)
         self.assertTrue(move.picked)
@@ -39,15 +37,19 @@ class TestParts(RepairJobCase):
     def test_set_quantity_does_not_rewrite_the_sale_order_line(self):
         """Editing demand would rewrite the customer's approved quote."""
         move = self.move
-        sale_order = self.env["sale.order"].sudo().create(
-            {"partner_id": self.customer.id}
+        sale_order = (
+            self.env["sale.order"].sudo().create({"partner_id": self.customer.id})
         )
-        sale_line = self.env["sale.order.line"].sudo().create(
-            {
-                "order_id": sale_order.id,
-                "product_id": self.part.id,
-                "product_uom_qty": 2.0,
-            }
+        sale_line = (
+            self.env["sale.order.line"]
+            .sudo()
+            .create(
+                {
+                    "order_id": sale_order.id,
+                    "product_id": self.part.id,
+                    "product_uom_qty": 2.0,
+                }
+            )
         )
         move.sudo().sale_line_id = sale_line
         self._dispatch("set_quantity", move_id=move.id, quantity=1.0)
@@ -67,9 +69,7 @@ class TestParts(RepairJobCase):
         self.assertFalse(self.move.picked)
 
     def test_negative_quantity_refused(self):
-        response = self._dispatch(
-            "set_quantity", move_id=self.move.id, quantity=-1.0
-        )
+        response = self._dispatch("set_quantity", move_id=self.move.id, quantity=-1.0)
         self.assert_error(response)
         self.assertEqual(self.move.quantity, 0.0)
 
@@ -91,9 +91,7 @@ class TestParts(RepairJobCase):
             "scan_part", repair_id=self.repair.id, barcode="SFR-TEST-OF-200"
         )
         self.assert_next_state(response, "catalog_detail")
-        self.assertEqual(
-            self.state_data(response)["record"]["id"], self.other_part.id
-        )
+        self.assertEqual(self.state_data(response)["record"]["id"], self.other_part.id)
 
     def test_scan_unknown_part(self):
         response = self._dispatch(
@@ -103,7 +101,9 @@ class TestParts(RepairJobCase):
         self.assert_error(response)
 
     def test_tracked_part_requires_a_lot(self):
-        tracked = self._make_product("Turbo", "TB-1", "SFR-TEST-TB-1", tracking="serial")
+        tracked = self._make_product(
+            "Turbo", "TB-1", "SFR-TEST-TB-1", tracking="serial"
+        )
         repair = self._make_repair(parts=[(tracked, 1.0)])
         move = repair.move_ids.filtered(lambda m: m.product_id == tracked)
         response = self._dispatch("consume_all", move_id=move.id)
@@ -111,11 +111,21 @@ class TestParts(RepairJobCase):
         self.assertEqual(move.quantity, 0.0)
 
     def test_tracked_part_consumed_with_a_lot(self):
-        tracked = self._make_product("Turbo", "TB-2", "SFR-TEST-TB-2", tracking="serial")
+        tracked = self._make_product(
+            "Turbo", "TB-2", "SFR-TEST-TB-2", tracking="serial"
+        )
         repair = self._make_repair(parts=[(tracked, 1.0)])
         move = repair.move_ids.filtered(lambda m: m.product_id == tracked)
-        lot = self.env["stock.lot"].sudo().create(
-            {"name": "SN-0001", "product_id": tracked.id, "company_id": self.company.id}
+        lot = (
+            self.env["stock.lot"]
+            .sudo()
+            .create(
+                {
+                    "name": "SN-0001",
+                    "product_id": tracked.id,
+                    "company_id": self.company.id,
+                }
+            )
         )
         response = self._dispatch(
             "set_quantity", move_id=move.id, quantity=1.0, lot_id=lot.id

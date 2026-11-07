@@ -22,18 +22,14 @@ class RepairServiceConfirmWizard(models.TransientModel):
         res = super().default_get(fields_list)
         if self.env.context.get("active_model") != "repair.order":
             return res
-        repair = self.env["repair.order"].browse(
-            self.env.context.get("active_id")
-        )
+        repair = self.env["repair.order"].browse(self.env.context.get("active_id"))
         if not repair:
             return res
         if "repair_id" in fields_list:
             res["repair_id"] = repair.id
         if "service_line_ids" in fields_list:
             res["service_line_ids"] = [
-                Command.create(
-                    {"service_id": service.id, "accepted": service.accepted}
-                )
+                Command.create({"service_id": service.id, "accepted": service.accepted})
                 for service in repair.repair_service_ids
             ]
         return res
@@ -78,7 +74,5 @@ class RepairServiceConfirmWizardLine(models.TransientModel):
     service_id = fields.Many2one("repair.service")
     product_id = fields.Many2one(related="service_id.product_id", readonly=True)
     display_name = fields.Text(related="service_id.display_name", readonly=True)
-    estimated_time = fields.Float(
-        related="service_id.estimated_time", readonly=True
-    )
+    estimated_time = fields.Float(related="service_id.estimated_time", readonly=True)
     accepted = fields.Boolean()

@@ -3,6 +3,7 @@
 from unittest.mock import MagicMock, patch
 
 from odoo.tests import TransactionCase, tagged
+from odoo.tools import mute_logger
 
 from odoo.addons.repair_purchase_order_match.models import purchase_order as po_module
 
@@ -41,7 +42,9 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
             {"model_id": self.vehicle_model.id, "model_year": model_year}
         )
 
-    def _make_repair(self, vehicle=None, customer_concern="Rear brakes need to be replaced"):
+    def _make_repair(
+        self, vehicle=None, customer_concern="Rear brakes need to be replaced"
+    ):
         return self.env["repair.order"].create(
             {
                 "product_id": self.item_to_repair.id,
@@ -120,9 +123,7 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
     def test_match_state_describes_the_purchase_order(self):
         po = self._make_po([(self.part_a, 3.0)])
         self.assertEqual(po._typesafe_match_state()["vendor"], "NAPA Vendor")
-        self.assertEqual(
-            po._typesafe_match_state()["lines"][0]["Quantity"], 3.0
-        )
+        self.assertEqual(po._typesafe_match_state()["lines"][0]["Quantity"], 3.0)
 
     def test_repairs_without_a_vehicle_are_not_candidates(self):
         self.env["repair.order"].create(
@@ -149,7 +150,10 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
         client.__enter__.return_value = client
         client.__exit__.return_value = False
         client.system_one.side_effect = po_module.TypeSafeError("boom")
-        with patch.object(po_module, "TypeSafeClient", return_value=client):
+        with (
+            patch.object(po_module, "TypeSafeClient", return_value=client),
+            mute_logger(po_module.__name__),
+        ):
             self.assertIsNone(po._repair_match_via_typesafe())
 
     # ----------------------------------------------------------
@@ -175,8 +179,12 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
     def test_suggestion_links_purchase_order_and_original_email(self):
         repair = self._make_repair()
         po = self._make_po()
-        backend = self.env["edi.backend"].search([], limit=1)
         exchange_type = self.env["edi.exchange.type"].search([], limit=1)
+        # An exchange record's backend has to fit its type: the type's own backend
+        # if it has one, otherwise any backend of the type's backend type.
+        backend = exchange_type.backend_id or self.env["edi.backend"].search(
+            [("backend_type_id", "=", exchange_type.backend_type_id.id)], limit=1
+        )
         if not (backend and exchange_type):
             self.skipTest("No EDI backend/exchange type available")
         exchange_record = self.env["edi.exchange.record"].create(
@@ -190,7 +198,9 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
 
         po_body = po.message_ids.sorted("id")[-1].body
         repair_body = repair.message_ids.sorted("id")[-1].body
-        email_marker = f'data-oe-model="edi.exchange.record" data-oe-id="{exchange_record.id}"'
+        email_marker = (
+            f'data-oe-model="edi.exchange.record" data-oe-id="{exchange_record.id}"'
+        )
         po_marker = f'data-oe-model="purchase.order" data-oe-id="{po.id}"'
         self.assertIn(email_marker, po_body)
         self.assertIn(email_marker, repair_body)
@@ -206,7 +216,9 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
             po._repair_auto_link_or_suggest()
 
         self.assertNotIn("edi.exchange.record", po.message_ids.sorted("id")[-1].body)
-        self.assertNotIn("edi.exchange.record", repair.message_ids.sorted("id")[-1].body)
+        self.assertNotIn(
+            "edi.exchange.record", repair.message_ids.sorted("id")[-1].body
+        )
 
     def test_confirm_token_is_specific_to_the_po_repair_pair(self):
         repair_1 = self._make_repair()
@@ -251,7 +263,9 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
             po._repair_auto_link_or_suggest()
 
         client.system_one.assert_not_called()
-        self.assertEqual(self._parts_on(repair).created_purchase_line_ids, po.order_line)
+        self.assertEqual(
+            self._parts_on(repair).created_purchase_line_ids, po.order_line
+        )
         self.assertFalse(self._parts_on(other))
         po_message = po.message_ids.sorted("id")[-1]
         repair_message = repair.message_ids.sorted("id")[-1]
@@ -309,7 +323,9 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
             po._repair_auto_link_or_suggest()
 
         self.assertFalse(self._parts_on(repair))
-        self.assertIn("/repair_purchase_order_match/confirm", po.message_ids.sorted("id")[-1].body)
+        self.assertIn(
+            "/repair_purchase_order_match/confirm", po.message_ids.sorted("id")[-1].body
+        )
 
     def test_po_number_naming_a_closed_repair_order_is_not_linked(self):
         repair = self._make_repair()
@@ -345,7 +361,9 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
 
         action = repair.with_context(po_id=po.id).action_link_purchase_order()
 
-        self.assertEqual((action["res_model"], action["res_id"]), ("purchase.order", po.id))
+        self.assertEqual(
+            (action["res_model"], action["res_id"]), ("purchase.order", po.id)
+        )
 
     def test_choose_action_gives_the_list_the_purchase_order_id(self):
         action = self.env.ref(

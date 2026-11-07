@@ -34,21 +34,26 @@ class RepairJobCase(CommonCase):
 
     @classmethod
     def setUpClassVars(cls):
-        super().setUpClassVars()
+        res = super().setUpClassVars()
         cls.company = cls.env.company
         cls.technician = cls.shopfloor_user
         cls.profile = cls.env.ref("shopfloor_repair.shopfloor_profile_technician")
         cls.menu = cls.env.ref("shopfloor_repair.shopfloor_menu_my_jobs")
+        return res
 
     @classmethod
     def setUpClassBaseData(cls):
-        super().setUpClassBaseData()
-        cls.employee = cls.env["hr.employee"].sudo().create(
-            {
-                "name": "Tina Technician",
-                "user_id": cls.technician.id,
-                "company_id": cls.company.id,
-            }
+        res = super().setUpClassBaseData()
+        cls.employee = (
+            cls.env["hr.employee"]
+            .sudo()
+            .create(
+                {
+                    "name": "Tina Technician",
+                    "user_id": cls.technician.id,
+                    "company_id": cls.company.id,
+                }
+            )
         )
         cls.labor_project = (
             cls.env["project.project"]
@@ -69,9 +74,7 @@ class RepairJobCase(CommonCase):
             .sudo()
             .create({"name": "Hauler", "brand_id": cls.brand.id})
         )
-        cls.customer = (
-            cls.env["res.partner"].sudo().create({"name": "Wile E. Coyote"})
-        )
+        cls.customer = cls.env["res.partner"].sudo().create({"name": "Wile E. Coyote"})
         cls.vehicle = (
             cls.env["fleet.vehicle"]
             .sudo()
@@ -90,6 +93,7 @@ class RepairJobCase(CommonCase):
         cls.other_part = cls._make_product("Oil Filter", "OF-200", "SFR-TEST-OF-200")
 
         cls.repair = cls._make_repair()
+        return res
 
     @classmethod
     def _make_product(cls, name, code, barcode, tracking="none"):

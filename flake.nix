@@ -2,7 +2,6 @@
   description = "vertical-auto-repair-addons: Avunu's Odoo addons, developed with odoo-nix (addons mode)";
 
   inputs = {
-    odoo-nix.url = "github:Avunu/odoo-nix/release-2";
     # flake-parts resolves perSystem `pkgs` from an input literally named `nixpkgs`.
     nixpkgs.follows = "odoo-nix/nixpkgs";
 
@@ -106,6 +105,13 @@
       url = "github:muk-it/odoo-modules/18.0";
       flake = false;
     };
+    # >>> odoo-nix: inputs (managed) >>>
+    odoo-nix.url = "github:Avunu/odoo-nix/release-2";
+    standards-profile = {
+      url = "github:Avunu/odoo-standards-profile/v1";
+      flake = false;
+    };
+    # <<< odoo-nix: inputs (managed) <<<
   };
 
   nixConfig = {

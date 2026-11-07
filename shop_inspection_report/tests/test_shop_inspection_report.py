@@ -78,9 +78,7 @@ class TestShopInspectionReport(TestShopInspectionReportCommon):
         )
 
     def test_access_url(self):
-        self.assertEqual(
-            self.repair.access_url, f"/my/inspections/{self.repair.id}"
-        )
+        self.assertEqual(self.repair.access_url, f"/my/inspections/{self.repair.id}")
 
     def test_report_renders(self):
         html = self.env["ir.actions.report"]._render_qweb_html(
@@ -126,9 +124,7 @@ class TestShopInspectionPortal(HttpCase):
         )
         token = repair._portal_ensure_token()
         self.env.flush_all()
-        response = self.url_open(
-            f"/my/inspections/{repair.id}?access_token={token}"
-        )
+        response = self.url_open(f"/my/inspections/{repair.id}?access_token={token}")
         self.assertEqual(response.status_code, 200)
         self.assertIn("Vehicle Inspection Report", response.text)
         # Without a token, anonymous access is denied (redirects away)

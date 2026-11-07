@@ -75,9 +75,7 @@ class MCPMixin(models.AbstractModel):
         },
         category="write",
     )
-    def _mcp_link_purchase_order_to_repair(
-        self, purchase_order_id, repair_order_id
-    ):
+    def _mcp_link_purchase_order_to_repair(self, purchase_order_id, repair_order_id):
         po = self.env["purchase.order"].browse(purchase_order_id)
         repair = self.env["repair.order"].browse(repair_order_id)
         if not po.exists():

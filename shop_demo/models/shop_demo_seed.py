@@ -600,7 +600,7 @@ class ShopDemoSeed(models.AbstractModel):
 
         repair.action_validate()
         if repair.state == "draft":
-            repair.action_repair_confirm()
+            repair._action_repair_confirm()
         if stage == "waiting_parts":
             return
 

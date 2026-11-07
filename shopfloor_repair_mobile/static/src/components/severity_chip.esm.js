@@ -2,6 +2,9 @@
  * Copyright 2026 Avunu LLC (avu.nu)
  * License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
@@ -14,11 +17,11 @@ const SeverityChip = defineComponent({
         small: {type: Boolean, default: false},
     },
     computed: {
-        /** @returns {string} */
+        /** @returns {String} */
         color() {
             return severity_color(this.value);
         },
-        /** @returns {string} */
+        /** @returns {String} */
         icon() {
             return severity_icon(this.value);
         },

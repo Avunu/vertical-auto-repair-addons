@@ -1,10 +1,10 @@
 // Copyright 2026 Avunu LLC (avu.nu)
 // License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-import { _t } from "@web/core/l10n/translation";
-import { registry } from "@web/core/registry";
-import { ListRenderer } from "@web/views/list/list_renderer";
-import { X2ManyField, x2ManyField } from "@web/views/fields/x2many/x2many_field";
+import {_t} from "@web/core/l10n/translation";
+import {registry} from "@web/core/registry";
+import {ListRenderer} from "@web/views/list/list_renderer";
+import {X2ManyField, x2ManyField} from "@web/views/fields/x2many/x2many_field";
 
 /**
  * Same list as usual, except the `open_form_view` cell always calls
@@ -35,10 +35,10 @@ export class DialogEditX2ManyField extends X2ManyField {
             // Push what is being typed in the row into the record before the
             // dialog reads it, and wait for any onchange it triggered.
             const proms = [];
-            list.model.bus.trigger("NEED_LOCAL_CHANGES", { proms });
+            list.model.bus.trigger("NEED_LOCAL_CHANGES", {proms});
             await Promise.all([...proms, editedRecord._updatePromise]);
-            // canAbandon: a row added and opened right away must survive.
-            await list.leaveEditMode({ canAbandon: false });
+            // CanAbandon: a row added and opened right away must survive.
+            await list.leaveEditMode({canAbandon: false});
         }
         return this._openRecord({
             record,

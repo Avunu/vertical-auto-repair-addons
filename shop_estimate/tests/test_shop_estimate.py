@@ -107,9 +107,7 @@ class TestShopEstimate(TransactionCase):
     def _run_builder(self):
         wizard = (
             self.env["shop.estimate.builder"]
-            .with_context(
-                active_model="repair.order", active_id=self.repair.id
-            )
+            .with_context(active_model="repair.order", active_id=self.repair.id)
             .create({})
         )
         return wizard
@@ -166,13 +164,9 @@ class TestShopEstimate(TransactionCase):
         rotor_move = moves.filtered(lambda m: m.product_id == self.rotors)
         self.assertEqual(rotor_move.product_uom_qty, 2)
         self.assertEqual(rotor_move.repair_line_type, "add")
-        services = self.repair.repair_service_ids.filtered(
-            "shop_job_sale_line_id"
-        )
+        services = self.repair.repair_service_ids.filtered("shop_job_sale_line_id")
         self.assertEqual(len(services), 2)
-        self.assertEqual(
-            sorted(services.mapped("product_uom_qty")), [0.5, 2.0]
-        )
+        self.assertEqual(sorted(services.mapped("product_uom_qty")), [0.5, 2.0])
         # …without creating extra sale order lines (no double billing)
         self.assertEqual(len(order.order_line), line_count_before)
         self.assertFalse(moves.sale_line_id)
@@ -183,9 +177,7 @@ class TestShopEstimate(TransactionCase):
 
         # Chatter summary on the repair order mentions the approved job
         messages = self.repair.message_ids.mapped("body")
-        self.assertTrue(
-            any("Front Brake Job" in message for message in messages)
-        )
+        self.assertTrue(any("Front Brake Job" in message for message in messages))
 
     def test_declined_option_stays_declined(self):
         wizard = self._run_builder()
@@ -201,9 +193,7 @@ class TestShopEstimate(TransactionCase):
             )
         )
         messages = self.repair.message_ids.mapped("body")
-        self.assertTrue(
-            any("Wiper Replacement" in message for message in messages)
-        )
+        self.assertTrue(any("Wiper Replacement" in message for message in messages))
 
     def test_rerun_excludes_quoted_findings(self):
         wizard = self._run_builder()

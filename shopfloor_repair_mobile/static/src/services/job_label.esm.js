@@ -12,17 +12,21 @@
 
 /**
  * @param {RepairJobRecord} record
- * @returns {string}
+ * @returns {String}
  */
 export function job_label(record) {
-    return record.vehicle_description || (record.partner && record.partner.name) || record.name;
+    return (
+        record.vehicle_description ||
+        (record.partner && record.partner.name) ||
+        record.name
+    );
 }
 
 /**
  * The line under the label, minus whatever the label already fell back to.
  *
  * @param {RepairJobRecord} record
- * @returns {string}
+ * @returns {String}
  */
 export function job_meta(record) {
     const label = job_label(record);
@@ -37,7 +41,7 @@ export function job_meta(record) {
  * status.
  *
  * @param {RepairJobRecord} record
- * @returns {string}
+ * @returns {String}
  */
 export function job_status_label(record) {
     return (record.stage && record.stage.name) || record.state_label;

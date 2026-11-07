@@ -59,7 +59,7 @@ import {ScenarioBaseMixinClass} from "./scenario_base_mixin.esm.js";
 // of this component (Home and back into My Jobs, say) would refetch too.
 let first_mount_done = false;
 
-/** @returns {boolean} */
+/** @returns {Boolean} */
 function is_browser_reload() {
     const [nav] = /** @type {PerformanceNavigationTiming[]} */ (
         performance.getEntriesByType("navigation")
@@ -81,8 +81,10 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
             // Client state: the 20s services poll must never clear what the
             // technician is in the middle of typing.
             note_draft: "",
-            _services_poll_interval: /** @type {ReturnType<typeof setInterval> | null} */ (null),
-            _job_list_poll_interval: /** @type {ReturnType<typeof setInterval> | null} */ (null),
+            _services_poll_interval:
+                /** @type {ReturnType<typeof setInterval> | null} */ (null),
+            _job_list_poll_interval:
+                /** @type {ReturnType<typeof setInterval> | null} */ (null),
         };
     },
 
@@ -177,7 +179,8 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                 },
                 // A scan here is the lot/serial for the part on screen.
                 on_scan: (scanned) => {
-                    const record = /** @type {PartDetailData} */ (this.state.data).record;
+                    const record = /** @type {PartDetailData} */ (this.state.data)
+                        .record;
                     this.wait_call(
                         this.odoo.post(["part", record.id, "set_quantity"], {
                             quantity: record.quantity_demand,
@@ -254,7 +257,9 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
         },
         /** @returns {ClientOptions} */
         client_options() {
-            const stored = /** @type {JobDetailDataLike} */ (this.state_get_data("job_detail") || {});
+            const stored = /** @type {JobDetailDataLike} */ (
+                this.state_get_data("job_detail") || {}
+            );
             return (
                 stored.options || {
                     allow_repair_end: false,
@@ -273,9 +278,17 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
             }
             return null;
         },
-        /** @returns {string} */
+        /** @returns {String} */
         back_label() {
-            if (this.state_in(["job_detail", "services", "part_detail", "catalog_detail", "inspection_line_detail"])) {
+            if (
+                this.state_in([
+                    "job_detail",
+                    "services",
+                    "part_detail",
+                    "catalog_detail",
+                    "inspection_line_detail",
+                ])
+            ) {
                 return this.$t("repair.nav.back");
             }
             return this.$t("repair.nav.back_to_job");
@@ -283,7 +296,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
     },
 
     methods: {
-        /** @returns {string} */
+        /** @returns {String} */
         screen_title() {
             const job = this.job;
             if (_.isEmpty(job)) {
@@ -324,7 +337,9 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                 return this.go_catalog();
             }
             if (this.state_is("inspection_line_detail")) {
-                return this.wait_call(this.odoo.get(["inspection", this.inspection_id]));
+                return this.wait_call(
+                    this.odoo.get(["inspection", this.inspection_id])
+                );
             }
             if (this.state_is("inspection_lines")) {
                 return this.go_inspections();
@@ -433,7 +448,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
         // navigation path would re-trigger this same state's `enter` (and, via
         // the global fetch events, flicker the loading indicator) every time.
         /**
-         * @param {boolean} [silent]
+         * @param {Boolean} [silent]
          * @returns {void}
          */
         _fetch_services(silent = false) {
@@ -458,9 +473,14 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                         return;
                     }
                     this.state_reset_data("services");
-                    this.state_set_data({job: data.job, records: data.records, notes: data.notes}, "services");
+                    this.state_set_data(
+                        {job: data.job, records: data.records, notes: data.notes},
+                        "services"
+                    );
                 })
-                .catch(() => {});
+                .catch(() => {
+                    // Best effort: a failed fetch leaves the screen as it is.
+                });
         },
 
         // Same client `refresh_shift_timer` (services/timer_store.esm.js)
@@ -486,24 +506,30 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
         // off `wait_call` so a silent poll neither flickers the loading
         // indicator nor re-runs this state's `enter`.
         /**
-         * @param {boolean} [silent]
+         * @param {Boolean} [silent]
          * @returns {void}
          */
         _fetch_job_list(silent = false) {
             const client = silent ? this._silent_repair_job_client() : this.odoo;
             client
                 .get("jobs")
-                .then((/** @type {{data?: {job_list?: {records?: unknown[]}}}} */ result) => {
-                    const data = result && result.data && result.data.job_list;
-                    // Leaving the screen while the request was in flight must
-                    // not write a list into a state nobody is looking at.
-                    if (!data || !this.state_is("job_list")) {
-                        return;
+                .then(
+                    (
+                        /** @type {{data?: {job_list?: {records?: unknown[]}}}} */ result
+                    ) => {
+                        const data = result && result.data && result.data.job_list;
+                        // Leaving the screen while the request was in flight must
+                        // not write a list into a state nobody is looking at.
+                        if (!data || !this.state_is("job_list")) {
+                            return;
+                        }
+                        this.state_reset_data("job_list");
+                        this.state_set_data({records: data.records}, "job_list");
                     }
-                    this.state_reset_data("job_list");
-                    this.state_set_data({records: data.records}, "job_list");
-                })
-                .catch(() => {});
+                )
+                .catch(() => {
+                    // Best effort: a failed fetch leaves the list as it is.
+                });
         },
 
         /** @returns {void} */
@@ -579,7 +605,9 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
             if (!note) {
                 return;
             }
-            this.wait_call(this.odoo.post(["job", this.job_id, "add_note"], {note})).then(() => {
+            this.wait_call(
+                this.odoo.post(["job", this.job_id, "add_note"], {note})
+            ).then(() => {
                 this.note_draft = "";
             });
         },
@@ -592,7 +620,10 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
          */
         service_timer_start(service) {
             this.wait_call(
-                this.odoo.post(["job", this.job_id, "service", service.id, "timer_start"], {})
+                this.odoo.post(
+                    ["job", this.job_id, "service", service.id, "timer_start"],
+                    {}
+                )
             ).then(() => this._refresh_shift_timer_now());
         },
 
@@ -602,7 +633,10 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
          */
         service_timer_stop(service) {
             this.wait_call(
-                this.odoo.post(["job", this.job_id, "service", service.id, "timer_stop"], {})
+                this.odoo.post(
+                    ["job", this.job_id, "service", service.id, "timer_stop"],
+                    {}
+                )
             ).then(() => this._refresh_shift_timer_now());
         },
 
@@ -615,12 +649,17 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
          */
         job_list_timer_stop(timer) {
             this.odoo
-                .post(["job", timer.repair_id, "service", timer.service_id, "timer_stop"], {})
+                .post(
+                    ["job", timer.repair_id, "service", timer.service_id, "timer_stop"],
+                    {}
+                )
                 .then(() => {
                     this._refresh_shift_timer_now();
                     this._fetch_job_list(true);
                 })
-                .catch(() => {});
+                .catch(() => {
+                    // Best effort: a failed stop leaves the list as it is.
+                });
         },
 
         // Without this, starting or stopping a service's timer here wouldn't
@@ -630,7 +669,9 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
         // its own eager publish via `on_job_change`) is gone.
         /** @returns {void} */
         _refresh_shift_timer_now() {
-            refresh_shift_timer(this).catch(() => {});
+            refresh_shift_timer(this).catch(() => {
+                // Best effort: the app bar's own poll catches up.
+            });
         },
 
         // -- parts ---------------------------------------------------------
@@ -679,7 +720,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
         // -- catalog --------------------------------------------------------
 
         /**
-         * @param {number} [page]
+         * @param {Number} [page]
          * @returns {void}
          */
         go_catalog(page) {
@@ -695,7 +736,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
         },
 
         /**
-         * @param {number} page
+         * @param {Number} page
          * @returns {void}
          */
         go_catalog_page(page) {
@@ -742,7 +783,9 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
          * @returns {void}
          */
         create_inspection(payload) {
-            this.wait_call(this.odoo.post(["job", this.job_id, "inspection_create"], payload));
+            this.wait_call(
+                this.odoo.post(["job", this.job_id, "inspection_create"], payload)
+            );
         },
 
         /**
@@ -767,7 +810,9 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
          */
         grade_line(payload) {
             const line = /** @type {InspectionLinesData} */ (this.state.data).record;
-            this.wait_call(this.odoo.post(["inspection_line", line.id, "grade"], payload));
+            this.wait_call(
+                this.odoo.post(["inspection_line", line.id, "grade"], payload)
+            );
         },
 
         /**
@@ -787,13 +832,18 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
          * @returns {void}
          */
         add_photo(payload) {
-            const line = /** @type {InspectionLineDetailData} */ (this.state.data).record;
-            this.wait_call(this.odoo.post(["inspection_line", line.id, "photo"], payload));
+            const line = /** @type {InspectionLineDetailData} */ (this.state.data)
+                .record;
+            this.wait_call(
+                this.odoo.post(["inspection_line", line.id, "photo"], payload)
+            );
         },
 
         /** @returns {void} */
         confirm_inspection() {
-            this.wait_call(this.odoo.post(["inspection", this.inspection_id, "confirm"], {}));
+            this.wait_call(
+                this.odoo.post(["inspection", this.inspection_id, "confirm"], {})
+            );
         },
     },
 
@@ -803,7 +853,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                 v-if="state.on_scan"
                 v-on:found="on_scan"
                 :input_placeholder="search_input_placeholder"
-                />
+            />
 
             <!-- ============ job list ============ -->
             <div v-if="state_is('job_list')">
@@ -816,7 +866,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                     :record="rec"
                     v-on:select="open_job_services"
                     v-on:stop-timer="job_list_timer_stop"
-                    />
+                />
             </div>
 
             <!-- ============ job hub ============ -->
@@ -829,7 +879,8 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                              longer starts/stops anything itself. -->
                         <v-card outlined class="repair-timer-summary">
                             <v-card-text>
-                                {{ $t('repair.timer.total') }}: {{ job.timer.total_hours.toFixed(2) }} h
+                                {{ $t('repair.timer.total') }}: {{
+                                job.timer.total_hours.toFixed(2) }} h
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -842,7 +893,8 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                             <v-row align="center" v-if="job.state === 'confirmed'">
                                 <v-col class="text-center" cols="12">
                                     <btn-action action="complete" @click="start_repair">
-                                        <v-icon left>mdi-wrench</v-icon>{{ $t('repair.jobs.start_repair') }}
+                                        <v-icon left>mdi-wrench</v-icon>{{
+                                        $t('repair.jobs.start_repair') }}
                                     </btn-action>
                                 </v-col>
                             </v-row>
@@ -858,34 +910,41 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                                 <v-col class="text-center" cols="12">
                                     <btn-action @click="go_parts">
                                         <v-icon left>mdi-package-variant-closed</v-icon>
-                                        {{ $t('repair.jobs.parts') }}
-                                        ({{ job.parts_done }}/{{ job.parts_total }})
+                                        {{ $t('repair.jobs.parts') }} ({{ job.parts_done
+                                        }}/{{ job.parts_total }})
                                     </btn-action>
                                 </v-col>
                             </v-row>
                             <v-row align="center">
                                 <v-col class="text-center" cols="12">
                                     <btn-action @click="go_catalog()">
-                                        <v-icon left>mdi-magnify</v-icon>{{ $t('repair.jobs.catalog') }}
+                                        <v-icon left>mdi-magnify</v-icon>{{
+                                        $t('repair.jobs.catalog') }}
                                     </btn-action>
                                 </v-col>
                             </v-row>
                             <v-row align="center">
                                 <v-col class="text-center" cols="12">
                                     <btn-action @click="go_inspections">
-                                        <v-icon left>mdi-clipboard-check-outline</v-icon>
+                                        <v-icon left
+                                            >mdi-clipboard-check-outline</v-icon
+                                        >
                                         {{ $t('repair.jobs.inspections') }}
                                         <span v-if="job.inspection_total">
-                                            ({{ job.inspection_graded }}/{{ job.inspection_total }})
+                                            ({{ job.inspection_graded }}/{{
+                                            job.inspection_total }})
                                         </span>
                                     </btn-action>
                                 </v-col>
                             </v-row>
-                            <v-row align="center"
-                                   v-if="client_options.allow_repair_end && job.state === 'under_repair'">
+                            <v-row
+                                align="center"
+                                v-if="client_options.allow_repair_end && job.state === 'under_repair'"
+                            >
                                 <v-col class="text-center" cols="12">
                                     <btn-action action="warn" @click="ask_finish">
-                                        <v-icon left>mdi-flag-checkered</v-icon>{{ $t('repair.jobs.finish') }}
+                                        <v-icon left>mdi-flag-checkered</v-icon>{{
+                                        $t('repair.jobs.finish') }}
                                     </btn-action>
                                 </v-col>
                             </v-row>
@@ -895,11 +954,17 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                 <v-dialog v-model="confirm_finish" max-width="480">
                     <v-card>
                         <v-card-title>{{ $t('repair.jobs.finish') }}</v-card-title>
-                        <v-card-text>{{ $t('repair.jobs.finish_confirm') }}</v-card-text>
+                        <v-card-text
+                            >{{ $t('repair.jobs.finish_confirm') }}</v-card-text
+                        >
                         <v-card-actions>
-                            <v-btn text @click="confirm_finish = false">{{ $t('btn.cancel.title') }}</v-btn>
+                            <v-btn text @click="confirm_finish = false"
+                                >{{ $t('btn.cancel.title') }}</v-btn
+                            >
                             <v-spacer />
-                            <v-btn color="warning" @click="finish">{{ $t('repair.jobs.finish') }}</v-btn>
+                            <v-btn color="warning" @click="finish"
+                                >{{ $t('repair.jobs.finish') }}</v-btn
+                            >
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -912,10 +977,12 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                     :records="state.data.records"
                     v-on:timer-start="service_timer_start"
                     v-on:timer-stop="service_timer_stop"
-                    />
+                />
                 <v-card outlined class="repair-notes">
                     <v-card-text>
-                        <div class="repair-notes-existing" v-if="state.data.notes">{{ state.data.notes }}</div>
+                        <div class="repair-notes-existing" v-if="state.data.notes">
+                            {{ state.data.notes }}
+                        </div>
                         <v-textarea
                             v-model="note_draft"
                             :label="$t('repair.notes.placeholder')"
@@ -923,9 +990,10 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                             auto-grow
                             rows="2"
                             hide-details
-                            />
+                        />
                         <btn-action :disabled="!note_draft.trim()" @click="save_note">
-                            <v-icon left>mdi-note-plus-outline</v-icon>{{ $t('repair.notes.add') }}
+                            <v-icon left>mdi-note-plus-outline</v-icon>{{
+                            $t('repair.notes.add') }}
                         </btn-action>
                     </v-card-text>
                 </v-card>
@@ -949,12 +1017,13 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                     v-on:select="open_part"
                     v-on:consume-all="consume_all"
                     v-on:reset="reset_part"
-                    />
+                />
                 <div class="button-list button-vertical-list full">
                     <v-row align="center">
                         <v-col class="text-center" cols="12">
                             <btn-action @click="go_catalog()">
-                                <v-icon left>mdi-plus-box</v-icon>{{ $t('repair.jobs.catalog') }}
+                                <v-icon left>mdi-plus-box</v-icon>{{
+                                $t('repair.jobs.catalog') }}
                             </btn-action>
                         </v-col>
                     </v-row>
@@ -967,7 +1036,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                     :key="make_state_component_key(['part', state.data.record.id])"
                     v-on:confirm="set_quantity"
                     v-on:reset="reset_part(state.data.record)"
-                    />
+                />
             </div>
 
             <!-- ============ catalog ============ -->
@@ -982,7 +1051,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                     v-on:select="open_catalog_product"
                     v-on:filter-category="filter_catalog_category"
                     v-on:page="go_catalog_page"
-                    />
+                />
             </div>
 
             <div v-if="state_is('catalog_detail')">
@@ -990,7 +1059,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                     :record="state.data.record"
                     :key="make_state_component_key(['product', state.data.record.id])"
                     v-on:add="add_part"
-                    />
+                />
             </div>
 
             <!-- ============ inspections ============ -->
@@ -1003,20 +1072,22 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                     :odometer_unit="state.data.odometer_unit"
                     v-on:open="open_inspection"
                     v-on:start="create_inspection"
-                    />
+                />
             </div>
 
             <div v-if="state_is('inspection_lines')">
                 <repair-inspection-checklist
                     :lines="state.data.lines"
                     v-on:select="open_inspection_line"
-                    />
+                />
                 <div class="button-list button-vertical-list full">
                     <v-row align="center" v-if="state.data.record.state === 'draft'">
                         <v-col class="text-center" cols="12">
-                            <btn-action action="complete"
-                                        :disabled="state.data.record.graded_count < state.data.record.line_count"
-                                        @click="confirm_inspection">
+                            <btn-action
+                                action="complete"
+                                :disabled="state.data.record.graded_count < state.data.record.line_count"
+                                @click="confirm_inspection"
+                            >
                                 <v-icon left>mdi-check-decagram</v-icon>
                                 {{ $t('repair.inspection.complete') }}
                             </btn-action>
@@ -1034,7 +1105,7 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                     v-on:grade="grade_line"
                     v-on:measure="set_measurement"
                     v-on:photo="add_photo"
-                    />
+                />
             </div>
 
             <!-- ============ navigation ============ -->
@@ -1044,7 +1115,11 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                      job_detail included, shows both Back and Home together. -->
                 <v-row align="center" v-if="!state_is('job_list')">
                     <v-col class="text-center" cols="12">
-                        <btn-action action="back" :router_back="false" @click="go_back_in_flow">
+                        <btn-action
+                            action="back"
+                            :router_back="false"
+                            @click="go_back_in_flow"
+                        >
                             <v-icon left>mdi-keyboard-backspace</v-icon>{{ back_label }}
                         </btn-action>
                     </v-col>
@@ -1052,7 +1127,8 @@ const RepairJob = extendComponent(ScenarioBaseMixinClass, {
                 <v-row align="center">
                     <v-col class="text-center" cols="12">
                         <btn-action action="cancel" @click="go_home">
-                            <v-icon left>mdi-home-outline</v-icon>{{ $t('repair.jobs.home') }}
+                            <v-icon left>mdi-home-outline</v-icon>{{
+                            $t('repair.jobs.home') }}
                         </btn-action>
                     </v-col>
                 </v-row>
@@ -1112,7 +1188,8 @@ const T = {
     "repair.inspection.new": "New inspection",
     "repair.inspection.template": "Checklist",
     "repair.inspection.odometer": "Odometer",
-    "repair.inspection.odometer_hint": "Required — the reading is written to the vehicle history.",
+    "repair.inspection.odometer_hint":
+        "Required — the reading is written to the vehicle history.",
     "repair.inspection.start": "Start inspection",
     "repair.inspection.checklist": "Inspection",
     "repair.inspection.item": "Checklist item",
@@ -1123,13 +1200,14 @@ const T = {
     "repair.inspection.measurements": "Measurements",
     "repair.inspection.not_measured": "not measured",
     "repair.inspection.add_photo": "Take photo",
-    "repair.inspection.photo_required": "A photo is required before grading this as a problem.",
+    "repair.inspection.photo_required":
+        "A photo is required before grading this as a problem.",
     "repair.inspection.complete": "Complete inspection",
     "repair.inspection.remaining": "{count} item(s) still to grade",
     "repair.inspection.all_graded": "Everything graded — ready to complete.",
     "repair.inspection.other": "Other",
 };
-_.each(T, (/** @type {string} */ value, /** @type {string} */ key) => {
+_.each(T, (/** @type {String} */ value, /** @type {String} */ key) => {
     translation_registry.add("en-US." + key, value);
 });
 

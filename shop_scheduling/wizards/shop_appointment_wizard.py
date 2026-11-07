@@ -26,7 +26,6 @@ class ShopAppointmentWizard(models.TransientModel):
         default=lambda self: self._default_type_id(),
     )
     duration = fields.Float(
-        string="Duration",
         compute="_compute_duration",
         store=True,
         readonly=False,

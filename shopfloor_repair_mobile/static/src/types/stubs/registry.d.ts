@@ -9,21 +9,25 @@
  * one.
  */
 export interface RegistryRecord<TComponent = unknown> {
-    key: string;
-    component: TComponent;
-    metadata: Record<string, unknown>;
-    route: Record<string, unknown>;
+  key: string;
+  component: TComponent;
+  metadata: Record<string, unknown>;
+  route: Record<string, unknown>;
 }
 
 export class BaseRegistry<TComponent = unknown> {
-    add(
-        key: string,
-        component: TComponent,
-        route?: Record<string, unknown>,
-        metadata?: Record<string, unknown>,
-        override?: boolean
-    ): RegistryRecord<TComponent>;
-    replace(key: string, component: TComponent, metadata?: Record<string, unknown>): RegistryRecord<TComponent>;
-    get(key: string): RegistryRecord<TComponent> | undefined;
-    all(): Record<string, RegistryRecord<TComponent>>;
+  add(
+    key: string,
+    component: TComponent,
+    route?: Record<string, unknown>,
+    metadata?: Record<string, unknown>,
+    override?: boolean
+  ): RegistryRecord<TComponent>;
+  replace(
+    key: string,
+    component: TComponent,
+    metadata?: Record<string, unknown>
+  ): RegistryRecord<TComponent>;
+  get(key: string): RegistryRecord<TComponent> | undefined;
+  all(): Record<string, RegistryRecord<TComponent>>;
 }

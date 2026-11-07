@@ -18,16 +18,19 @@
  * Deleting is no longer done from here - each row on the timesheets page
  * has its own Delete action (with its own confirm dialog).
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {TimesheetRecord, JobPickerValue} from "./timesheet_types" */
 import {translation_registry} from "/shopfloor_mobile_base/static/src/services/translation_registry.esm.js";
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
 import {
-    server_datetime_to_local_input,
-    local_input_to_server_datetime,
-    local_input_duration_hours,
     format_duration,
+    local_input_duration_hours,
+    local_input_to_server_datetime,
+    server_datetime_to_local_input,
 } from "../services/datetime.esm.js";
 
 translation_registry.add("en-US.repair.timesheets.edit_title", "Edit timesheet");
@@ -42,13 +45,18 @@ translation_registry.add("en-US.btn.save.title", "Save");
 function pick_from_record(record) {
     return {
         job_id: /** @type {number | null} */ (record.job ? record.job.id : null),
-        service_id: /** @type {number | null} */ (record.service ? record.service.id : null),
+        service_id: /** @type {number | null} */ (
+            record.service ? record.service.id : null
+        ),
     };
 }
 
 const RepairTimesheetEditForm = defineComponent({
     props: {
-        record: {type: /** @type {PropType<TimesheetRecord>} */ (Object), required: true},
+        record: {
+            type: /** @type {PropType<TimesheetRecord>} */ (Object),
+            required: true,
+        },
     },
     data() {
         return {
@@ -58,20 +66,29 @@ const RepairTimesheetEditForm = defineComponent({
         };
     },
     computed: {
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         valid() {
             return Boolean(
-                this.pick.job_id && this.date_time && this.date_time_end && this.date_time_end > this.date_time
+                this.pick.job_id &&
+                    this.date_time &&
+                    this.date_time_end &&
+                    this.date_time_end > this.date_time
             );
         },
         // Recomputed on every keystroke/pick in either field, so the
         // technician sees what the entry will add up to before saving.
-        /** @returns {string} */
+        /** @returns {String} */
         total() {
-            if (!this.date_time || !this.date_time_end || this.date_time_end <= this.date_time) {
+            if (
+                !this.date_time ||
+                !this.date_time_end ||
+                this.date_time_end <= this.date_time
+            ) {
                 return "—";
             }
-            return format_duration(local_input_duration_hours(this.date_time, this.date_time_end));
+            return format_duration(
+                local_input_duration_hours(this.date_time, this.date_time_end)
+            );
         },
     },
     watch: {
@@ -91,13 +108,13 @@ const RepairTimesheetEditForm = defineComponent({
         // splice.
         /**
          * @param {string | null} value
-         * @returns {string}
+         * @returns {String}
          */
         _to_local_input(value) {
             return server_datetime_to_local_input(value);
         },
         /**
-         * @param {string} value
+         * @param {String} value
          * @returns {string | null}
          */
         _from_local_input(value) {
@@ -125,12 +142,12 @@ const RepairTimesheetEditForm = defineComponent({
                     type="datetime-local"
                     :label="$t('repair.timesheets.start')"
                     v-model="date_time"
-                    />
+                />
                 <v-text-field
                     type="datetime-local"
                     :label="$t('repair.timesheets.end')"
                     v-model="date_time_end"
-                    />
+                />
                 <div class="repair-timesheet-total">
                     <span>{{ $t('repair.timesheets.total') }}</span>
                     <strong>{{ total }}</strong>

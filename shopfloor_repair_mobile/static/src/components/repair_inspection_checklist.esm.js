@@ -6,6 +6,9 @@
  * The ungraded counter is the gate: OCA's button_confirm refuses while any
  * line is still `todo`, so the technician needs to see what is left.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {InspectionGroup, InspectionLine} from "./inspection_types" */
 import {defineComponent} from "../services/define_component.esm.js";
@@ -14,7 +17,10 @@ import {severity_color, severity_icon} from "./severity.esm.js";
 
 const RepairInspectionChecklist = defineComponent({
     props: {
-        lines: {type: /** @type {PropType<InspectionLine[]>} */ (Array), default: () => []},
+        lines: {
+            type: /** @type {PropType<InspectionLine[]>} */ (Array),
+            default: () => [],
+        },
     },
     computed: {
         /** @returns {InspectionGroup[]} */
@@ -37,7 +43,7 @@ const RepairInspectionChecklist = defineComponent({
             });
             return groups;
         },
-        /** @returns {number} */
+        /** @returns {Number} */
         ungraded() {
             return this.lines.filter((line) => !line.severity).length;
         },
@@ -45,14 +51,14 @@ const RepairInspectionChecklist = defineComponent({
     methods: {
         /**
          * @param {InspectionLine} line
-         * @returns {string}
+         * @returns {String}
          */
         color_for(line) {
             return line.severity ? severity_color(line.severity) : "#e0e0e0";
         },
         /**
          * @param {InspectionLine} line
-         * @returns {string}
+         * @returns {String}
          */
         icon_for(line) {
             return line.severity ? severity_icon(line.severity) : "mdi-circle-outline";
@@ -61,33 +67,55 @@ const RepairInspectionChecklist = defineComponent({
     template: html`
         <div class="inspection-checklist">
             <v-alert
-                dense text
+                dense
+                text
                 :type="ungraded ? 'warning' : 'success'"
-                class="checklist-progress">
+                class="checklist-progress"
+            >
                 <span v-if="ungraded">
                     {{ $t('repair.inspection.remaining', {count: ungraded}) }}
                 </span>
                 <span v-else>{{ $t('repair.inspection.all_graded') }}</span>
             </v-alert>
 
-            <v-card v-for="group in groups" :key="group.id" outlined class="checklist-group">
-                <v-card-title class="checklist-group__title">{{ group.name }}</v-card-title>
-                <div class="checklist-item" v-for="line in group.lines" :key="line.id"
-                     @click="$emit('select', line)">
-                    <div class="checklist-item__marker"
-                         :style="{backgroundColor: color_for(line)}">
+            <v-card
+                v-for="group in groups"
+                :key="group.id"
+                outlined
+                class="checklist-group"
+            >
+                <v-card-title class="checklist-group__title"
+                    >{{ group.name }}</v-card-title
+                >
+                <div
+                    class="checklist-item"
+                    v-for="line in group.lines"
+                    :key="line.id"
+                    @click="$emit('select', line)"
+                >
+                    <div
+                        class="checklist-item__marker"
+                        :style="{backgroundColor: color_for(line)}"
+                    >
                         <v-icon dark>{{ icon_for(line) }}</v-icon>
                     </div>
                     <div class="checklist-item__body">
                         <div class="name">{{ line.name }}</div>
                         <div class="summary" v-if="line.measurement_summary">
-                            <v-icon x-small color="error" v-if="line.measurement_alert">mdi-alert</v-icon>
+                            <v-icon x-small color="error" v-if="line.measurement_alert"
+                                >mdi-alert</v-icon
+                            >
                             {{ line.measurement_summary }}
                         </div>
                         <div class="note" v-if="line.note">{{ line.note }}</div>
                         <div class="tags" v-if="line.recommended_actions.length">
-                            <v-chip x-small outlined class="mr-1"
-                                    v-for="action in line.recommended_actions" :key="action.id">
+                            <v-chip
+                                x-small
+                                outlined
+                                class="mr-1"
+                                v-for="action in line.recommended_actions"
+                                :key="action.id"
+                            >
                                 {{ action.name }}
                             </v-chip>
                         </div>

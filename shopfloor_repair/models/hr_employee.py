@@ -33,9 +33,7 @@ class HrEmployee(models.Model):
     def _stop_repair_timers_on_clock_out(self):
         AAL = self.env["account.analytic.line"]
         for employee in self:
-            running = AAL.search(
-                AAL._repair_running_domain_for_employee(employee)
-            )
+            running = AAL.search(AAL._repair_running_domain_for_employee(employee))
             if not running:
                 continue
             jobs = running.repair_order_id

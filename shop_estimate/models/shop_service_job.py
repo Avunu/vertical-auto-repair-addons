@@ -12,9 +12,7 @@ class ShopServiceJob(models.Model):
 
     name = fields.Char(required=True, translate=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one(
-        "res.company", default=lambda self: self.env.company
-    )
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
     customer_description = fields.Text(
         help="Customer-facing wording used on the quote line."
     )
@@ -41,7 +39,7 @@ class ShopServiceJob(models.Model):
         help="Labor line added to the repair order when the job is approved. "
         "Also prices the job when using computed pricing.",
     )
-    labor_hours = fields.Float(string="Labor Hours")
+    labor_hours = fields.Float()
     part_line_ids = fields.One2many(
         "shop.service.job.part",
         "job_id",
@@ -87,17 +85,21 @@ class ShopServiceJob(models.Model):
         if not self.product_id:
             # sudo: service writers build estimates without product-creation
             # rights; the product is fully determined by the job.
-            self.sudo().product_id = self.env["product.product"].sudo().create(
-                {
-                    "name": self.name,
-                    "type": "service",
-                    "invoice_policy": "order",
-                    "sale_ok": True,
-                    "purchase_ok": False,
-                    "list_price": self.price_total,
-                    "description_sale": self.customer_description or False,
-                    "company_id": self.company_id.id,
-                }
+            self.sudo().product_id = (
+                self.env["product.product"]
+                .sudo()
+                .create(
+                    {
+                        "name": self.name,
+                        "type": "service",
+                        "invoice_policy": "order",
+                        "sale_ok": True,
+                        "purchase_ok": False,
+                        "list_price": self.price_total,
+                        "description_sale": self.customer_description or False,
+                        "company_id": self.company_id.id,
+                    }
+                )
             )
         return self.product_id
 

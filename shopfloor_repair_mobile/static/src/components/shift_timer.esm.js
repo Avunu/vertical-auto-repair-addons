@@ -17,20 +17,27 @@
  * instead (see its own comment for why), so this component only ever needs
  * to read and format it - remounting has no effect on the value shown.
  */
+
+/* global Vue */
+
 import {translation_registry} from "/shopfloor_mobile_base/static/src/services/translation_registry.esm.js";
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
-import {timer_store, shift_elapsed_seconds, format_elapsed} from "../services/timer_store.esm.js";
+import {
+    format_elapsed,
+    shift_elapsed_seconds,
+    timer_store,
+} from "../services/timer_store.esm.js";
 
 translation_registry.add("en-US.repair.timer.shift", "Shift");
 
 const ShiftTimer = defineComponent({
     computed: {
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         running() {
             return timer_store.shift_timer.running;
         },
-        /** @returns {string} */
+        /** @returns {String} */
         display() {
             return format_elapsed(shift_elapsed_seconds());
         },

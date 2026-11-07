@@ -4,6 +4,9 @@
  *
  * Confirm quantity before adding a catalog part to the job.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {CatalogRecord} from "./catalog_types" */
 import {defineComponent} from "../services/define_component.esm.js";
@@ -22,7 +25,7 @@ const RepairCatalogDetail = defineComponent({
     computed: {
         // A tracked part needs its serial scanned on the part screen, so
         // "add and mark used" cannot be honoured in one step.
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         can_consume_now() {
             return this.record.tracking === "none";
         },
@@ -37,7 +40,7 @@ const RepairCatalogDetail = defineComponent({
             this.consume_now = true;
         },
         /**
-         * @param {number} delta
+         * @param {Number} delta
          * @returns {void}
          */
         step(delta) {
@@ -51,7 +54,9 @@ const RepairCatalogDetail = defineComponent({
             <v-card outlined class="mt-3">
                 <v-card-text>
                     <div class="qty-stepper">
-                        <v-btn x-large icon @click="step(-1)"><v-icon large>mdi-minus-circle</v-icon></v-btn>
+                        <v-btn x-large icon @click="step(-1)"
+                            ><v-icon large>mdi-minus-circle</v-icon></v-btn
+                        >
                         <v-text-field
                             v-model.number="quantity"
                             type="number"
@@ -59,13 +64,17 @@ const RepairCatalogDetail = defineComponent({
                             min="0"
                             hide-details
                             class="qty-stepper__field"
-                            :label="$t('repair.catalog.quantity')" />
-                        <v-btn x-large icon @click="step(1)"><v-icon large>mdi-plus-circle</v-icon></v-btn>
+                            :label="$t('repair.catalog.quantity')"
+                        />
+                        <v-btn x-large icon @click="step(1)"
+                            ><v-icon large>mdi-plus-circle</v-icon></v-btn
+                        >
                     </div>
                     <v-checkbox
                         v-if="can_consume_now"
                         v-model="consume_now"
-                        :label="$t('repair.catalog.consume_now')" />
+                        :label="$t('repair.catalog.consume_now')"
+                    />
                     <v-alert type="info" dense text class="mt-2">
                         {{ $t('repair.catalog.billing_notice') }}
                     </v-alert>
@@ -74,9 +83,12 @@ const RepairCatalogDetail = defineComponent({
             <div class="button-list button-vertical-list full mt-3">
                 <v-row align="center">
                     <v-col class="text-center" cols="12">
-                        <btn-action action="complete"
-                            @click="$emit('add', {quantity: Number(quantity), consume_now: can_consume_now && consume_now})">
-                            <v-icon left>mdi-plus-box</v-icon>{{ $t('repair.catalog.add') }}
+                        <btn-action
+                            action="complete"
+                            @click="$emit('add', {quantity: Number(quantity), consume_now: can_consume_now && consume_now})"
+                        >
+                            <v-icon left>mdi-plus-box</v-icon>{{
+                            $t('repair.catalog.add') }}
                         </btn-action>
                     </v-col>
                 </v-row>

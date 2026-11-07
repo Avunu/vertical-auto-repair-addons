@@ -58,12 +58,9 @@ class DataDetailAction(Component):
                         "services": [
                             {
                                 "id": service.id,
-                                "name": service.product_id.name
-                                or service.display_name,
+                                "name": service.product_id.name or service.display_name,
                             }
-                            for service in job.repair_service_ids.filtered(
-                                "accepted"
-                            )
+                            for service in job.repair_service_ids.filtered("accepted")
                         ],
                     }
                     for job in jobs

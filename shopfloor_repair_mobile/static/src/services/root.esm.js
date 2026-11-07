@@ -35,7 +35,7 @@ export function sf_root(vm) {
  * e.g. "repair_job").
  *
  * @param {Vue} vm
- * @param {string} usage
+ * @param {String} usage
  * @returns {unknown}
  */
 export function menu_id_for(vm, usage) {

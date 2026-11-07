@@ -15,6 +15,9 @@
  * instead, so tapping your own name is how you reach the profile picker,
  * rather than a second, redundant row underneath it.
  */
+
+/* global Vue */
+
 /** @import {ShopfloorRoot} from "../types/shopfloor-mobile-base" */
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
@@ -47,52 +50,60 @@ const UserSessionDetail = defineComponent({
         },
     },
     template: html`
-      <div :class="tag_name" data-ref="user-session-detail">
-        <v-list>
-            <report-issue-action v-if="show_report_issue_action" />
-            <v-list-item v-if="show_env"
+        <div :class="tag_name" data-ref="user-session-detail">
+            <v-list>
+                <report-issue-action v-if="show_report_issue_action" />
+                <v-list-item
+                    v-if="show_env"
                     data-ref="session-detail-env"
                     :data-id="root.app_info.running_env"
-                    >
-                <v-list-item-avatar>
-                    <v-avatar :color="root.app_info.running_env == 'prod' ? 'primary' : 'warning'" size="36">
-                        <v-icon dark>mdi-server</v-icon>
-                    </v-avatar>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                    <span v-text="$t('app.running_env.' + root.app_info.running_env)" />
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item v-if="show_user && root.user.id"
+                >
+                    <v-list-item-avatar>
+                        <v-avatar
+                            :color="root.app_info.running_env == 'prod' ? 'primary' : 'warning'"
+                            size="36"
+                        >
+                            <v-icon dark>mdi-server</v-icon>
+                        </v-avatar>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                        <span
+                            v-text="$t('app.running_env.' + root.app_info.running_env)"
+                        />
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item
+                    v-if="show_user && root.user.id"
                     data-ref="session-detail-user"
                     :data-id="root.user.id"
                     :to="{name: 'profile'}"
-                    >
-                <v-list-item-avatar>
-                    <v-avatar color="primary" size="36">
-                        <v-icon dark>mdi-account-circle</v-icon>
-                    </v-avatar>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                    <span v-text="root.user.name" />
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item v-if="show_profile && root.has_profile"
+                >
+                    <v-list-item-avatar>
+                        <v-avatar color="primary" size="36">
+                            <v-icon dark>mdi-account-circle</v-icon>
+                        </v-avatar>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                        <span v-text="root.user.name" />
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item
+                    v-if="show_profile && root.has_profile"
                     data-ref="session-detail-profile"
                     :data-id="root.profile.id"
                     :to="{name: 'profile'}"
-                    >
-                <v-list-item-avatar>
-                    <v-avatar color="primary" size="36">
-                        <v-icon dark>mdi-account-multiple-check</v-icon>
-                    </v-avatar>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                    <span v-text="root.profile.name" />
-                </v-list-item-content>
-            </v-list-item>
-        </v-list>
-      </div>
+                >
+                    <v-list-item-avatar>
+                        <v-avatar color="primary" size="36">
+                            <v-icon dark>mdi-account-multiple-check</v-icon>
+                        </v-avatar>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                        <span v-text="root.profile.name" />
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+        </div>
     `,
 });
 

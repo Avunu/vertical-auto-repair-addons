@@ -81,7 +81,10 @@ const Profile = defineComponent({
                 .post("set_default_profile", {profile_id: profile.id})
                 .then((/** @type {any} */ result) => {
                     if (result && result.error) {
-                        console.warn("Could not remember the profile choice:", result.error);
+                        console.warn(
+                            "Could not remember the profile choice:",
+                            result.error
+                        );
                     }
                 })
                 .catch((/** @type {unknown} */ err) => {
@@ -90,31 +93,38 @@ const Profile = defineComponent({
         },
     },
     template: html`
-        <Screen :screen_info="{title: $t('screen.settings.profile.title'), klass: 'settings settings-profile'}">
+        <Screen
+            :screen_info="{title: $t('screen.settings.profile.title'), klass: 'settings settings-profile'}"
+        >
             <manual-select
                 :records="root.profiles"
                 :options="{initValue: current_profile_id, showActions: false, required: true}"
                 v-on:select="on_select"
-                />
+            />
 
             <div class="button-list button-vertical-list full">
                 <v-row align="center">
                     <v-col class="text-center" cols="12">
-                        <btn-action color="primary" @click="$router.push({name: 'language'})">
-                            <v-icon left>mdi-flag</v-icon>{{ $t('repair.profile.language') }}
+                        <btn-action
+                            color="primary"
+                            @click="$router.push({name: 'language'})"
+                        >
+                            <v-icon left>mdi-flag</v-icon>{{
+                            $t('repair.profile.language') }}
                         </btn-action>
                     </v-col>
                 </v-row>
                 <v-row align="center">
                     <v-col class="text-center" cols="12">
                         <btn-action color="primary" @click="root.logout()">
-                            <v-icon left>mdi-logout</v-icon>{{ $t('app.action.logout') }}
+                            <v-icon left>mdi-logout</v-icon>{{ $t('app.action.logout')
+                            }}
                         </btn-action>
                     </v-col>
                 </v-row>
                 <v-row align="center">
                     <v-col class="text-center" cols="12">
-                        <btn-back/>
+                        <btn-back />
                     </v-col>
                 </v-row>
             </div>
@@ -127,12 +137,12 @@ export default Profile;
 page_registry.replace("profile", Profile, {
     tag: "settings",
     icon: "mdi-account-cog",
-    display_name: (/** @type {Vue} */ instance, /** @type {unknown} */ _rec) => {
+    display_name: (/** @type {Vue} */ instance) => {
         const root = sf_root(instance);
         const profile_name = root.has_profile ? root.profile.name : "?";
         return [instance.$t("screen.settings.profile.name"), profile_name].join(" - ");
     },
-    is_enabled: (/** @type {Vue} */ instance, /** @type {unknown} */ _rec) => {
+    is_enabled: (/** @type {Vue} */ instance) => {
         return sf_root(instance).app_info.profile_required;
     },
 });

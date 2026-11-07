@@ -7,6 +7,9 @@
  * inverse raises on a blank value, so the reading has to be collected before
  * the record is created, and one screen is one fewer tap.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {InspectionRecord, InspectionTemplate} from "./inspection_types" */
 import {defineComponent} from "../services/define_component.esm.js";
@@ -15,8 +18,14 @@ import {severity_color} from "./severity.esm.js";
 
 const RepairInspectionList = defineComponent({
     props: {
-        records: {type: /** @type {PropType<InspectionRecord[]>} */ (Array), default: () => []},
-        templates: {type: /** @type {PropType<InspectionTemplate[]>} */ (Array), default: () => []},
+        records: {
+            type: /** @type {PropType<InspectionRecord[]>} */ (Array),
+            default: () => [],
+        },
+        templates: {
+            type: /** @type {PropType<InspectionTemplate[]>} */ (Array),
+            default: () => [],
+        },
         default_odometer: {type: Number, default: 0},
         odometer_unit: {type: String, default: ""},
     },
@@ -27,11 +36,11 @@ const RepairInspectionList = defineComponent({
         };
     },
     computed: {
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         can_start() {
             return Boolean(this.template_id) && Number(this.odometer) > 0;
         },
-        /** @returns {string} */
+        /** @returns {String} */
         unit_label() {
             return this.odometer_unit === "kilometers" ? "km" : "mi";
         },
@@ -41,7 +50,7 @@ const RepairInspectionList = defineComponent({
     },
     methods: {
         /**
-         * @param {number} value
+         * @param {Number} value
          * @returns {void}
          */
         on_default_odometer_change(value) {
@@ -50,8 +59,8 @@ const RepairInspectionList = defineComponent({
             }
         },
         /**
-         * @param {string} value
-         * @returns {string}
+         * @param {String} value
+         * @returns {String}
          */
         color_for(value) {
             return severity_color(value);
@@ -59,25 +68,60 @@ const RepairInspectionList = defineComponent({
     },
     template: html`
         <div class="inspection-list">
-            <v-card v-for="rec in records" :key="rec.id" outlined class="inspection-row"
-                    @click="$emit('open', rec)">
+            <v-card
+                v-for="rec in records"
+                :key="rec.id"
+                outlined
+                class="inspection-row"
+                @click="$emit('open', rec)"
+            >
                 <div class="inspection-row__info">
                     <div class="name">{{ rec.name }}</div>
                     <div class="meta">
-                        <v-chip x-small :color="rec.state === 'confirmed' ? 'success' : 'info'" dark>
+                        <v-chip
+                            x-small
+                            :color="rec.state === 'confirmed' ? 'success' : 'info'"
+                            dark
+                        >
                             {{ rec.state_label }}
                         </v-chip>
-                        <span class="ml-2">{{ rec.graded_count }} / {{ rec.line_count }}</span>
+                        <span class="ml-2"
+                            >{{ rec.graded_count }} / {{ rec.line_count }}</span
+                        >
                     </div>
                     <div class="counts">
-                        <v-chip x-small dark class="mr-1" v-if="rec.counts.today"
-                                :color="color_for('today')">{{ rec.counts.today }}</v-chip>
-                        <v-chip x-small dark class="mr-1" v-if="rec.counts.attention"
-                                :color="color_for('attention')">{{ rec.counts.attention }}</v-chip>
-                        <v-chip x-small dark class="mr-1" v-if="rec.counts.future"
-                                :color="color_for('future')">{{ rec.counts.future }}</v-chip>
-                        <v-chip x-small dark class="mr-1" v-if="rec.counts.good"
-                                :color="color_for('good')">{{ rec.counts.good }}</v-chip>
+                        <v-chip
+                            x-small
+                            dark
+                            class="mr-1"
+                            v-if="rec.counts.today"
+                            :color="color_for('today')"
+                            >{{ rec.counts.today }}</v-chip
+                        >
+                        <v-chip
+                            x-small
+                            dark
+                            class="mr-1"
+                            v-if="rec.counts.attention"
+                            :color="color_for('attention')"
+                            >{{ rec.counts.attention }}</v-chip
+                        >
+                        <v-chip
+                            x-small
+                            dark
+                            class="mr-1"
+                            v-if="rec.counts.future"
+                            :color="color_for('future')"
+                            >{{ rec.counts.future }}</v-chip
+                        >
+                        <v-chip
+                            x-small
+                            dark
+                            class="mr-1"
+                            v-if="rec.counts.good"
+                            :color="color_for('good')"
+                            >{{ rec.counts.good }}</v-chip
+                        >
                     </div>
                 </div>
                 <v-icon>mdi-chevron-right</v-icon>
@@ -91,7 +135,8 @@ const RepairInspectionList = defineComponent({
                         :items="templates"
                         item-text="name"
                         item-value="id"
-                        :label="$t('repair.inspection.template')" />
+                        :label="$t('repair.inspection.template')"
+                    />
                     <v-text-field
                         v-model.number="odometer"
                         type="number"
@@ -100,11 +145,17 @@ const RepairInspectionList = defineComponent({
                         :suffix="unit_label"
                         :label="$t('repair.inspection.odometer')"
                         :hint="$t('repair.inspection.odometer_hint')"
-                        persistent-hint />
+                        persistent-hint
+                    />
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn block x-large color="primary" :disabled="!can_start"
-                           @click="$emit('start', {template_id: template_id, odometer: Number(odometer)})">
+                    <v-btn
+                        block
+                        x-large
+                        color="primary"
+                        :disabled="!can_start"
+                        @click="$emit('start', {template_id: template_id, odometer: Number(odometer)})"
+                    >
                         <v-icon left>mdi-clipboard-plus-outline</v-icon>
                         {{ $t('repair.inspection.start') }}
                     </v-btn>

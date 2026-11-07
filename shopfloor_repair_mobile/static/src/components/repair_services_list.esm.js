@@ -10,6 +10,9 @@
  * whole row record rather than by adding an id prop to `repair_timer.esm.js`
  * itself.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {RepairTimerState} from "./timer_widget_types" */
 /** @import {RepairServiceRecord} from "./repair_service_types" */
@@ -36,12 +39,15 @@ function service_timer_state(record) {
 
 const RepairServicesList = defineComponent({
     props: {
-        records: {type: /** @type {PropType<RepairServiceRecord[]>} */ (Array), default: () => []},
+        records: {
+            type: /** @type {PropType<RepairServiceRecord[]>} */ (Array),
+            default: () => [],
+        },
     },
     methods: {
         /**
          * @param {RepairServiceRecord} rec
-         * @returns {string}
+         * @returns {String}
          */
         service_name(rec) {
             return (rec.product && rec.product.name) || rec.name;
@@ -56,18 +62,21 @@ const RepairServicesList = defineComponent({
     },
     template: html`
         <div class="repair-services-list">
-            <p class="empty" v-if="!records.length">{{ $t('repair.services.empty') }}</p>
+            <p class="empty" v-if="!records.length">
+                {{ $t('repair.services.empty') }}
+            </p>
             <v-card v-for="rec in records" :key="rec.id" outlined class="service-row">
                 <v-card-text>
                     <div class="service-row__name">{{ service_name(rec) }}</div>
                     <div class="service-row__meta">
-                        {{ $t('repair.services.estimated') }}: {{ rec.estimated_time.toFixed(2) }} h
+                        {{ $t('repair.services.estimated') }}: {{
+                        rec.estimated_time.toFixed(2) }} h
                     </div>
                     <repair-timer
                         :timer="timer_state(rec)"
                         v-on:start="$emit('timer-start', rec)"
                         v-on:stop="$emit('timer-stop', rec)"
-                        />
+                    />
                 </v-card-text>
             </v-card>
         </div>

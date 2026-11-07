@@ -20,7 +20,7 @@ class TestTimer(RepairJobCase):
 
     @classmethod
     def setUpClassBaseData(cls):
-        super().setUpClassBaseData()
+        res = super().setUpClassBaseData()
         cls.service = (
             cls.env["repair.service"]
             .sudo()
@@ -32,6 +32,7 @@ class TestTimer(RepairJobCase):
                 }
             )
         )
+        return res
 
     def _running_lines(self, repair):
         return self.env["account.analytic.line"].search(

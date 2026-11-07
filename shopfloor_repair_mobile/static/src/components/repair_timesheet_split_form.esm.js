@@ -14,23 +14,32 @@
  * which the plain list entries don't) - the page fetches it before opening
  * this dialog, the same way it does for the Edit dialog.
  */
+
+/* global Vue */
+
 /** @import {PropType} from "vue" */
 /** @import {TimesheetRecord, JobPickerValue} from "./timesheet_types" */
 import {translation_registry} from "/shopfloor_mobile_base/static/src/services/translation_registry.esm.js";
 import {defineComponent} from "../services/define_component.esm.js";
 import {html} from "../services/html.esm.js";
 import {
-    server_datetime_to_date,
-    local_input_to_date,
     date_to_local_input,
     date_to_server_datetime,
     format_clock,
     format_duration,
+    local_input_to_date,
+    server_datetime_to_date,
 } from "../services/datetime.esm.js";
 
 translation_registry.add("en-US.repair.timesheets.split_title", "Split timesheet");
-translation_registry.add("en-US.repair.timesheets.split_hint", "Move this part of the timesheet to the job above");
-translation_registry.add("en-US.repair.timesheets.split_invalid", "Choose a part inside the timesheet, but not all of it.");
+translation_registry.add(
+    "en-US.repair.timesheets.split_hint",
+    "Move this part of the timesheet to the job above"
+);
+translation_registry.add(
+    "en-US.repair.timesheets.split_invalid",
+    "Choose a part inside the timesheet, but not all of it."
+);
 
 /**
  * A `datetime-local` field only holds whole minutes, while an entry's own
@@ -39,7 +48,7 @@ translation_registry.add("en-US.repair.timesheets.split_invalid", "Choose a part
  * part that visibly runs "to the end" would stop a few seconds short and leave
  * a sliver of time behind.
  *
- * @param {string} input
+ * @param {String} input
  * @param {Date | null} entry_edge
  * @returns {Date | null}
  */
@@ -52,7 +61,10 @@ function resolve_edge(input, entry_edge) {
 
 const RepairTimesheetSplitForm = defineComponent({
     props: {
-        record: {type: /** @type {PropType<TimesheetRecord>} */ (Object), required: true},
+        record: {
+            type: /** @type {PropType<TimesheetRecord>} */ (Object),
+            required: true,
+        },
     },
     data() {
         const current = this.record.job ? this.record.job.id : null;
@@ -63,7 +75,8 @@ const RepairTimesheetSplitForm = defineComponent({
         const start = server_datetime_to_date(this.record.date_time);
         const end = server_datetime_to_date(this.record.date_time_end);
         // Open on the second half of the entry - a valid choice to adjust.
-        const middle = start && end ? new Date((start.getTime() + end.getTime()) / 2) : null;
+        const middle =
+            start && end ? new Date((start.getTime() + end.getTime()) / 2) : null;
         return {
             pick: /** @type {JobPickerValue} */ ({
                 job_id: other ? other.id : /** @type {number | null} */ (current),
@@ -90,10 +103,16 @@ const RepairTimesheetSplitForm = defineComponent({
         part_end() {
             return resolve_edge(this.split_end, this.entry_end);
         },
-        /** @returns {boolean} */
+        /** @returns {Boolean} */
         valid() {
             const {entry_start, entry_end, part_start, part_end} = this;
-            if (!this.pick.job_id || !entry_start || !entry_end || !part_start || !part_end) {
+            if (
+                !this.pick.job_id ||
+                !entry_start ||
+                !entry_end ||
+                !part_start ||
+                !part_end
+            ) {
                 return false;
             }
             const inside =
@@ -101,23 +120,28 @@ const RepairTimesheetSplitForm = defineComponent({
                 part_end.getTime() <= entry_end.getTime() &&
                 part_end.getTime() > part_start.getTime();
             const everything =
-                part_start.getTime() === entry_start.getTime() && part_end.getTime() === entry_end.getTime();
+                part_start.getTime() === entry_start.getTime() &&
+                part_end.getTime() === entry_end.getTime();
             return inside && !everything;
         },
         // Updates as either time changes; "—" while the choice isn't valid.
-        /** @returns {string} */
+        /** @returns {String} */
         total() {
             const {part_start, part_end} = this;
             if (!this.valid || !part_start || !part_end) {
                 return "—";
             }
-            return format_duration((part_end.getTime() - part_start.getTime()) / 3600000);
+            return format_duration(
+                (part_end.getTime() - part_start.getTime()) / 3600000
+            );
         },
         // What the part has to fit inside, e.g. "10:50 AM – 5:11 PM".
-        /** @returns {string} */
+        /** @returns {String} */
         entry_range() {
             const {entry_start, entry_end} = this;
-            return entry_start && entry_end ? `${format_clock(entry_start)} – ${format_clock(entry_end)}` : "";
+            return entry_start && entry_end
+                ? `${format_clock(entry_start)} – ${format_clock(entry_end)}`
+                : "";
         },
     },
     methods: {
@@ -140,19 +164,20 @@ const RepairTimesheetSplitForm = defineComponent({
             <v-card-text>
                 <repair-job-picker :jobs="record.jobs" v-model="pick" />
                 <div class="repair-timesheet-hint">
-                    {{ $t('repair.timesheets.split_hint') }}
-                    ({{ $t('repair.timesheets.entry_range') }}: <strong>{{ entry_range }}</strong>)
+                    {{ $t('repair.timesheets.split_hint') }} ({{
+                    $t('repair.timesheets.entry_range') }}:
+                    <strong>{{ entry_range }}</strong>)
                 </div>
                 <v-text-field
                     type="datetime-local"
                     :label="$t('repair.timesheets.start')"
                     v-model="split_start"
-                    />
+                />
                 <v-text-field
                     type="datetime-local"
                     :label="$t('repair.timesheets.end')"
                     v-model="split_end"
-                    />
+                />
                 <div class="repair-timesheet-total">
                     <span>{{ $t('repair.timesheets.total') }}</span>
                     <strong>{{ total }}</strong>

@@ -8,9 +8,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">shop_inspection_report.report_inspection</field>
         <field name="report_file">shop_inspection_report.report_inspection</field>
-        <field
-            name="print_report_name"
-        >'Inspection Report - %s' % (object.name)</field>
+        <field name="print_report_name">'Inspection Report - %s' % (object.name)</field>
         <field name="binding_model_id" ref="repair.model_repair_order" />
         <field name="binding_type">report</field>
     </record>

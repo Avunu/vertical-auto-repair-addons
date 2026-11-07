@@ -59,7 +59,6 @@ class RepairOrder(models.Model):
         "pick the job up, whoever it is assigned to.",
     )
     book_hours = fields.Float(
-        string="Book Hours",
         compute="_compute_book_hours",
         help="Flat-rate hours on the service lines. Seeds the appointment "
         "duration, so a technician's day is booked for as long as the job "
@@ -91,9 +90,9 @@ class RepairOrder(models.Model):
     def _compute_booking_type_user_ids(self):
         for repair in self:
             combinations = repair.booking_type_id.combination_rel_ids.combination_id
-            repair.booking_type_user_ids = (
-                combinations.filtered("active").resource_ids.user_id
-            )
+            repair.booking_type_user_ids = combinations.filtered(
+                "active"
+            ).resource_ids.user_id
 
     @api.depends(
         "vehicle_id.color",

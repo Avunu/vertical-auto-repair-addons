@@ -5,8 +5,8 @@
  * Type-only stub - see registry.d.ts for why this exists.
  */
 export class TranslationRegistry {
-    add(path: string, value: unknown): void;
-    get(path: string): unknown;
+  add(path: string, value: unknown): void;
+  get(path: string): unknown;
 }
 
 export const translation_registry: TranslationRegistry;

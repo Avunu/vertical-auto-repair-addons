@@ -5,10 +5,7 @@
     <record id="view_repair_order_form_service_workflow" model="ir.ui.view">
         <field name="name">repair.order.form.service.workflow</field>
         <field name="model">repair.order</field>
-        <field
-            name="inherit_id"
-            ref="repair_service.view_repair_order_form_inherit"
-        />
+        <field name="inherit_id" ref="repair_service.view_repair_order_form_inherit" />
         <field name="arch" type="xml">
             <!-- repair.order itself also has a top-level `product_id`
                  ("Product to Repair"), so every xpath below is scoped
@@ -35,7 +32,9 @@
                 expr="//field[@name='repair_service_ids']//field[@name='product_id']"
                 position="attributes"
             >
-                <attribute name="context">{'default_purchase_ok': False, 'default_type': 'service', 'default_service_policy': 'ordered_prepaid'}</attribute>
+                <attribute
+                    name="context"
+                >{'default_purchase_ok': False, 'default_type': 'service', 'default_service_policy': 'ordered_prepaid'}</attribute>
             </xpath>
             <xpath
                 expr="//field[@name='repair_service_ids']//field[@name='product_uom']"

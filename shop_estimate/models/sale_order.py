@@ -42,9 +42,7 @@ class SaleOrder(models.Model):
             and line.shop_job_exploded
             and (line.shop_repair_id == repair or not line.shop_repair_id)
         )
-        body = Markup("<p>%s</p>") % _(
-            "Estimate %(order)s approved.", order=order.name
-        )
+        body = Markup("<p>%s</p>") % _("Estimate %(order)s approved.", order=order.name)
         if approved:
             items = Markup("").join(
                 Markup("<li>%s</li>") % escape(line.shop_job_id.name)

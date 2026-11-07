@@ -20,9 +20,7 @@ class RepairOrder(models.Model):
 
     def action_validate(self):
         self.ensure_one()
-        if self.state != "draft" or self.env.context.get(
-            "skip_service_confirm_wizard"
-        ):
+        if self.state != "draft" or self.env.context.get("skip_service_confirm_wizard"):
             return super().action_validate()
         return {
             "type": "ir.actions.act_window",
