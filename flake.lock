@@ -946,11 +946,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1794147220,
-        "narHash": "sha256-YJcbK7ETL+fmNu6K/5No76QkRM/nsM4CdAC+BEeKrw8=",
+        "lastModified": 1794329426,
+        "narHash": "sha256-S6Iu0T1k2Bvi9v+RgCSnU+fpsjpQRvjRk7HD2cqtkYE=",
         "owner": "Avunu",
         "repo": "odoo-nix",
-        "rev": "917f576254afd3108f705a9097940fa51667f304",
+        "rev": "1a9b7a74979425584669cc04d841d0ae90894ddb",
         "type": "github"
       },
       "original": {
@@ -1038,11 +1038,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793886131,
-        "narHash": "sha256-WYx/W7Kq6UwPvIFmbXzyMPbP0J99AzaxSXJLHeeNlqM=",
+        "lastModified": 1794079530,
+        "narHash": "sha256-T76hmhJb9ioLHxx+pvRRsPCppKr4eay4A5vC+yiQT1E=",
         "owner": "Avunu",
         "repo": "python-devops-nix",
-        "rev": "7887586590d83942dac7db84c655478f633a7005",
+        "rev": "ef790559b046095880b2776ebe6a00f455a455eb",
         "type": "github"
       },
       "original": {
