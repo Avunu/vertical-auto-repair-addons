@@ -760,11 +760,11 @@
     "oca-shopfloor-app": {
       "flake": false,
       "locked": {
-        "lastModified": 1792663870,
-        "narHash": "sha256-m0vxvij6TsEH/Hc4FqeZUk7zlK2aGV2MzmacnVl0rKo=",
+        "lastModified": 1793346890,
+        "narHash": "sha256-At8B6caTtRPV8i0Kt12ieX4Czkhx8KH9gPAOqyy4ius=",
         "owner": "OCA",
         "repo": "shopfloor-app",
-        "rev": "05ec79d982af71e3abd9eff0edf4b01f416f7992",
+        "rev": "fe46c6b2cc97f75985a1e1696584242980d95839",
         "type": "github"
       },
       "original": {
