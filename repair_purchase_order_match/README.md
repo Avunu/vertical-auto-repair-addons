@@ -24,14 +24,14 @@ entered.
   Document** holds the number of an existing repair order of the same company, the
   purchase order is linked to it automatically, with no confirmation: its parts are
   added to the repair order, and the same users `edi_purchase_order_import` notifies are
-  told in the purchase order's inbox (see _Notices_). Only the number counts, not the letters or
-  separators around it (`RO00004`, `RO-4` and `WH/RO/00004` all name `WH/RO/00004`): the
-  last run of digits in each is compared. If two repair orders share a number the match
-  is ambiguous and nothing is linked automatically. The vendor's import template needs a
-  line that puts the vendor's "PO number" into Source Document (the vendor's own order
-  number belongs in Vendor Reference and is not used for matching). If the number names
-  a repair order that is already done or cancelled, nothing is added and the chatter
-  says so.
+  told in the purchase order's inbox (see _Notices_). Only the number counts, not the
+  letters or separators around it (`RO00004`, `RO-4` and `WH/RO/00004` all name
+  `WH/RO/00004`): the last run of digits in each is compared. If two repair orders share
+  a number the match is ambiguous and nothing is linked automatically. The vendor's
+  import template needs a line that puts the vendor's "PO number" into Source Document
+  (the vendor's own order number belongs in Vendor Reference and is not used for
+  matching). If the number names a repair order that is already done or cancelled,
+  nothing is added and the chatter says so.
 - **Choosing a different repair order.** Every link message in the chatter (automatic or
   confirmed) ends with _Not the right repair order? Choose a different one._ That opens
   the list of open repair orders; clicking one links the purchase order to it and
@@ -74,11 +74,12 @@ entered.
   order with `po_id` in the context link the way the match flow does (same rights,
   validation, notes and clearing); a user who can't match is refused (`AccessError`)
   whichever way they call.
-- **Confirm Repair wizard.** `repair_service_workflow`'s confirm wizard has its own
-  "Add from Purchase Order" button, which calls `action_add_parts_from_purchase_order`: it
+- **Confirm Repair wizard.** `repair_service_workflow`'s confirm wizard has its own "Add
+  from Purchase Order" button, which calls `action_add_parts_from_purchase_order`: it
   therefore opens the **Match Order** dialog too (the wizard is replaced by the dialog,
   and matching reloads the repair order, so confirm the repair again afterwards). This
-  module does not depend on `repair_service_workflow`, so it does not relabel that button.
+  module does not depend on `repair_service_workflow`, so it does not relabel that
+  button.
 - After an EDI-imported purchase order is confirmed, a background job (`queue_job`)
   describes the purchase order (vendor, order date, lines) and every open,
   vehicle-linked repair order (repair date, vehicle manufacturer/model/year, customer
@@ -115,58 +116,60 @@ nothing is posted with `message_post(partner_ids=...)` any more, which emailed f
 | "... so it was linked automatically" (PO number; nobody confirmed it) | informational                      | yes (stays unread)        | no                                                              |
 
 - **Who gets the email.** Only the address(es) the vendor's email was addressed to or
-  forwarded from - the shop mailbox whose Gmail rule forwards into the alias, and only if
-  it is an allowed one (Settings > Purchase > **Allowed Reply Addresses**, or a user's or
-  company's email: the addresses come from headers whoever can write to the alias
-  controls) - as a reply
-  in the thread of the original email (`Re: <subject>`, `In-Reply-To`/`References` of the
-  inbound `Message-Id`). Never the vendor, the repair order's customer, other followers or
-  the notify group (they get the inbox notification, never an email). An order with no
-  such address (e.g. a PDF upload, or a vendor writing straight to the alias) sends no
-  email at all. The reply of the shop lands on the purchase order, as an internal note
-  (the vendor is not mailed it). The record links in the emailed copy are absolute.
+  forwarded from - the shop mailbox whose Gmail rule forwards into the alias, and only
+  if it is an allowed one (Settings > Purchase > **Allowed Reply Addresses**, or a
+  user's or company's email: the addresses come from headers whoever can write to the
+  alias controls) - as a reply in the thread of the original email (`Re: <subject>`,
+  `In-Reply-To`/`References` of the inbound `Message-Id`). Never the vendor, the repair
+  order's customer, other followers or the notify group (they get the inbox
+  notification, never an email). An order with no such address (e.g. a PDF upload, or a
+  vendor writing straight to the alias) sends no email at all. The reply of the shop
+  lands on the purchase order, as an internal note (the vendor is not mailed it). The
+  record links in the emailed copy are absolute.
 - **The Confirm Match button in the email** is the same link as in the chatter: it is
-  login-protected (a recipient who is not logged in is sent to the login page first), tied
-  to its purchase order/repair order pair by a signed token, and runs with the _rights of
-  whoever clicks it_ (see _Access_). A shop mailbox owner without those rights gets a 403
-  page and nothing happens; so does a malformed token (also a non-ASCII one). See also _Stale buttons_ below.
+  login-protected (a recipient who is not logged in is sent to the login page first),
+  tied to its purchase order/repair order pair by a signed token, and runs with the
+  _rights of whoever clicks it_ (see _Access_). A shop mailbox owner without those
+  rights gets a 403 page and nothing happens; so does a malformed token (also a
+  non-ASCII one). See also _Stale buttons_ below.
 - **On the repair order** the suggestion and link messages are **internal notes**
-  (`mail.mt_note`), never discussion messages: the customer follows the repair order, and
-  a discussion message would be emailed to them. An internal note is only ever sent to
-  followers who are internal users (and only the ones that subscribed to notes). Nobody
-  is notified explicitly. The suggestion note is tied to the purchase order it concerns
-  (`mail.message.repair_match_purchase_order_id`, a field only the Settings group can
-  write: it decides whose notifications get cleared) and flagged outstanding, so that it can
-  be cleared for exactly that purchase order, on whichever repair orders it was suggested
-  to.
+  (`mail.mt_note`), never discussion messages: the customer follows the repair order,
+  and a discussion message would be emailed to them. An internal note is only ever sent
+  to followers who are internal users (and only the ones that subscribed to notes).
+  Nobody is notified explicitly. The suggestion note is tied to the purchase order it
+  concerns (`mail.message.repair_match_purchase_order_id`, a field only the Settings
+  group can write: it decides whose notifications get cleared) and flagged outstanding,
+  so that it can be cleared for exactly that purchase order, on whichever repair orders
+  it was suggested to.
 
 ### Clearing
 
-The moment a purchase order is linked to a repair order - inside `_link_to_repair_order`,
-so whichever way it happens: the Match Order card, the Match Repair dialog, the Confirm
-Match link, the automatic PO-number match, the queue job, the MCP tool - its outstanding
-notices are cleared with `_edi_clear_notices()`: their inbox notifications are marked read
-for **all** users (and the inbox counters refreshed), on the purchase order and on every
-repair order the suggestion went to. Clearing is quiet: no email, no new notification, the
-notices stay in the chatter as history, and the informational messages (never outstanding)
-are untouched. It is a technical operation and uses sudo narrowly, only to flip `is_read`
-on those notifications, so any user who may match can clear.
+The moment a purchase order is linked to a repair order - inside
+`_link_to_repair_order`, so whichever way it happens: the Match Order card, the Match
+Repair dialog, the Confirm Match link, the automatic PO-number match, the queue job, the
+MCP tool - its outstanding notices are cleared with `_edi_clear_notices()`: their inbox
+notifications are marked read for **all** users (and the inbox counters refreshed), on
+the purchase order and on every repair order the suggestion went to. Clearing is quiet:
+no email, no new notification, the notices stay in the chatter as history, and the
+informational messages (never outstanding) are untouched. It is a technical operation
+and uses sudo narrowly, only to flip `is_read` on those notifications, so any user who
+may match can clear.
 
-If an order is **already matched when a notice is posted** (the PO-number match ran before
-the held-back confirmation notice was released under `quick_exec`, say),
-`_edi_notice_still_needed()` is false: the notice is posted for the record without an inbox
-notification and not flagged outstanding (the email, if asked, still goes: it is the reply
-in the vendor's thread). The suggestion job also does nothing at all for an order somebody
-matched in the meantime.
+If an order is **already matched when a notice is posted** (the PO-number match ran
+before the held-back confirmation notice was released under `quick_exec`, say),
+`_edi_notice_still_needed()` is false: the notice is posted for the record without an
+inbox notification and not flagged outstanding (the email, if asked, still goes: it is
+the reply in the vendor's thread). The suggestion job also does nothing at all for an
+order somebody matched in the meantime.
 
 ### Stale buttons
 
 Old chatter messages keep their **Confirm Match** button. The link re-matches (moves
-parts), so for an order matched since it is guarded: if the order is already matched to the
-repair order of the link, nothing is done and the user lands on the order; if it is matched
-to a different one, the user gets a 400 page naming it and pointing to **Match Repair** on
-the purchase order, the deliberate way to move it. A cancelled repair order does not count
-as a match (the order is up for matching again).
+parts), so for an order matched since it is guarded: if the order is already matched to
+the repair order of the link, nothing is done and the user lands on the order; if it is
+matched to a different one, the user gets a 400 page naming it and pointing to **Match
+Repair** on the purchase order, the deliberate way to move it. A cancelled repair order
+does not count as a match (the order is up for matching again).
 
 ## Access
 

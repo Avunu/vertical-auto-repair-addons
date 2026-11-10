@@ -28,6 +28,7 @@
     <record id="view_repair_order_form_match_order" model="ir.ui.view">
         <field name="name">repair.order.form.match.order</field>
         <field name="model">repair.order</field>
+        <field name="priority">99</field>
         <field name="inherit_id" ref="repair.view_repair_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//header/field[@name='state']" position="before">
