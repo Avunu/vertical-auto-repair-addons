@@ -22,6 +22,7 @@
         "views/repair_order_views.xml",
         "views/calendar_event_views.xml",
         "wizards/shop_appointment_wizard_views.xml",
+        "report/shop_schedule_report.xml",
         "views/menus.xml",
     ],
     "assets": {

@@ -1,0 +1,179 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "include-component-in-tag": true,
+  "include-v-in-tag": false,
+  "tag-separator": ".",
+  "separate-pull-requests": false,
+  "group-pull-request-title-pattern": "chore(release): release ${branch}",
+  "pull-request-header": "Merging this releases the addons below on 18.0: release-please tags each `<addon>-18.0.x.y.z` and publishes its GitHub release, which carries the addon's zip and wheel.",
+  "changelog-sections": [
+    {
+      "type": "feat",
+      "section": "Features"
+    },
+    {
+      "type": "fix",
+      "section": "Bug Fixes"
+    },
+    {
+      "type": "perf",
+      "section": "Performance Improvements"
+    },
+    {
+      "type": "revert",
+      "section": "Reverts"
+    },
+    {
+      "type": "deps",
+      "section": "Dependencies"
+    },
+    {
+      "type": "docs",
+      "section": "Documentation",
+      "hidden": true
+    },
+    {
+      "type": "style",
+      "section": "Styles",
+      "hidden": true
+    },
+    {
+      "type": "chore",
+      "section": "Miscellaneous Chores",
+      "hidden": true
+    },
+    {
+      "type": "refactor",
+      "section": "Code Refactoring",
+      "hidden": true
+    },
+    {
+      "type": "test",
+      "section": "Tests",
+      "hidden": true
+    },
+    {
+      "type": "build",
+      "section": "Build System",
+      "hidden": true
+    },
+    {
+      "type": "ci",
+      "section": "Continuous Integration",
+      "hidden": true
+    }
+  ],
+  "packages": {
+    "fleet_vehicle_simplify": {
+      "component": "fleet_vehicle_simplify-18.0",
+      "exclude-paths": [
+        "fleet_vehicle_simplify/tests",
+        "fleet_vehicle_simplify/readme",
+        "fleet_vehicle_simplify/i18n",
+        "fleet_vehicle_simplify/i18n_extra",
+        "fleet_vehicle_simplify/static/description"
+      ]
+    },
+    "repair_purchase_order_match": {
+      "component": "repair_purchase_order_match-18.0",
+      "exclude-paths": [
+        "repair_purchase_order_match/tests",
+        "repair_purchase_order_match/readme",
+        "repair_purchase_order_match/i18n",
+        "repair_purchase_order_match/i18n_extra",
+        "repair_purchase_order_match/static/description"
+      ]
+    },
+    "repair_service_productivity": {
+      "component": "repair_service_productivity-18.0",
+      "exclude-paths": [
+        "repair_service_productivity/tests",
+        "repair_service_productivity/readme",
+        "repair_service_productivity/i18n",
+        "repair_service_productivity/i18n_extra",
+        "repair_service_productivity/static/description"
+      ]
+    },
+    "repair_service_workflow": {
+      "component": "repair_service_workflow-18.0",
+      "exclude-paths": [
+        "repair_service_workflow/tests",
+        "repair_service_workflow/readme",
+        "repair_service_workflow/i18n",
+        "repair_service_workflow/i18n_extra",
+        "repair_service_workflow/static/description"
+      ]
+    },
+    "shop_demo": {
+      "component": "shop_demo-18.0",
+      "exclude-paths": [
+        "shop_demo/tests",
+        "shop_demo/readme",
+        "shop_demo/i18n",
+        "shop_demo/i18n_extra",
+        "shop_demo/static/description"
+      ]
+    },
+    "shop_estimate": {
+      "component": "shop_estimate-18.0",
+      "exclude-paths": [
+        "shop_estimate/tests",
+        "shop_estimate/readme",
+        "shop_estimate/i18n",
+        "shop_estimate/i18n_extra",
+        "shop_estimate/static/description"
+      ]
+    },
+    "shop_inspection": {
+      "component": "shop_inspection-18.0",
+      "exclude-paths": [
+        "shop_inspection/tests",
+        "shop_inspection/readme",
+        "shop_inspection/i18n",
+        "shop_inspection/i18n_extra",
+        "shop_inspection/static/description"
+      ]
+    },
+    "shop_inspection_report": {
+      "component": "shop_inspection_report-18.0",
+      "exclude-paths": [
+        "shop_inspection_report/tests",
+        "shop_inspection_report/readme",
+        "shop_inspection_report/i18n",
+        "shop_inspection_report/i18n_extra",
+        "shop_inspection_report/static/description"
+      ]
+    },
+    "shop_scheduling": {
+      "component": "shop_scheduling-18.0",
+      "exclude-paths": [
+        "shop_scheduling/tests",
+        "shop_scheduling/readme",
+        "shop_scheduling/i18n",
+        "shop_scheduling/i18n_extra",
+        "shop_scheduling/static/description"
+      ]
+    },
+    "shopfloor_repair": {
+      "component": "shopfloor_repair-18.0",
+      "exclude-paths": [
+        "shopfloor_repair/tests",
+        "shopfloor_repair/readme",
+        "shopfloor_repair/i18n",
+        "shopfloor_repair/i18n_extra",
+        "shopfloor_repair/static/description"
+      ]
+    },
+    "shopfloor_repair_mobile": {
+      "component": "shopfloor_repair_mobile-18.0",
+      "exclude-paths": [
+        "shopfloor_repair_mobile/tests",
+        "shopfloor_repair_mobile/readme",
+        "shopfloor_repair_mobile/i18n",
+        "shopfloor_repair_mobile/i18n_extra",
+        "shopfloor_repair_mobile/static/description"
+      ]
+    }
+  }
+}
