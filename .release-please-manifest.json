@@ -1,0 +1,13 @@
+{
+  "fleet_vehicle_simplify": "1.0.1",
+  "repair_purchase_order_match": "3.0.0",
+  "repair_service_productivity": "1.0.1",
+  "repair_service_workflow": "1.0.1",
+  "shop_demo": "1.1.1",
+  "shop_estimate": "1.0.0",
+  "shop_inspection": "1.3.0",
+  "shop_inspection_report": "1.0.1",
+  "shop_scheduling": "1.1.0",
+  "shopfloor_repair": "1.0.9",
+  "shopfloor_repair_mobile": "1.0.28"
+}

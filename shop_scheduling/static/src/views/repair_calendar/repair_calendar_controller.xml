@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<templates xml:space="preserve">
+
+    <t t-name="shop_scheduling.RepairCalendarController.controlButtons">
+        <button
+            class="o_calendar_button_print btn btn-secondary"
+            type="button"
+            title="Print the schedule on screen as a PDF"
+            t-on-click="onClickPrint"
+        >
+            <i class="fa fa-print me-1" />Print
+        </button>
+    </t>
+
+</templates>
