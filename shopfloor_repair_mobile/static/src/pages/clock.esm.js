@@ -36,6 +36,7 @@ const Clock = defineComponent({
             ticked_seconds: 0,
             interval: /** @type {ReturnType<typeof setInterval> | null} */ (null),
             busy: false,
+            error_message: /** @type {string | null} */ (null),
         };
     },
     computed: {
@@ -97,6 +98,7 @@ const Clock = defineComponent({
         /** @returns {void} */
         toggle() {
             this.busy = true;
+            this.error_message = null;
             const root = sf_root(this);
             // `clock_toggle` inherits `base.shopfloor.process`, which requires
             // both a menu and a profile header on every call - see
@@ -120,14 +122,12 @@ const Clock = defineComponent({
                         set_shift_timer(data.shift_timer);
                         set_current_job_timer(data.shift_timer.current_job || null);
                     }
-                    // No natural `screen_info`/notification slot for a
-                    // Cerberus-validated error here (e.g. no employee linked
-                    // to this user), so it's surfaced plainly rather than
-                    // silently doing nothing - same choice already made by
-                    // the drawer's own toggle before this screen existed.
+                    // A Cerberus-validated error (e.g. no employee linked to
+                    // this user) has no `screen_info` slot, so it shows in the
+                    // banner above the clock rather than failing silently.
                     const message = result && result.message;
                     if (message && message.message_type === "error") {
-                        window.alert(message.body);
+                        this.error_message = message.body;
                     }
                 })
                 .finally(() => {
@@ -137,6 +137,9 @@ const Clock = defineComponent({
     },
     template: html`
         <Screen :screen_info="screen_info">
+            <v-alert v-if="error_message" type="error" dense class="mb-3">
+                {{ error_message }}
+            </v-alert>
             <v-card
                 outlined
                 class="clock-status"
