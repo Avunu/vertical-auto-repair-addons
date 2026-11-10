@@ -22,7 +22,7 @@ jobs:
   release:
     permissions:
       contents: read
-    uses: Avunu/odoo-nix/.github/workflows/odoo-release-please.yml@1a9b7a74979425584669cc04d841d0ae90894ddb # v2.6.0
+    uses: Avunu/odoo-nix/.github/workflows/odoo-release-please.yml@6fc2fc6adab2c0ea30af870cd814a681a442ea9f # v2.7.0
     with:
       series-branch: "18.0"
       runs-on: '["self-hosted","nixos"]'
