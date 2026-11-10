@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 from unittest.mock import MagicMock, patch
 
+from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
 
@@ -75,6 +76,20 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
                     for product, qty in lines
                 ],
             }
+        )
+
+    def _confirmed_po(self, lines=None, **vals):
+        po = self._make_po(lines)
+        if vals:
+            po.write(vals)
+        po.button_confirm()
+        return po
+
+    def _unmatched_ids(self, company=None):
+        return set(
+            self.env["purchase.order"]
+            .search(self.env["purchase.order"]._repair_match_unmatched_domain(company))
+            .ids
         )
 
     def _patch_typesafe(self, choice=None, confidence=0.9):
@@ -399,3 +414,418 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
         self.assertTrue(result["linked"])
         parts = repair.move_ids.filtered(lambda m: m.repair_line_type == "add")
         self.assertEqual(set(parts.product_id.ids), {self.part_a.id})
+
+    # ----------------------------------------------------------
+    # Match Order (repair order -> purchase order)
+    # ----------------------------------------------------------
+
+    def test_unmatched_domain_includes_a_confirmed_unlinked_po(self):
+        po = self._confirmed_po()
+        self.assertIn(po.id, self._unmatched_ids())
+        self.assertTrue(po.repair_match_unmatched)
+
+    def test_unmatched_domain_excludes_fully_linked_po(self):
+        repair = self._make_repair()
+        po = self._confirmed_po()
+        po._link_to_repair_order(repair)
+        self.assertNotIn(po.id, self._unmatched_ids())
+        self.assertFalse(po.repair_match_unmatched)
+
+    def test_unmatched_domain_excludes_partially_linked_po(self):
+        repair = self._make_repair()
+        part_b = self.env["product.product"].create(
+            {"name": "Brake Rotor", "type": "consu", "is_storable": True}
+        )
+        po = self._confirmed_po([(self.part_a, 1.0), (part_b, 1.0)])
+        # Only the first line is on a repair order.
+        moves = self.env["stock.move"].create(
+            po._prepare_repair_move_vals(repair, po.order_line[1:].ids)
+        )
+        self.assertEqual(moves.created_purchase_line_ids, po.order_line[:1])
+        self.assertNotIn(po.id, self._unmatched_ids())
+
+    def test_unmatched_domain_excludes_buy_route_po_linked_by_receipt_move(self):
+        """Once a purchase order made by the Buy route is confirmed, the
+        repair part is linked through the receipt move, not through the
+        order line (purchase_stock clears the line's `move_dest_ids`).
+        """
+        repair = self._make_repair()
+        po = self._make_po()
+        self.env["stock.move"].create(po._prepare_repair_move_vals(repair, []))
+        po.button_confirm()
+        self.assertFalse(po.order_line.move_dest_ids)
+        self.assertEqual(po._get_linked_repair_orders(), repair)
+
+        self.assertFalse(po.repair_match_unmatched)
+        self.assertNotIn(po.id, self._unmatched_ids())
+
+        repair.action_repair_cancel()
+        self.assertIn(po.id, self._unmatched_ids())
+
+    def test_unmatched_domain_excludes_po_without_parts(self):
+        po = self.env["purchase.order"].create(
+            {
+                "partner_id": self.vendor.id,
+                "order_line": [
+                    (
+                        0,
+                        0,
+                        {
+                            "display_type": "line_section",
+                            "name": "Freight",
+                            "product_qty": 0,
+                        },
+                    )
+                ],
+            }
+        )
+        po.button_confirm()
+        self.assertNotIn(po.id, self._unmatched_ids())
+        repair = self._make_repair()
+        with self.assertRaises(UserError):
+            po.with_context(repair_id=repair.id).action_match_to_repair()
+
+    def test_unmatched_domain_excludes_rfq_and_cancelled_po(self):
+        rfq = self._make_po()
+        cancelled = self._confirmed_po()
+        cancelled.button_cancel()
+        unmatched = self._unmatched_ids()
+        self.assertNotIn(rfq.id, unmatched)
+        self.assertNotIn(cancelled.id, unmatched)
+
+    def test_unmatched_domain_is_per_company(self):
+        other_company = self.env["res.company"].create({"name": "Other Shop"})
+        po = self._make_po()
+        po.write({"company_id": other_company.id, "state": "purchase"})
+        self.assertNotIn(po.id, self._unmatched_ids())
+        self.assertIn(po.id, self._unmatched_ids(other_company))
+
+    def test_po_linked_only_to_a_cancelled_repair_is_unmatched_again(self):
+        repair = self._make_repair()
+        po = self._confirmed_po()
+        po._link_to_repair_order(repair)
+        self.assertNotIn(po.id, self._unmatched_ids())
+
+        repair.action_repair_cancel()
+
+        self.assertIn(po.id, self._unmatched_ids())
+
+    def test_po_linked_to_a_done_repair_stays_matched(self):
+        repair = self._make_repair()
+        po = self._confirmed_po()
+        po._link_to_repair_order(repair)
+        repair.action_validate()
+        repair.action_repair_start()
+        repair.action_repair_end()
+        self.assertEqual(repair.state, "done")
+        self.assertNotIn(po.id, self._unmatched_ids())
+
+    def test_unmatched_search_negation(self):
+        repair = self._make_repair()
+        linked = self._confirmed_po()
+        linked._link_to_repair_order(repair)
+        free = self._confirmed_po()
+        orders = linked | free
+        search = self.env["purchase.order"].search
+        self.assertEqual(
+            search([("id", "in", orders.ids), ("repair_match_unmatched", "=", False)]),
+            linked,
+        )
+        self.assertEqual(
+            search([("id", "in", orders.ids), ("repair_match_unmatched", "!=", False)]),
+            free,
+        )
+        with self.assertRaises(UserError):
+            search([("repair_match_unmatched", "ilike", True)])
+
+    def test_unmatched_search_needs_no_stock_access(self):
+        """A purchase user who cannot read stock moves still sees the right
+        purchase orders."""
+        repair = self._make_repair()
+        linked = self._confirmed_po()
+        linked._link_to_repair_order(repair)
+        free = self._confirmed_po()
+        buyer = self.env["res.users"].create(
+            {
+                "name": "Buyer",
+                "login": "buyer_match",
+                "groups_id": [
+                    (6, 0, [self.env.ref("purchase.group_purchase_user").id])
+                ],
+            }
+        )
+        found = (
+            self.env["purchase.order"]
+            .with_user(buyer)
+            .search(
+                [
+                    ("id", "in", (linked | free).ids),
+                    ("repair_match_unmatched", "=", True),
+                ]
+            )
+        )
+        self.assertEqual(found, free)
+
+    def test_parts_html_lists_quantity_part_number_and_description(self):
+        self.part_a.default_code = "BP-100"
+        po = self._make_po([(self.part_a, 2.0)])
+        html = str(po.repair_match_parts_html)
+        self.assertIn("BP-100", html)
+        self.assertIn("Brake Pad", html)
+        self.assertIn("2.00", html)
+        self.assertIn(self.unit.name, html)
+
+    def test_parts_html_escapes_user_provided_strings(self):
+        evil = self.env["product.product"].create(
+            {
+                "name": "<script>alert(1)</script>",
+                "default_code": "<b>X</b>",
+                "type": "consu",
+            }
+        )
+        po = self._make_po([(evil, 1.0)])
+        html = str(po.repair_match_parts_html)
+        self.assertNotIn("<script>", html)
+        self.assertNotIn("<b>X</b>", html)
+        self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", html)
+
+    def test_parts_html_skips_sections_notes_and_lines_without_product(self):
+        po = self._make_po([(self.part_a, 1.0)])
+        po.write(
+            {
+                "order_line": [
+                    (
+                        0,
+                        0,
+                        {
+                            "display_type": "line_section",
+                            "name": "SECTION-X",
+                            "product_qty": 0,
+                        },
+                    ),
+                    (
+                        0,
+                        0,
+                        {
+                            "display_type": "line_note",
+                            "name": "NOTE-X",
+                            "product_qty": 0,
+                        },
+                    ),
+                ]
+            }
+        )
+        html = str(po.repair_match_parts_html)
+        self.assertIn("Brake Pad", html)
+        self.assertNotIn("SECTION-X", html)
+        self.assertNotIn("NOTE-X", html)
+        self.assertEqual(html.count("<tr>"), 1)
+
+    def test_parts_html_is_empty_without_parts(self):
+        po = self.env["purchase.order"].create({"partner_id": self.vendor.id})
+        self.assertFalse(po.repair_match_parts_html)
+
+    def test_action_match_order_opens_dialog_of_unmatched_orders(self):
+        repair = self._make_repair()
+        free = self._confirmed_po()
+        linked = self._confirmed_po()
+        linked._link_to_repair_order(self._make_repair())
+
+        action = repair.action_match_order()
+
+        self.assertEqual(action["type"], "ir.actions.act_window")
+        self.assertEqual(action["res_model"], "purchase.order")
+        self.assertEqual(action["target"], "new")
+        self.assertEqual(action["view_mode"], "kanban")
+        self.assertEqual(action["views"][0][1], "kanban")
+        self.assertEqual(action["context"]["repair_id"], repair.id)
+        found = self.env["purchase.order"].search(action["domain"])
+        self.assertIn(free, found)
+        self.assertNotIn(linked, found)
+        # The dialog's views really load, parts list included.
+        kanban = self.env["purchase.order"].get_view(action["views"][0][0], "kanban")
+        self.assertIn("repair_match_parts_html", kanban["arch"])
+        self.assertIn('name="action_match_to_repair"', kanban["arch"])
+        self.assertTrue(action["search_view_id"][0])
+
+    def test_action_match_order_raises_for_closed_repair(self):
+        repair = self._make_repair()
+        repair.action_repair_cancel()
+        with self.assertRaises(UserError):
+            repair.action_match_order()
+
+    def test_search_view_has_email_filter(self):
+        search = self.env.ref(
+            "repair_purchase_order_match.view_purchase_order_search_match_repair"
+        )
+        arch = self.env["purchase.order"].get_view(search.id, "search")["arch"]
+        self.assertIn('name="imported_from_email"', arch)
+        self.assertIn("exchange_related_record_ids", arch)
+        exchange_type = self.env["edi.exchange.type"].search([], limit=1)
+        backend = exchange_type.backend_id or self.env["edi.backend"].search(
+            [("backend_type_id", "=", exchange_type.backend_type_id.id)], limit=1
+        )
+        plain = self._confirmed_po()
+        # The filter's domain must be searchable.
+        domain = [("exchange_related_record_ids", "!=", False)]
+        self.assertNotIn(plain, self.env["purchase.order"].search(domain))
+        if backend and exchange_type:
+            imported = self._confirmed_po()
+            record = self.env["edi.exchange.record"].create(
+                {"type_id": exchange_type.id, "backend_id": backend.id}
+            )
+            record._set_related_record(imported)
+            self.assertIn(imported, self.env["purchase.order"].search(domain))
+
+    def test_action_match_to_repair_links_posts_and_reloads(self):
+        repair = self._make_repair()
+        po = self._confirmed_po()
+
+        action = po.with_context(repair_id=repair.id).action_match_to_repair()
+
+        self.assertEqual(action, {"type": "ir.actions.client", "tag": "soft_reload"})
+        self.assertEqual(
+            self._parts_on(repair).created_purchase_line_ids, po.order_line
+        )
+        self.assertIn(repair.name, po.message_ids.sorted("id")[-1].body)
+        self.assertIn(po.name, repair.message_ids.sorted("id")[-1].body)
+        self.assertNotIn(po.id, self._unmatched_ids())
+
+    def test_action_match_to_repair_moves_parts_from_previous_repair(self):
+        wrong = self._make_repair()
+        right = self._make_repair()
+        po = self._confirmed_po()
+        po._link_to_repair_order(wrong)
+
+        po.with_context(repair_id=right.id).action_match_to_repair()
+
+        self.assertFalse(self._parts_on(wrong))
+        self.assertEqual(self._parts_on(right).created_purchase_line_ids, po.order_line)
+
+    def test_action_match_to_repair_validates(self):
+        po = self._confirmed_po()
+        with self.assertRaises(UserError):
+            po.action_match_to_repair()  # no repair in the context
+        with self.assertRaises(UserError):
+            po.with_context(repair_id=0).action_match_to_repair()
+        closed = self._make_repair()
+        closed.action_repair_cancel()
+        with self.assertRaises(UserError):
+            po.with_context(repair_id=closed.id).action_match_to_repair()
+        other_company = self.env["res.company"].create({"name": "Other Shop"})
+        foreign = self._make_repair()
+        foreign.company_id = other_company
+        with self.assertRaises(UserError):
+            po.with_context(repair_id=foreign.id).action_match_to_repair()
+        cancelled = self._confirmed_po()
+        cancelled.button_cancel()
+        with self.assertRaises(UserError):
+            cancelled.with_context(
+                repair_id=self._make_repair().id
+            ).action_match_to_repair()
+
+    # ----------------------------------------------------------
+    # Match Repair (purchase order -> repair order)
+    # ----------------------------------------------------------
+
+    def test_action_match_repair_opens_dialog_of_open_repairs(self):
+        open_repair = self._make_repair()
+        closed = self._make_repair()
+        closed.action_repair_cancel()
+        po = self._confirmed_po()
+
+        action = po.action_match_repair()
+
+        self.assertEqual(action["res_model"], "repair.order")
+        self.assertEqual(action["target"], "new")
+        self.assertEqual(action["context"]["po_id"], po.id)
+        found = self.env["repair.order"].search(action["domain"])
+        self.assertIn(open_repair, found)
+        self.assertNotIn(closed, found)
+        view = self.env["repair.order"].get_view(action["views"][0][0], "list")
+        self.assertIn('action="action_link_purchase_order"', view["arch"])
+
+    def test_row_click_from_match_repair_dialog_reloads_the_form(self):
+        repair = self._make_repair()
+        po = self._confirmed_po()
+        action = po.action_match_repair()
+
+        result = repair.with_context(**action["context"]).action_link_purchase_order()
+
+        self.assertEqual(result, {"type": "ir.actions.client", "tag": "soft_reload"})
+        self.assertEqual(
+            self._parts_on(repair).created_purchase_line_ids, po.order_line
+        )
+
+    def test_row_click_refuses_a_closed_repair(self):
+        repair = self._make_repair()
+        repair.action_repair_cancel()
+        po = self._confirmed_po()
+        with self.assertRaises(UserError):
+            repair.with_context(po_id=po.id).action_link_purchase_order()
+
+    # ----------------------------------------------------------
+    # Buttons in the combined form views
+    # ----------------------------------------------------------
+
+    def _form_arch(self, model, user):
+        return self.env[model].with_user(user).get_view(view_type="form")["arch"]
+
+    def test_repair_form_has_match_order_button_before_the_statusbar(self):
+        arch = self._form_arch("repair.order", self.env.ref("base.user_admin"))
+        self.assertIn('name="action_match_order"', arch)
+        self.assertLess(
+            arch.index('name="action_match_order"'),
+            arch.index('widget="statusbar"'),
+        )
+
+    def test_purchase_form_has_one_match_repair_button_and_no_add_to_repair(self):
+        arch = self._form_arch("purchase.order", self.env.ref("base.user_admin"))
+        self.assertEqual(arch.count('name="action_match_repair"'), 1)
+        self.assertNotIn("action_add_to_repair", arch)
+        self.assertNotIn("Add to Repair", arch)
+
+    def test_buttons_follow_the_access_rights_not_a_purchase_group(self):
+        """The buttons are shown to who can really match (see
+        `repair.match.access`): the form carries the flag their `invisible`
+        reads, and no `groups` restricts them to purchase users."""
+        arch = self._form_arch("repair.order", self.env.ref("base.user_admin"))
+        self.assertIn('name="repair_match_can_link"', arch)
+        button = arch[arch.index('name="action_match_order"') :]
+        button = button[: button.index("/>")]
+        self.assertIn("repair_match_can_link", button)
+        self.assertNotIn("groups", button)
+
+    def test_dialogs_open_for_a_purchase_and_stock_user(self):
+        """Opening the dialogs must not need Settings rights (the search
+        view's name is read with sudo).
+        """
+        user = self.env["res.users"].create(
+            {
+                "name": "Purchase Manager",
+                "login": "purchase_manager_match",
+                "groups_id": [
+                    (
+                        6,
+                        0,
+                        [
+                            self.env.ref("base.group_user").id,
+                            self.env.ref("purchase.group_purchase_user").id,
+                            self.env.ref("stock.group_stock_user").id,
+                        ],
+                    )
+                ],
+            }
+        )
+        repair = self._make_repair()
+        po = self._confirmed_po()
+
+        action = repair.with_user(user).action_match_order()
+        self.assertEqual(action["res_model"], "purchase.order")
+        self.assertEqual(len(action["search_view_id"]), 2)
+        self.assertIn(
+            po, self.env["purchase.order"].with_user(user).search(action["domain"])
+        )
+        self.assertEqual(
+            po.with_user(user).action_match_repair()["res_model"], "repair.order"
+        )

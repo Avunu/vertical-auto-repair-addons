@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Match Repair replaces "Add to Repair" (repair_purchase_order_parts),
+         which this module depends on, so that there is one button that
+         matches: it also moves the parts off a repair order the purchase
+         order was matched to before. Shown to who has the access rights
+         the match needs (`repair_match_can_link`), not to a purchase group. -->
+    <record id="view_purchase_order_form_match_repair" model="ir.ui.view">
+        <field name="name">purchase.order.form.match.repair</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//header/button[@name='action_add_to_repair']"
+                position="replace"
+            >
+                <button
+                    name="action_match_repair"
+                    string="Match Repair"
+                    type="object"
+                    invisible="state not in ('purchase', 'done') or not repair_match_can_link"
+                />
+                <field name="repair_match_can_link" invisible="1" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- The Match Order dialog on a repair order: one card per purchase order
+         not linked to a repair order yet. -->
+    <record id="view_purchase_order_kanban_match_repair" model="ir.ui.view">
+        <field name="name">purchase.order.kanban.match.repair</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <kanban
+                string="Purchase Orders"
+                create="0"
+                edit="0"
+                delete="0"
+                import="0"
+                default_order="date_order desc, id desc"
+                class="o_repair_match_kanban"
+            >
+                <field name="currency_id" />
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex align-items-baseline">
+                            <field name="partner_id" class="fw-bolder fs-5 me-2" />
+                            <field
+                                name="amount_total"
+                                widget="monetary"
+                                class="fw-bolder ms-auto flex-shrink-0"
+                            />
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 text-muted">
+                            <field name="name" class="fw-bold" />
+                            <field name="partner_ref" invisible="not partner_ref" />
+                            <field name="date_order" options="{'show_time': false}" />
+                        </div>
+                        <field name="repair_match_parts_html" class="mt-2" />
+                        <footer class="pt-2">
+                            <button
+                                name="action_match_to_repair"
+                                type="object"
+                                string="Match"
+                                class="btn btn-primary"
+                            />
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_search_match_repair" model="ir.ui.view">
+        <field name="name">purchase.order.search.match.repair</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <search string="Search Purchase Orders">
+                <field
+                    name="name"
+                    string="Order"
+                    filter_domain="['|', '|', ('name', 'ilike', self), ('partner_ref', 'ilike', self), ('partner_id', 'child_of', self)]"
+                />
+                <field name="partner_id" operator="child_of" />
+                <field name="partner_ref" />
+                <field name="product_id" string="Part" />
+                <separator />
+                <filter
+                    name="imported_from_email"
+                    string="Imported from email"
+                    domain="[('exchange_related_record_ids', '!=', False)]"
+                />
+            </search>
+        </field>
+    </record>
+</odoo>

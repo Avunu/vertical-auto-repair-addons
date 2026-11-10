@@ -15,9 +15,33 @@
                 <field name="name" />
                 <field name="partner_id" />
                 <field name="vehicle_id" />
+                <field name="customer_concern" optional="hide" />
                 <field name="schedule_date" />
                 <field name="state" />
             </list>
+        </field>
+    </record>
+
+    <!-- Match Order: sits where the time control's Start Timer used to be,
+         i.e. right before the statusbar. Shown to who has the access rights
+         the match needs (`repair_match_can_link`). -->
+    <record id="view_repair_order_form_match_order" model="ir.ui.view">
+        <field name="name">repair.order.form.match.order</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='state']" position="before">
+                <button
+                    name="action_match_order"
+                    string="Match Order"
+                    type="object"
+                    invisible="state in ('done', 'cancel') or not repair_match_can_link"
+                />
+                <field name="repair_match_can_link" invisible="1" />
+            </xpath>
+            <!-- Match Order replaces the Parts tab's "Purchase Orders"
+                 picker (repair_purchase_order_parts). -->
+            <button name="action_add_from_purchase_order_repair" position="replace" />
         </field>
     </record>
 

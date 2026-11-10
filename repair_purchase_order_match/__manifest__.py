@@ -6,7 +6,8 @@
     "order automatically when its PO number is a repair order number, "
     "otherwise ask TypeSafe for the likeliest open repair order and let a "
     "user confirm it from the chatter; either way a user can pick a "
-    "different repair order from a link in the chatter.",
+    "different repair order from a link in the chatter, or match by hand "
+    "with the Match Order (repair) and Match Repair (purchase) buttons.",
     "version": "18.0.3.0.0",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
@@ -32,8 +33,15 @@
         # with_delay()
         "queue_job",
     ],
+    "assets": {
+        "web.assets_tests": [
+            "repair_purchase_order_match/static/tests/tours/*.js",
+        ],
+    },
     "data": [
         "views/repair_order_views.xml",
+        "views/purchase_order_views.xml",
+        "views/stock_picking_views.xml",
         "views/res_config_settings_views.xml",
     ],
 }
