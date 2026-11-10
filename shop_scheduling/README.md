@@ -49,6 +49,16 @@ aggregate availability of every technician, then commits the job to one of them.
   so it opens in whatever scale the browser session last used, and a click in month
   scale creates an all-day event that fits no work interval and books nobody.
   Appointments are placed on a pinned `day,week` view with no all-day row.
+- **The repair calendar prints as a PDF.** A **Print** button on the Repair Orders
+  calendar opens, in a new browser tab, a PDF of exactly the jobs on screen: it sends
+  the ids the calendar is drawing, so its search, sidebar filters, scale and date all
+  carry through with nothing to fill in. Each day with jobs is a table in time order, on
+  US Letter landscape: time, vehicle, customer, order, technician, services and hours.
+  The report route serves the file inline, which is why it opens in the browser's viewer
+  where a report action would download it. Days are cut in the timezone the calendar
+  draws in, so a job at 22:00 local time prints under that day rather than the next one
+  in UTC. The browser's own print of the calendar page cannot do this: it prints the
+  grid as drawn, app sidebar included.
 
 ## Models
 
