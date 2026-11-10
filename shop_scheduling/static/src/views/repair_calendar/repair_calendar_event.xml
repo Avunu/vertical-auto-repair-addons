@@ -3,37 +3,32 @@
      License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
 <templates xml:space="preserve">
 
-    <!-- Vehicle on top, customer · order reference under it; the month grid
-         is one line per job. Falls back to the customer, then the reference,
-         for a job with no vehicle. -->
+    <!-- Customer on top, then the vehicle, then the order reference; the
+         month grid is one line per job. No time: the grid's own hour labels
+         already say when, and the customer is what a card was missing.
+         Falls back to the order reference for a job with neither. -->
     <t t-name="shop_scheduling.RepairCalendarEvent">
         <t
             t-set="customer"
             t-value="rawRecord.partner_id and rawRecord.partner_id[1]"
         />
-        <t
-            t-set="vehicle"
-            t-value="rawRecord.shop_vehicle_label or customer or title"
-        />
-        <span
-            t-if="!isTimeHidden"
-            class="d-none d-lg-inline fc-time fw-normal"
-            t-esc="startTime"
-        />
+        <t t-set="vehicle" t-value="rawRecord.shop_vehicle_label" />
         <div class="o_event_title text-truncate">
-            <span class="fw-bold" t-esc="vehicle" />
             <t t-if="isMonth">
-                <t t-if="customer and customer !== vehicle">
-                    · <t t-esc="customer" />
+                <t t-if="customer">
+                    <t t-esc="customer" />
+                    <t t-if="vehicle"> · </t>
                 </t>
+                <span t-if="vehicle" class="fw-bold" t-esc="vehicle" />
+                <span t-if="!customer and !vehicle" class="fw-bold" t-esc="title" />
             </t>
-            <t t-elif="title !== vehicle">
-                <div class="fw-normal text-truncate">
-                    <t t-if="customer and customer !== vehicle">
-                        <t t-esc="customer" /> ·
-                    </t>
-                    <t t-esc="title" />
-                </div>
+            <t t-else="">
+                <div t-if="customer" class="text-truncate" t-esc="customer" />
+                <div t-if="vehicle" class="fw-bold text-truncate" t-esc="vehicle" />
+                <div
+                    t-att-class="'text-truncate' + (customer or vehicle ? ' fw-normal' : ' fw-bold')"
+                    t-esc="title"
+                />
             </t>
         </div>
     </t>
