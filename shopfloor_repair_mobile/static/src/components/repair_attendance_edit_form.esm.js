@@ -68,6 +68,7 @@ const RepairAttendanceEditForm = defineComponent({
                     saving: false,
                 }))
             ),
+            error_message: /** @type {string | null} */ (null),
         };
     },
     computed: {
@@ -111,6 +112,7 @@ const RepairAttendanceEditForm = defineComponent({
                 return;
             }
             row.saving = true;
+            this.error_message = null;
             const root = sf_root(this);
             root.getOdoo({
                 usage: "repair_timesheet",
@@ -127,7 +129,7 @@ const RepairAttendanceEditForm = defineComponent({
                     const day = result && result.data && result.data.attendance_day;
                     const message = result && result.message;
                     if (message && message.message_type === "error") {
-                        window.alert(message.body);
+                        this.error_message = message.body;
                         return;
                     }
                     if (day) {
@@ -143,6 +145,9 @@ const RepairAttendanceEditForm = defineComponent({
         <v-card class="repair-attendance-edit-form">
             <v-card-title>{{ title }}</v-card-title>
             <v-card-text>
+                <v-alert v-if="error_message" type="error" dense>
+                    {{ error_message }}
+                </v-alert>
                 <div v-for="row in rows" :key="row.id" class="attendance-row mb-4">
                     <v-text-field
                         type="datetime-local"
