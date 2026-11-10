@@ -12,7 +12,7 @@ import {useService} from "@web/core/utils/hooks";
 import {user} from "@web/core/user";
 
 /**
- * The repair calendar draws each job as vehicle + customer instead of the
+ * The repair calendar draws each job as customer + vehicle instead of the
  * order reference, the way the shop floor app names a job. Only the event
  * template changes; colour and the sidebar filter come from the view arch.
  * Scoped to js_class="repair_calendar" so no other calendar is touched.
