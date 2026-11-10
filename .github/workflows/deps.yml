@@ -17,7 +17,7 @@ jobs:
       pull-requests: write
       actions: write
       checks: read
-    uses: Avunu/odoo-nix/.github/workflows/odoo-deps.yml@917f576254afd3108f705a9097940fa51667f304 # v2.4.1
+    uses: Avunu/odoo-nix/.github/workflows/odoo-deps.yml@1a9b7a74979425584669cc04d841d0ae90894ddb # v2.6.0
     with:
       shape: addons
       integration-branch: "18.0"
