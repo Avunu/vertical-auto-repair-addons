@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="paperformat_shop_schedule" model="report.paperformat">
+        <field name="name">Shop Schedule (US Letter landscape)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">22</field>
+        <field name="margin_bottom">12</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">18</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Bound to nothing: it is only reached from the Print button on the
+         repair calendar, which opens /report/pdf/... with the ids on screen. -->
+    <record id="action_report_shop_schedule" model="ir.actions.report">
+        <field name="name">Shop Schedule</field>
+        <field name="model">repair.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">shop_scheduling.report_shop_schedule</field>
+        <field name="report_file">shop_scheduling.report_shop_schedule</field>
+        <field name="paperformat_id" ref="paperformat_shop_schedule" />
+    </record>
+
+    <template id="report_shop_schedule">
+        <t t-call="web.html_container">
+            <!-- The layout reads the company off `o`. -->
+            <t t-set="o" t-value="docs[:1]" />
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <h3>
+                        Shop Schedule
+                        <small class="text-muted" t-if="title" t-out="title" />
+                    </h3>
+                    <p t-if="not days" class="mt-4">
+                        Nothing is scheduled.
+                    </p>
+                    <t t-foreach="days" t-as="day">
+                        <h5 class="mt-3 mb-1" t-out="day['label']" />
+                        <table class="table table-sm table-bordered mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 14%;">Time</th>
+                                    <th style="width: 22%;">Vehicle</th>
+                                    <th style="width: 16%;">Customer</th>
+                                    <th style="width: 10%;">Order</th>
+                                    <th style="width: 12%;">Technician</th>
+                                    <th>Services</th>
+                                    <th style="width: 6%;" class="text-end">Hours</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    t-foreach="day['lines']"
+                                    t-as="line"
+                                    style="page-break-inside: avoid;"
+                                >
+                                    <td t-out="line['time']" />
+                                    <td class="fw-bold" t-out="line['vehicle']" />
+                                    <td t-out="line['repair'].partner_id.name" />
+                                    <td t-out="line['repair'].name" />
+                                    <td
+                                        t-out="line['repair'].technician_id.name or 'Unassigned'"
+                                    />
+                                    <td t-out="line['services']" />
+                                    <td class="text-end" t-out="line['hours']" />
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
