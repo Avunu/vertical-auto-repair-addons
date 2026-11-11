@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 from werkzeug.exceptions import BadRequest, Forbidden
 
-from odoo import _, http
+from odoo import http
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 
@@ -53,7 +53,7 @@ class RepairPurchaseOrderMatchController(http.Controller):
             matched = purchase_order._repair_match_linked_repairs()
             if matched and matched != repair_order.sudo():
                 raise UserError(
-                    _(
+                    request.env._(
                         "%(order)s is already matched to repair order "
                         "%(repairs)s. To match it to a different one, use "
                         "Match Repair on the purchase order.",
@@ -67,7 +67,9 @@ class RepairPurchaseOrderMatchController(http.Controller):
                 purchase_order._link_to_repair_order(repair_order)
         except AccessError:
             raise Forbidden(
-                _("You don't have the access rights to match this purchase order.")
+                request.env._(
+                    "You don't have the access rights to match this purchase order."
+                )
             ) from None
         except UserError as error:
             raise BadRequest(error.args[0]) from None
