@@ -37,6 +37,11 @@ class MCPMixin(models.AbstractModel):
         po = self.env["purchase.order"].browse(purchase_order_id)
         if not po.exists():
             raise UserError(_("Purchase order %s not found.", purchase_order_id))
+        # Runs with the user's own rights: the purchase order must be
+        # readable and only the repair orders the user can read are offered
+        # to TypeSafe as candidates.
+        po.check_access("read")
+        self.env["repair.order"].check_access("read")
         match = po._repair_match_via_typesafe()
         if not match:
             return {"match": None}
@@ -53,9 +58,11 @@ class MCPMixin(models.AbstractModel):
     @mcp_tool(
         name="link_purchase_order_to_repair",
         description=(
-            "Add every product line on a purchase order to a repair "
-            "order's parts list, the same way the purchase order's Add "
-            "to Repair button does it by hand. Use "
+            "Match a purchase order to a repair order: add every product "
+            "line on the purchase order to the repair order's parts list "
+            "(taking them off the repair order it was matched to before), "
+            "the same way the purchase order's Match Repair button does it "
+            "by hand. Needs the same access rights as the button. Use "
             "find_repair_order_matches first to pick the right repair "
             "order id."
         ),
@@ -82,5 +89,7 @@ class MCPMixin(models.AbstractModel):
             raise UserError(_("Purchase order %s not found.", purchase_order_id))
         if not repair.exists():
             raise UserError(_("Repair order %s not found.", repair_order_id))
+        po._repair_match_check_access(repair)
+        po._repair_match_validate(repair)
         po._link_to_repair_order(repair)
         return {"linked": True, "purchase_order": po.name, "repair_order": repair.name}
