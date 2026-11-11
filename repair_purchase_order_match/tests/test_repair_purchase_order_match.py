@@ -516,7 +516,9 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
         po._link_to_repair_order(repair)
         repair.action_validate()
         repair.action_repair_start()
-        repair.action_repair_end()
+        # repair_service_workflow, when installed alongside, turns this into a
+        # "Finalize Repair" wizard unless told to skip it.
+        repair.with_context(skip_service_finalize_wizard=True).action_repair_end()
         self.assertEqual(repair.state, "done")
         self.assertNotIn(po.id, self._unmatched_ids())
 
