@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Match Repair replaces the receipt's "Add to Repair"
+         (repair_purchase_order_parts): the same match flow as the purchase
+         order's own button. -->
+    <record id="view_picking_form_match_repair" model="ir.ui.view">
+        <field name="name">stock.picking.form.match.repair</field>
+        <field name="model">stock.picking</field>
+        <field name="priority">99</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//header/button[@name='action_add_to_repair']"
+                position="replace"
+            >
+                <button
+                    name="action_match_repair"
+                    string="Match Repair"
+                    type="object"
+                    invisible="state != 'done' or not purchase_id or not repair_match_can_link"
+                />
+                <field name="repair_match_can_link" invisible="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
