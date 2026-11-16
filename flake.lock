@@ -624,11 +624,11 @@
     "oca-l10n-usa": {
       "flake": false,
       "locked": {
-        "lastModified": 1789232753,
-        "narHash": "sha256-FB+LyFW+TnOCs7VnAvJ4Sm+HD4RarHNaWTcOmPz1saA=",
+        "lastModified": 1793464918,
+        "narHash": "sha256-O3My8OSvuwGm2WKCl+ror+zoLlZNaWnkCap9Fl69e48=",
         "owner": "OCA",
         "repo": "l10n-usa",
-        "rev": "c06ce9e61f16a09cbb0be97308a76577027dcad3",
+        "rev": "a568fdcb6ae89c78710cbe9a5a409edb5092b835",
         "type": "github"
       },
       "original": {
