@@ -152,6 +152,7 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-base_rest_pydantic" = { path = "../.odoo-nix/modules/rest-framework/base_rest_pydantic" }
     "odoo-addon-base_search_fuzzy" = { path = "../.odoo-nix/modules/server-tools/base_search_fuzzy" }
     "odoo-addon-base_sequence_option" = { path = "../.odoo-nix/modules/server-tools/base_sequence_option" }
+    "odoo-addon-base_sequence_template" = { path = "../.odoo-nix/modules/server-tools/base_sequence_template" }
     "odoo-addon-base_sparse_field_list_support" = { path = "../.odoo-nix/modules/server-tools/base_sparse_field_list_support" }
     "odoo-addon-base_technical_user" = { path = "../.odoo-nix/modules/server-tools/base_technical_user" }
     "odoo-addon-base_temporary_action" = { path = "../.odoo-nix/modules/server-tools/base_temporary_action" }
@@ -270,6 +271,7 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-hr_timesheet_portal" = { path = "../.odoo-nix/modules/timesheet/hr_timesheet_portal" }
     "odoo-addon-hr_timesheet_report" = { path = "../.odoo-nix/modules/timesheet/hr_timesheet_report" }
     "odoo-addon-hr_timesheet_sheet" = { path = "../.odoo-nix/modules/timesheet/hr_timesheet_sheet" }
+    "odoo-addon-hr_timesheet_sheet_activity" = { path = "../.odoo-nix/modules/timesheet/hr_timesheet_sheet_activity" }
     "odoo-addon-hr_timesheet_sheet_attendance" = { path = "../.odoo-nix/modules/timesheet/hr_timesheet_sheet_attendance" }
     "odoo-addon-hr_timesheet_sheet_autodraft" = { path = "../.odoo-nix/modules/timesheet/hr_timesheet_sheet_autodraft" }
     "odoo-addon-hr_timesheet_sheet_policy_department_manager" = { path = "../.odoo-nix/modules/timesheet/hr_timesheet_sheet_policy_department_manager" }
@@ -396,6 +398,7 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-queue_job_subscribe" = { path = "../.odoo-nix/modules/queue/queue_job_subscribe" }
     "odoo-addon-repair_analytic" = { path = "../.odoo-nix/modules/repair/repair_analytic" }
     "odoo-addon-repair_analytic_timesheet" = { path = "../.odoo-nix/modules/repair/repair_analytic_timesheet" }
+    "odoo-addon-repair_customer_reference" = { path = "../.odoo-nix/modules/repair-addons/repair_customer_reference" }
     "odoo-addon-repair_fleet_vehicle" = { path = "../.odoo-nix/modules/repair-addons/repair_fleet_vehicle" }
     "odoo-addon-repair_order_group" = { path = "../.odoo-nix/modules/repair/repair_order_group" }
     "odoo-addon-repair_order_group_services" = { path = "../.odoo-nix/modules/repair/repair_order_group_services" }
@@ -497,6 +500,7 @@ constraint-dependencies = ["setuptools<81"]
     "odoo-addon-web_loading_block_ui" = { path = "../.odoo-nix/modules/web/web_loading_block_ui" }
     "odoo-addon-web_m2x_options" = { path = "../.odoo-nix/modules/web/web_m2x_options" }
     "odoo-addon-web_m2x_options_manager" = { path = "../.odoo-nix/modules/web/web_m2x_options_manager" }
+    "odoo-addon-web_navbar_light" = { path = "../.odoo-nix/modules/web/web_navbar_light" }
     "odoo-addon-web_no_bubble" = { path = "../.odoo-nix/modules/web/web_no_bubble" }
     "odoo-addon-web_notify" = { path = "../.odoo-nix/modules/web/web_notify" }
     "odoo-addon-web_notify_channel_message" = { path = "../.odoo-nix/modules/web/web_notify_channel_message" }
