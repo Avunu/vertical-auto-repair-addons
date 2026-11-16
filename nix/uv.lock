@@ -2083,7 +2083,7 @@ wheels = [
 
 [[package]]
 name = "odoo-addon-queue-job"
-version = "18.0.4.1.2"
+version = "18.0.4.2.0"
 source = { directory = "../.odoo-nix/modules/queue/queue_job" }
 dependencies = [
     { name = "odoo" },
@@ -2098,7 +2098,7 @@ requires-dist = [
 
 [[package]]
 name = "odoo-addon-repair-fleet-vehicle"
-version = "18.0.1.1.1"
+version = "18.0.1.2.0"
 source = { directory = "../.odoo-nix/modules/repair-addons/repair_fleet_vehicle" }
 dependencies = [
     { name = "odoo" },
@@ -2288,7 +2288,7 @@ requires-dist = [
 
 [[package]]
 name = "odoo-addon-shopfloor-base"
-version = "18.0.1.6.0"
+version = "18.0.1.9.0"
 source = { directory = "../.odoo-nix/modules/shopfloor-app/shopfloor_base" }
 dependencies = [
     { name = "odoo" },
