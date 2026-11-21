@@ -4,7 +4,7 @@
     "name": "Shop Scheduling",
     "summary": "Book repair orders into technician appointment slots drawn "
     "from the whole shop's availability",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.0",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
     "website": "https://github.com/Avunu/vertical-auto-repair-addons",
