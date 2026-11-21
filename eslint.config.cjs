@@ -3,7 +3,7 @@ var globals = require('globals');
 jsdoc = require("eslint-plugin-jsdoc");
 
 const config = [{
-    ignores: ["shopfloor_repair_mobile/static/check_templates.mjs**"],
+    ignores: ["eslint.config.cjs", "prettier.config.cjs", "shopfloor_repair_mobile/static/check_templates.mjs**"],
 }, {
     plugins: {
       jsdoc,
