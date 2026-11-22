@@ -4,7 +4,7 @@
     "name": "Shopfloor Repair Technician (Mobile)",
     "summary": "iPad-first technician app for the repair shop: assigned jobs, "
     "work timer, parts consumption and digital vehicle inspections",
-    "version": "18.0.1.0.28",
+    "version": "18.0.1.1.0",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
     "website": "https://github.com/Avunu/vertical-auto-repair-addons",
