@@ -8,7 +8,7 @@
     "user confirm it from the chatter; either way a user can pick a "
     "different repair order from a link in the chatter, or match by hand "
     "with the Match Order (repair) and Match Repair (purchase) buttons.",
-    "version": "18.0.3.0.0",
+    "version": "18.0.3.1.0",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
     "website": "https://github.com/Avunu/vertical-auto-repair-addons",
