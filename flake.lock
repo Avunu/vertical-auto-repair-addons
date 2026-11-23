@@ -32,11 +32,11 @@
     "avunu-edi-addons": {
       "flake": false,
       "locked": {
-        "lastModified": 1794344576,
-        "narHash": "sha256-UAZ6eCUu5P+2rXHNtrxS4MpKWCGQ1NrAlhPmLVLM81I=",
+        "lastModified": 1794827907,
+        "narHash": "sha256-GLPqOGK+bQS6FJIO5xbzc8fepYjIkTKXUdri2E6fUao=",
         "owner": "Avunu",
         "repo": "edi-addons",
-        "rev": "a133f87932b5d16d3791c15d52abf83b62c265c6",
+        "rev": "3b6c00e4d579ebedee211754563e0edfab986275",
         "type": "github"
       },
       "original": {
