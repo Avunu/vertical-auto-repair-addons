@@ -13,6 +13,13 @@ class RepairOrder(models.Model):
     # appointment, so leave it empty until the job is booked.
     schedule_date = fields.Datetime(default=None, required=False)
     planned_duration = fields.Float(default=None)
+    # Shown on the repairs board, which can't read through vehicle_id.
+    vehicle_model_year = fields.Char(
+        related="vehicle_id.model_year", string="Vehicle Year"
+    )
+    vehicle_unit_number = fields.Char(
+        related="vehicle_id.unit_number", string="Unit Number"
+    )
     booking_ids = fields.One2many(
         "resource.booking",
         "repair_id",
