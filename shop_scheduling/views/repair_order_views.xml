@@ -124,7 +124,31 @@
             <!-- product_id is dead weight here; the vehicle takes its place.
                  vehicle_id displays as Brand/Model/Plate. -->
             <field name="product_id" position="replace">
-                <field name="vehicle_id" class="fw-bold text-truncate d-block" />
+                <div
+                    class="fw-bold text-truncate"
+                    t-att-title="record.vehicle_id.value"
+                >
+                    <field name="vehicle_id" />
+                </div>
+                <!-- Year and unit number are their own lines under the
+                     vehicle, each only when the vehicle has one. Hovering
+                     shows the full text of anything the card cuts off. -->
+                <div
+                    t-if="record.vehicle_model_year.raw_value"
+                    class="text-truncate small"
+                    t-att-title="'Year: ' + record.vehicle_model_year.value"
+                >
+                    <span class="me-1">Year</span>
+                    <field name="vehicle_model_year" class="fw-medium" />
+                </div>
+                <div
+                    t-if="record.vehicle_unit_number.raw_value"
+                    class="text-truncate small"
+                    t-att-title="'Unit: ' + record.vehicle_unit_number.value"
+                >
+                    <span class="me-1">Unit</span>
+                    <field name="vehicle_unit_number" class="fw-medium" />
+                </div>
             </field>
 
             <!-- Customer keeps its column; the rest hangs underneath so the
