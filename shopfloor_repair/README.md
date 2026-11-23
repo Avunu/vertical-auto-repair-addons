@@ -128,9 +128,12 @@ is the same trap `repair_fleet_vehicle` already had to undo one model up, for
 
 ## Setup
 
-1. Give each technician the **Shop Floor Technician** group, plus
-   `stock.group_stock_user`, `hr_timesheet.group_hr_timesheet_user`,
-   `fleet.fleet_group_user` and `shopfloor_base.group_shopfloor_user`.
+1. Give each technician the **Shop Floor Technician** group. It implies
+   `shopfloor_base.group_shopfloor_user`, `stock.group_stock_user`,
+   `hr_timesheet.group_hr_timesheet_user` and `fleet.fleet_group_user`, which the
+   services read without `sudo`: a technician missing one signs in and clocks in, then
+   gets a 403 on the job list. Users who already hold the group get the rest when the
+   module is upgraded.
 2. Each technician needs an `hr.employee` linked to their user.
 3. Set **Repair Labor Project** on the company (Settings → Repair).
 4. Install `shopfloor_repair_mobile` and follow its README for API keys.
