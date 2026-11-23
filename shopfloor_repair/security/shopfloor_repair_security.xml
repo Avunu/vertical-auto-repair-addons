@@ -18,7 +18,25 @@
         <field name="name">Shop Floor Technician</field>
         <field name="category_id" ref="base.module_category_inventory_inventory" />
         <field name="comment">Record inspections, consume parts and log time
-            from the shop floor app.</field>
+            from the shop floor app. Implies every other group the app's
+            services read as the technician, so this is the only one to grant.</field>
+        <!--
+            What the services touch without sudo: repair orders and stock moves
+            (Inventory / User), the job's analytic lines (Timesheets / User),
+            its vehicle (Fleet / Officer, widened to every customer vehicle by
+            repair_fleet_vehicle's rule), and the app itself. Missing any one
+            of them is a 403 on the job list or a screen, with a user who
+            otherwise signs in and clocks in without trouble.
+        -->
+        <field
+            name="implied_ids"
+            eval="[
+                Command.link(ref('shopfloor_base.group_shopfloor_user')),
+                Command.link(ref('stock.group_stock_user')),
+                Command.link(ref('hr_timesheet.group_hr_timesheet_user')),
+                Command.link(ref('fleet.fleet_group_user')),
+            ]"
+        />
     </record>
 
     <!--
