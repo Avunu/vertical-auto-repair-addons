@@ -4,7 +4,7 @@
     "name": "Shopfloor Repair Technician",
     "summary": "REST services for the technician-facing repair shop app: "
     "assigned jobs, work timer, parts consumption and vehicle inspections",
-    "version": "18.0.1.0.9",
+    "version": "18.0.1.1.0",
     "category": "Inventory/Repair",
     "author": "Avunu LLC",
     "website": "https://github.com/Avunu/vertical-auto-repair-addons",
