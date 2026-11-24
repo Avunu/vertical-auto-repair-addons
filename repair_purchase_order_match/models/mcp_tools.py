@@ -13,13 +13,13 @@ class MCPMixin(models.AbstractModel):
     @mcp_tool(
         name="find_repair_order_matches",
         description=(
-            "For a purchase order, ask TypeSafe which open repair order "
+            "For a purchase order, ask Odoo which open repair order "
             "(with a vehicle and customer concern on file) its parts most "
             "likely belong to. Returns the single best guess with a "
             "confidence score, not a ranked list - use "
             "link_purchase_order_to_repair to confirm it, or link a "
             "different repair order if this guess is wrong. Requires the "
-            "TypeSafe API key to be configured (Settings > Purchase)."
+            "Repair Matching API key to be configured (Settings > Purchase)."
         ),
         input_schema={
             "type": "object",
@@ -50,6 +50,7 @@ class MCPMixin(models.AbstractModel):
             "match": {
                 "repair_id": repair.id,
                 "repair_name": repair.display_name,
+                "repair_reference": repair._repair_reference(),
                 "confidence": confidence,
             }
         }
@@ -92,4 +93,8 @@ class MCPMixin(models.AbstractModel):
         po._repair_match_check_access(repair)
         po._repair_match_validate(repair)
         po._link_to_repair_order(repair)
-        return {"linked": True, "purchase_order": po.name, "repair_order": repair.name}
+        return {
+            "linked": True,
+            "purchase_order": po._edi_reference(),
+            "repair_order": repair._repair_reference(),
+        }

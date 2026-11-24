@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <!-- The dialog footer (see web.Layout's layout-buttons portal). -->
+    <t t-name="repair_purchase_order_match.RepairMatchKanban.Buttons">
+        <button
+            type="button"
+            class="btn btn-primary o_repair_match_confirm"
+            t-att-disabled="!selectedRecord"
+            t-on-click="() => this.onMatchClicked()"
+        >Match</button>
+        <button
+            type="button"
+            class="btn btn-secondary o_repair_match_discard"
+            t-on-click="() => this.onDiscardClicked()"
+        >Discard</button>
+    </t>
+</templates>

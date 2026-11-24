@@ -16,9 +16,22 @@ registry.category("web_tour.tours").add("repair_match_order_tour", {
                 ".modal .o_kanban_record:contains('Tour Vendor'):contains('TOUR-PART-1')",
         },
         {
-            content: "Match the purchase order",
+            content: "Nothing is selected yet, so Match is disabled",
+            trigger: ".modal .modal-footer button.o_repair_match_confirm:disabled",
+        },
+        {
+            content: "Select the purchase order's card",
+            trigger: ".modal .o_kanban_record:contains('Tour Vendor')",
+            run: "click",
+        },
+        {
+            content: "The card is selected",
             trigger:
-                ".modal .o_kanban_record:contains('Tour Vendor') button[name='action_match_to_repair']",
+                ".modal .o_kanban_record.o_repair_match_selected:contains('Tour Vendor')",
+        },
+        {
+            content: "Match it from the dialog footer",
+            trigger: ".modal .modal-footer button.o_repair_match_confirm:enabled",
             run: "click",
         },
         {

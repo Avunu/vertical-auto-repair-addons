@@ -25,8 +25,42 @@ class RepairOrder(models.Model):
         for repair in self:
             repair.repair_match_can_link = access._can_link(orders, repair)
 
+    def _repair_reference(self):
+        """How notices, their emails and the match dialogs refer to this
+        repair order: its number, then the customer and the vehicle's year,
+        make and model, with the customer's unit number when there is one -
+        ``WH/RO/00004 – Jane Doe, 2019 Ford F-150 (T-104)``. Whatever is
+        missing is left out (just the number when nothing else is known).
+        """
+        self.ensure_one()
+        # sudo: shown to whoever is notified, who may not be allowed to read
+        # partners or vehicles
+        repair = self.sudo()
+        vehicle = repair.vehicle_id
+        vehicle_label = ""
+        if vehicle:
+            model = vehicle.model_id
+            vehicle_label = " ".join(
+                part
+                for part in (vehicle.model_year, model.brand_id.name, model.name)
+                if part
+            )
+            if vehicle.unit_number:
+                vehicle_label = f"{vehicle_label} ({vehicle.unit_number})".strip()
+        details = ", ".join(
+            part
+            for part in (repair.partner_id.commercial_partner_id.name, vehicle_label)
+            if part
+        )
+        return f"{repair.name} – {details}" if details else repair.name
+
+    def _repair_html_link(self):
+        """A chatter link to this repair order, titled `_repair_reference()`."""
+        self.ensure_one()
+        return self._get_html_link(title=self._repair_reference())
+
     def _typesafe_match_criteria(self):
-        """This repair order, described for TypeSafe as one named option
+        """This repair order, described for the matching service as one named option
         of the "matching_ro" choice - vehicle info and the customer's own
         words, the same fields a service writer would use to recognize
         which job a vendor's part is for.
@@ -57,7 +91,10 @@ class RepairOrder(models.Model):
         )
         if self.state in ("done", "cancel"):
             raise UserError(
-                _("%s is closed, so purchase orders can't be matched to it.", self.name)
+                _(
+                    "%s is closed, so purchase orders can't be matched to it.",
+                    self._repair_reference(),
+                )
             )
         kanban = self.env.ref(
             "repair_purchase_order_match.view_purchase_order_kanban_match_repair"
@@ -143,7 +180,10 @@ class RepairOrder(models.Model):
             self, self.move_ids.created_purchase_line_ids.ids
         ):
             raise UserError(
-                _("Every part on %s is already on this repair order.", order.name)
+                _(
+                    "Every part on %s is already on this repair order.",
+                    order._edi_reference(),
+                )
             )
         order._link_to_repair_order(self)
         return {"type": "ir.actions.act_window_close"}

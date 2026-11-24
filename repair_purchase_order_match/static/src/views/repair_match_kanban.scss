@@ -1,0 +1,16 @@
+// Copyright 2026 Avunu LLC (avu.nu)
+// License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
+
+// One card per row, so the parts list gets the dialog's whole width.
+.o_repair_match_kanban .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record {
+    flex-basis: 100%;
+    width: 100%;
+    max-width: none;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+
+    &.o_repair_match_selected {
+        outline-color: $o-action;
+        background-color: rgba($o-action, 0.06);
+    }
+}
