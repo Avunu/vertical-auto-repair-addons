@@ -27,7 +27,9 @@
     </record>
 
     <!-- The Match Order dialog on a repair order: one card per purchase order
-         not linked to a repair order yet. -->
+         not linked to a repair order yet, one per row. A click selects a
+         card; the dialog footer's Match button matches it (js_class
+         repair_match_kanban). -->
     <record id="view_purchase_order_kanban_match_repair" model="ir.ui.view">
         <field name="name">purchase.order.kanban.match.repair</field>
         <field name="model">purchase.order</field>
@@ -40,6 +42,7 @@
                 import="0"
                 default_order="date_order desc, id desc"
                 class="o_repair_match_kanban"
+                js_class="repair_match_kanban"
             >
                 <field name="currency_id" />
                 <templates>
@@ -58,14 +61,6 @@
                             <field name="date_order" options="{'show_time': false}" />
                         </div>
                         <field name="repair_match_parts_html" class="mt-2" />
-                        <footer class="pt-2">
-                            <button
-                                name="action_match_to_repair"
-                                type="object"
-                                string="Match"
-                                class="btn btn-primary"
-                            />
-                        </footer>
                     </t>
                 </templates>
             </kanban>

@@ -57,8 +57,11 @@ class RepairPurchaseOrderMatchController(http.Controller):
                         "%(order)s is already matched to repair order "
                         "%(repairs)s. To match it to a different one, use "
                         "Match Repair on the purchase order.",
-                        order=purchase_order.name,
-                        repairs=", ".join(matched.with_env(request.env).mapped("name")),
+                        order=purchase_order._edi_reference(),
+                        repairs=", ".join(
+                            repair._repair_reference()
+                            for repair in matched.with_env(request.env)
+                        ),
                     )
                 )
             if not matched:

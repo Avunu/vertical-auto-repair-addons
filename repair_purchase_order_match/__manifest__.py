@@ -2,9 +2,9 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 {
     "name": "Repair Purchase Order Match",
-    "summary": "Link an EDI/email-imported purchase order to its repair "
+    "summary": "Link an imported purchase order to its repair "
     "order automatically when its PO number is a repair order number, "
-    "otherwise ask TypeSafe for the likeliest open repair order and let a "
+    "otherwise let Odoo suggest the likeliest open repair order and let a "
     "user confirm it from the chatter; either way a user can pick a "
     "different repair order from a link in the chatter, or match by hand "
     "with the Match Order (repair) and Match Repair (purchase) buttons.",
@@ -34,6 +34,9 @@
         "queue_job",
     ],
     "assets": {
+        "web.assets_backend": [
+            "repair_purchase_order_match/static/src/views/*",
+        ],
         "web.assets_tests": [
             "repair_purchase_order_match/static/tests/tours/*.js",
         ],

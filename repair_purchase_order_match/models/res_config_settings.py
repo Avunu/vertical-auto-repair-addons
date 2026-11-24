@@ -7,11 +7,11 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     repair_match_typesafe_api_key = fields.Char(
-        string="TypeSafe API Key",
+        string="Repair Matching API Key",
         config_parameter="repair_purchase_order_match.typesafe_api_key",
         groups="base.group_system",
-        help="API key for TypeSafe AI (typesafe.ai), used to decide which "
-        "open repair order an imported purchase order most likely belongs "
+        help="API key for the TypeSafe AI service (typesafe.ai) Odoo uses to "
+        "decide which open repair order an imported purchase order most likely belongs "
         "to. Leave empty to disable automatic matching - purchase orders "
         "will need to be linked to a repair order by hand.",
     )

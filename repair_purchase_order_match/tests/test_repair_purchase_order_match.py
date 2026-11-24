@@ -190,6 +190,42 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
         self.assertIn("85%", po_message.body)
         self.assertIn("/repair_purchase_order_match/confirm", po_message.body)
         self.assertIn("/repair_purchase_order_match/confirm", repair_message.body)
+        # Both sides are named by their references, in the text and in the
+        # title of the inbox notification.
+        self.assertIn("Odoo suggests", po_message.body)
+        self.assertIn(repair._repair_reference(), po_message.body)
+        self.assertIn(po._edi_reference(), repair_message.body)
+        self.assertEqual(po_message.record_name, po._edi_reference())
+        self.assertEqual(repair_message.record_name, repair._repair_reference())
+
+    # ----------------------------------------------------------
+    # References
+    # ----------------------------------------------------------
+
+    def test_repair_reference_names_customer_vehicle_and_unit(self):
+        vehicle = self._make_vehicle(model_year="2019")
+        repair = self._make_repair(vehicle=vehicle)
+        self.assertEqual(
+            repair._repair_reference(),
+            f"{repair.name} – Repair Customer, 2019 Toyota Corolla Matrix",
+        )
+        vehicle.unit_number = "T-104"
+        self.assertEqual(
+            repair._repair_reference(),
+            f"{repair.name} – Repair Customer, 2019 Toyota Corolla Matrix (T-104)",
+        )
+
+    def test_repair_reference_leaves_out_what_is_missing(self):
+        repair = self.env["repair.order"].create(
+            {"product_id": self.item_to_repair.id, "product_uom": self.unit.id}
+        )
+        self.assertEqual(repair._repair_reference(), repair.name)
+        repair.partner_id = self.customer
+        self.assertEqual(repair._repair_reference(), f"{repair.name} – Repair Customer")
+
+    def test_purchase_order_reference_names_the_vendor(self):
+        po = self._make_po()
+        self.assertEqual(po._edi_reference(), f"{po.name} – NAPA Vendor")
 
     def test_suggestion_links_purchase_order_and_original_email(self):
         repair = self._make_repair()
@@ -647,7 +683,7 @@ class TestRepairPurchaseOrderMatch(TransactionCase):
         # The dialog's views really load, parts list included.
         kanban = self.env["purchase.order"].get_view(action["views"][0][0], "kanban")
         self.assertIn("repair_match_parts_html", kanban["arch"])
-        self.assertIn('name="action_match_to_repair"', kanban["arch"])
+        self.assertIn('js_class="repair_match_kanban"', kanban["arch"])
         self.assertTrue(action["search_view_id"][0])
 
     def test_action_match_order_raises_for_closed_repair(self):

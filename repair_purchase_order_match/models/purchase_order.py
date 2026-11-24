@@ -46,13 +46,13 @@ class PurchaseOrder(models.Model):
     # ----------------------------------------------------------
 
     def _edi_confirm_and_notify(self):
-        """After an EDI/email-imported purchase order is confirmed, ask
-        TypeSafe which open repair order it most likely belongs to, in the
+        """After an imported purchase order is confirmed, ask the matching
+        service which open repair order it most likely belongs to, in the
         background so a slow request never delays the import itself.
         """
         res = super()._edi_confirm_and_notify()
         self.with_delay(
-            description=_("Match %s to an open repair order", self.name)
+            description=_("Match %s to an open repair order", self._edi_reference())
         )._repair_auto_match_job()
         return res
 
@@ -264,26 +264,31 @@ class PurchaseOrder(models.Model):
             raise UserError(
                 _(
                     "%s is closed, so purchase orders can't be matched to it.",
-                    repair.name,
+                    repair._repair_reference(),
                 )
             )
         if repair.company_id != self.company_id:
             raise UserError(
                 _(
                     "%(order)s and %(repair)s belong to different companies.",
-                    order=self.name,
-                    repair=repair.name,
+                    order=self._edi_reference(),
+                    repair=repair._repair_reference(),
                 )
             )
         if self.state == "cancel":
             raise UserError(
                 _(
                     "%s is cancelled, so it can't be matched to a repair order.",
-                    self.name,
+                    self._edi_reference(),
                 )
             )
         if not self._repair_match_has_parts():
-            raise UserError(_("%s has no parts to add to a repair order.", self.name))
+            raise UserError(
+                _(
+                    "%s has no parts to add to a repair order.",
+                    self._edi_reference(),
+                )
+            )
 
     def _repair_match_moves_on_other_repairs(self, repair=None):
         """The parts this purchase order added to open repair orders other
@@ -339,11 +344,16 @@ class PurchaseOrder(models.Model):
             raise UserError(
                 _(
                     "%s is not confirmed, so it can't be matched to a repair order.",
-                    self.name,
+                    self._edi_reference(),
                 )
             )
         if not self._repair_match_has_parts():
-            raise UserError(_("%s has no parts to add to a repair order.", self.name))
+            raise UserError(
+                _(
+                    "%s has no parts to add to a repair order.",
+                    self._edi_reference(),
+                )
+            )
         return {
             "type": "ir.actions.act_window",
             "name": _("Match Repair"),
@@ -483,7 +493,7 @@ class PurchaseOrder(models.Model):
         else:
             self._edi_post_notice(
                 _(
-                    "TypeSafe could not suggest a repair order for this "
+                    "Odoo could not suggest a repair order for this "
                     "purchase order. Please check the configuration and "
                     "make sure there are open repair orders with vehicles "
                     "and customer concerns."
@@ -619,16 +629,19 @@ class PurchaseOrder(models.Model):
             po_intro = _(
                 "This purchase order's PO number matches repair order %s, "
                 "so it was linked automatically.",
-                repair._get_html_link(),
+                repair._repair_html_link(),
             )
             repair_intro = _(
                 "Purchase order %s uses this repair order's number as its "
                 "PO number, so it was linked automatically.",
-                self._get_html_link(),
+                self._get_html_link(title=self._edi_reference()),
             )
         else:
-            po_intro = _("Linked to repair order %s.", repair._get_html_link())
-            repair_intro = _("Linked to purchase order %s.", self._get_html_link())
+            po_intro = _("Linked to repair order %s.", repair._repair_html_link())
+            repair_intro = _(
+                "Linked to purchase order %s.",
+                self._get_html_link(title=self._edi_reference()),
+            )
         parts = _(
             "Every part on the purchase order was added to the repair order's parts "
             "list."
@@ -638,7 +651,7 @@ class PurchaseOrder(models.Model):
             moved = Markup(" {}").format(
                 _(
                     "The parts were taken off %s.",
-                    Markup(", ").join(p._get_html_link() for p in previous),
+                    Markup(", ").join(p._repair_html_link() for p in previous),
                 )
             )
         po_body = Markup("<p>{} {}{}</p>{}").format(po_intro, parts, moved, choose_link)
@@ -671,6 +684,7 @@ class PurchaseOrder(models.Model):
         inbox notifications it may have caused (e.g. an employee following
         the repair order with notes).
         """
+        kwargs.setdefault("record_name", repair._repair_reference())
         message = repair.message_post(body=body, subtype_xmlid="mail.mt_note", **kwargs)
         if purchase_order:
             # sudo: a technical marker, not a field users write
@@ -717,7 +731,7 @@ class PurchaseOrder(models.Model):
                     "This purchase order's PO number matches repair order "
                     "%(repair)s, but that repair order is %(state)s, so its "
                     "parts were not added.",
-                    repair=repair._get_html_link(),
+                    repair=repair._repair_html_link(),
                     state=dict(
                         repair._fields["state"]._description_selection(self.env)
                     )[repair.state].lower(),
@@ -740,10 +754,9 @@ class PurchaseOrder(models.Model):
         )
 
     def _repair_match_email_link(self):
-        """A "View original email" paragraph linking to the EDI exchange
-        record this purchase order was imported from (its stored email
-        body), or empty markup for a purchase order that wasn't imported
-        by email/EDI.
+        """A "View original email" paragraph linking to the exchange record
+        this purchase order was imported from (its stored email body), or
+        empty markup for a purchase order that wasn't imported by email.
         """
         self.ensure_one()
         exchange_record = self.exchange_record_ids[:1]
@@ -754,7 +767,7 @@ class PurchaseOrder(models.Model):
         )
 
     def _post_repair_match_suggestion(self, repair, confidence):
-        """Post TypeSafe's suggested match, with a Confirm Match button, on
+        """Post Odoo's suggested match, with a Confirm Match button, on
         both this purchase order's and the repair order's chatter.
 
         On the purchase order it is an outstanding notice
@@ -776,15 +789,15 @@ class PurchaseOrder(models.Model):
         # The purchase order's own chatter never links to itself; the
         # repair order's chatter links to the purchase order instead.
         po_message = _(
-            "TypeSafe suggests this purchase order belongs to repair "
+            "Odoo suggests this purchase order belongs to repair "
             "order %(repair)s (%(confidence)d%% confidence).",
-            repair=repair._get_html_link(),
+            repair=repair._repair_html_link(),
             confidence=confidence_pct,
         )
         repair_message = _(
-            "TypeSafe suggests purchase order %(purchase_order)s belongs "
+            "Odoo suggests purchase order %(purchase_order)s belongs "
             "to this repair order (%(confidence)d%% confidence).",
-            purchase_order=self._get_html_link(),
+            purchase_order=self._get_html_link(title=self._edi_reference()),
             confidence=confidence_pct,
         )
         email_link = self._repair_match_email_link()

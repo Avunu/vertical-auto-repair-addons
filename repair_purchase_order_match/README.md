@@ -41,13 +41,15 @@ entered.
 - **Match Order (on the repair order).** The repair order form header has a **Match
   Order** button (open repair orders; shown to who has the rights, see _Access_) in
   front of the status bar. It opens a dialog of the confirmed purchase orders of the
-  same company that are not linked to any repair order yet, newest first. Each card
-  shows the purchase order, its vendor, vendor reference, date and total, and its parts
-  list (quantity and unit, part number, description - the lines that are added to the
-  repair order), with a **Match** button: it adds the parts to the repair order, posts
+  same company that are not linked to any repair order yet, newest first, one card per
+  row. Each card shows the purchase order, its vendor, vendor reference, date and total,
+  and its parts list (quantity and unit, part number, description - the lines that are
+  added to the repair order). A click selects a card; the **Match** button of the dialog
+  footer (disabled until a card is selected) adds its parts to the repair order, posts
   to both chatters, and closes the dialog while reloading the repair order underneath.
-  The dialog can be searched by purchase order number, vendor, vendor reference or part,
-  and filtered to the ones **Imported from email**.
+  The cards are the `repair_match_kanban` view (`js_class`). The dialog can be searched
+  by purchase order number, vendor, vendor reference or part, and filtered to the ones
+  **Imported from email**.
 - **Unmatched** means: a purchase order in the _purchase_ or _done_ state none of whose
   lines is a part on a repair order that is not cancelled. A purchase order with only
   some lines linked counts as matched. One linked only to a cancelled repair order is
@@ -85,9 +87,9 @@ entered.
   vehicle-linked repair order (repair date, vehicle manufacturer/model/year, customer
   concern) to TypeSafe's [Choice primitive](https://docs.typesafe.ai/primitives/choice),
   asking which repair order the purchase order belongs to.
-- TypeSafe's best guess, with its confidence, is posted with a **Confirm Match** button
-  on _both_ the purchase order and the repair order, as an outstanding notice (see
-  _Notices_).
+- TypeSafe's best guess, with its confidence, is posted as Odoo's suggestion ("Odoo
+  suggests ...") with a **Confirm Match** button on _both_ the purchase order and the
+  repair order, as an outstanding notice (see _Notices_).
 - Clicking Confirm Match (a signed, one-time-pair link - it only works for that specific
   purchase order/repair order combination) adds every product line on the purchase order
   to the repair order's parts list, exactly like the Match buttons (it needs the same
@@ -101,6 +103,19 @@ entered.
 
 ## Notices
 
+Users only ever see "Odoo": the notices are posted by `base.partner_root` and say what
+Odoo did or suggests, whichever service answered. Every notice, its email and its inbox
+notification name the records by their reference:
+
+- a repair order (`repair.order._repair_reference()`): its number, the customer, and the
+  vehicle's year, make and model with the unit number when there is one -
+  `WH/RO/00004 – Jane Doe, 2019 Ford F-150 (T-104)`;
+- a purchase order (`purchase.order._edi_reference()`, from
+  `edi_purchase_order_import`): its number and vendor - `P00204 – NAPA`.
+
+These are the text of every link to the records, the title of the inbox notifications
+(`record_name`) and the names in the error messages of the Match actions.
+
 Every notice about a purchase order goes through the shared path of
 `edi_purchase_order_import` (`purchase.order._edi_post_notice()`, see its README), and
 nothing is posted with `message_post(partner_ids=...)` any more, which emailed followers
@@ -109,8 +124,8 @@ nothing is posted with `message_post(partner_ids=...)` any more, which emailed f
 | Notice                                                                | Kind                               | Inbox of the notify group | Email                                                           |
 | --------------------------------------------------------------------- | ---------------------------------- | ------------------------- | --------------------------------------------------------------- |
 | Confirmed automatically (`edi_purchase_order_import`)                 | outstanding                        | yes, until matched        | one, to the shop mailbox that forwarded the vendor's email only |
-| TypeSafe's suggestion, with **Confirm Match**                         | outstanding                        | yes, until matched        | the same                                                        |
-| TypeSafe could not suggest a repair order                             | outstanding                        | yes, until matched        | the same                                                        |
+| Odoo's suggestion, with **Confirm Match**                             | outstanding                        | yes, until matched        | the same                                                        |
+| Odoo could not suggest a repair order                                 | outstanding                        | yes, until matched        | the same                                                        |
 | The PO number names a repair order that is closed                     | outstanding                        | yes, until matched        | the same                                                        |
 | "Linked to repair order ..." (a user matched it)                      | plain internal note, informational | no                        | no                                                              |
 | "... so it was linked automatically" (PO number; nobody confirmed it) | informational                      | yes (stays unread)        | no                                                              |
@@ -145,7 +160,7 @@ nothing is posted with `message_post(partner_ids=...)` any more, which emailed f
 ### Clearing
 
 The moment a purchase order is linked to a repair order - inside
-`_link_to_repair_order`, so whichever way it happens: the Match Order card, the Match
+`_link_to_repair_order`, so whichever way it happens: the Match Order dialog, the Match
 Repair dialog, the Confirm Match link, the automatic PO-number match, the queue job, the
 MCP tool - its outstanding notices are cleared with `_edi_clear_notices()`: their inbox
 notifications are marked read for **all** users (and the inbox counters refreshed), on
@@ -198,10 +213,10 @@ orders), **Inventory user alone cannot** (it can't post on the purchase order), 
 neither can an internal user without those groups or a user of another company: the
 buttons are hidden and the methods refuse with an `AccessError`.
 
-- **Match Order** (repair order header, dialog and card button): the repair order must
-  be editable by the user and the purchase orders readable. The dialog only offers what
-  the user can read (record rules apply), and its search view's name is read with sudo,
-  a purely technical read.
+- **Match Order** (repair order header, dialog and its Match button): the repair order
+  must be editable by the user and the purchase orders readable. The dialog only offers
+  what the user can read (record rules apply), and its search view's name is read with
+  sudo, a purely technical read.
 - **Match Repair** (purchase order and receipt headers, dialog and row click): the same
   rights; the receipt button follows its purchase order.
 - **Unmatched filter** (`repair_match_unmatched`): the link between purchase lines and
