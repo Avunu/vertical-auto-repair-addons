@@ -18,13 +18,18 @@ class RepairService(models.Model):
     analytic_line_ids = fields.One2many(
         "account.analytic.line", "repair_service_id", string="Time Logs"
     )
+    # compute_sudo: the sum is everyone's time, but the request that
+    # recomputes it is one technician's, whose timesheet record rules show
+    # them only their own entries. Without it, each timer stop would set the
+    # service's time to the stopping technician's share.
     actual_time = fields.Float(
         compute="_compute_actual_time",
+        compute_sudo=True,
         store=True,
         readonly=False,
         digits="Product Unit of Measure",
-        help="Sum of the time logged against this service from the shop "
-        "floor app. Directly editable; a later timer stop recomputes and "
+        help="Sum of the time logged against this service from the "
+        "technician app. Directly editable; a later timer stop recomputes and "
         "overwrites a manual edit.",
     )
     # Overrides the plain `default=1.0` float defined upstream
@@ -53,7 +58,23 @@ class RepairService(models.Model):
 
     @api.depends("analytic_line_ids.unit_amount")
     def _compute_actual_time(self):
-        for service in self:
+        # Summed in the database, as superuser: the request that recomputes
+        # this is one technician's, and both their record rules and whatever
+        # they already read of analytic_line_ids (cached as they may see it)
+        # would leave out the others' time.
+        saved = self.filtered("id")
+        totals = dict(
+            self.env["account.analytic.line"]
+            .sudo()
+            ._read_group(
+                [("repair_service_id", "in", saved.ids)],
+                ["repair_service_id"],
+                ["unit_amount:sum"],
+            )
+        )
+        for service in saved:
+            service.actual_time = totals.get(service.sudo(), 0.0)
+        for service in self - saved:
             service.actual_time = sum(service.analytic_line_ids.mapped("unit_amount"))
 
     @api.depends("actual_time")
