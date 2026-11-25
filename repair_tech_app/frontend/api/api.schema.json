@@ -1,0 +1,3468 @@
+{
+  "$defs": {
+    "AddBreakMethod": {
+      "description": "Cut a break out of the middle of an entry.\n\nThe entry is split around the gap, and so is the clocked period that\nholds the break (clocked out at its start, back in at its end), so the\nbreak comes off the day's clocked total too. When nothing is clocked\nover the entry (a day entered by hand), only the job time splits. When\nthe entry is clocked but no single period holds the break, it is\nrefused: splitting the job time alone would leave the two disagreeing\nabout the same hours.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/AddBreakParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Notice"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "AddBreakMethod",
+      "type": "object"
+    },
+    "AddBreakParams": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "line_id",
+        "start",
+        "end"
+      ],
+      "title": "AddBreakParams",
+      "type": "object"
+    },
+    "AddNoteMethod": {
+      "description": "Add a note to the job's Repair Notes. It is also posted to the\nchatter as a Technician Note, so who hears about it is the order's\nordinary follower settings.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/AddNoteParams"
+        },
+        "result": {
+          "$ref": "#/$defs/JobDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "AddNoteMethod",
+      "type": "object"
+    },
+    "AddNoteParams": {
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "maxLength": 10000,
+          "title": "Note",
+          "type": "string"
+        },
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id",
+        "note"
+      ],
+      "title": "AddNoteParams",
+      "type": "object"
+    },
+    "AddPartMethod": {
+      "description": "Add a part from the catalog to the job; ``used`` records it as\ninstalled straight away (untracked parts only).\n\nThe part reaches the customer's quote, as core does for any part added\nto a repair - on purpose. It is flagged as added by the technician and\na note on the order says so, so the service advisor sees what was added\non top of what the customer approved and decides what to bill.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/AddPartParams"
+        },
+        "result": {
+          "$ref": "#/$defs/PartList"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "AddPartMethod",
+      "type": "object"
+    },
+    "AddPartParams": {
+      "additionalProperties": false,
+      "properties": {
+        "product_id": {
+          "title": "Product Id",
+          "type": "integer"
+        },
+        "quantity": {
+          "default": 1.0,
+          "exclusiveMinimum": 0,
+          "title": "Quantity",
+          "type": "number"
+        },
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        },
+        "used": {
+          "default": false,
+          "title": "Used",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "repair_id",
+        "product_id"
+      ],
+      "title": "AddPartParams",
+      "type": "object"
+    },
+    "AddPhotoMethod": {
+      "description": "Attach a photo to a checklist item: base64, bare or as a ``data:``\nURL. The app downscales it first (a tablet shot is 4-8 MB).",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/AddPhotoParams"
+        },
+        "result": {
+          "$ref": "#/$defs/InspectionLineDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "AddPhotoMethod",
+      "type": "object"
+    },
+    "AddPhotoParams": {
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filename"
+        },
+        "image": {
+          "maxLength": 20000000,
+          "minLength": 1,
+          "title": "Image",
+          "type": "string"
+        },
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "line_id",
+        "image"
+      ],
+      "title": "AddPhotoParams",
+      "type": "object"
+    },
+    "AppOptions": {
+      "additionalProperties": false,
+      "description": "Shop settings the app needs to hide what it must not offer (Settings >\nInventory > Technician App).",
+      "properties": {
+        "allow_finish": {
+          "description": "Technicians may close a job from the app.",
+          "title": "Allow Finish",
+          "type": "boolean"
+        },
+        "require_photo_on_fail": {
+          "description": "A problem grade needs a photo on the item first.",
+          "title": "Require Photo On Fail",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_finish",
+        "require_photo_on_fail"
+      ],
+      "title": "AppOptions",
+      "type": "object"
+    },
+    "Attendance": {
+      "additionalProperties": false,
+      "properties": {
+        "check_in": {
+          "format": "date-time",
+          "title": "Check In",
+          "type": "string"
+        },
+        "check_out": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Check Out"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "check_in",
+        "check_out"
+      ],
+      "title": "Attendance",
+      "type": "object"
+    },
+    "AttendanceDay": {
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "hours": {
+          "description": "Clocked time that day.",
+          "title": "Hours",
+          "type": "number"
+        },
+        "records": {
+          "items": {
+            "$ref": "#/$defs/Attendance"
+          },
+          "title": "Records",
+          "type": "array"
+        }
+      },
+      "required": [
+        "date",
+        "hours",
+        "records"
+      ],
+      "title": "AttendanceDay",
+      "type": "object"
+    },
+    "CatalogCategoriesMethod": {
+      "description": "Product categories, for the catalog's filter.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/CatalogCategoriesParams"
+        },
+        "result": {
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "Result",
+          "type": "array"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "CatalogCategoriesMethod",
+      "type": "object"
+    },
+    "CatalogCategoriesParams": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "CatalogCategoriesParams",
+      "type": "object"
+    },
+    "CatalogMethod": {
+      "description": "Browse the parts catalog: goods that can be purchased, by name,\ninternal reference or barcode.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/CatalogParams"
+        },
+        "result": {
+          "$ref": "#/$defs/CatalogPage"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "CatalogMethod",
+      "type": "object"
+    },
+    "CatalogPage": {
+      "additionalProperties": false,
+      "properties": {
+        "page": {
+          "title": "Page",
+          "type": "integer"
+        },
+        "page_size": {
+          "title": "Page Size",
+          "type": "integer"
+        },
+        "records": {
+          "items": {
+            "$ref": "#/$defs/CatalogProduct"
+          },
+          "title": "Records",
+          "type": "array"
+        },
+        "total": {
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "records",
+        "total",
+        "page",
+        "page_size"
+      ],
+      "title": "CatalogPage",
+      "type": "object"
+    },
+    "CatalogParams": {
+      "additionalProperties": false,
+      "properties": {
+        "category_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category Id"
+        },
+        "page": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "search": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Search"
+        }
+      },
+      "title": "CatalogParams",
+      "type": "object"
+    },
+    "CatalogProduct": {
+      "additionalProperties": false,
+      "properties": {
+        "barcode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Barcode"
+        },
+        "default_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Default Code"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "qty_available": {
+          "title": "Qty Available",
+          "type": "number"
+        },
+        "tracking": {
+          "enum": [
+            "none",
+            "lot",
+            "serial"
+          ],
+          "title": "Tracking",
+          "type": "string"
+        },
+        "uom": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "default_code",
+        "barcode",
+        "tracking",
+        "uom",
+        "qty_available"
+      ],
+      "title": "CatalogProduct",
+      "type": "object"
+    },
+    "ClockToggleMethod": {
+      "description": "Clock in, or out. Clocking out stops a running job timer\n(models/hr_employee.py).",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/ClockToggleParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Shift"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "ClockToggleMethod",
+      "type": "object"
+    },
+    "ClockToggleParams": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "ClockToggleParams",
+      "type": "object"
+    },
+    "ConfirmInspectionMethod": {
+      "description": "Complete the inspection (OCA's ``button_confirm``). Every item needs\na grade first; Not Applicable is the deliberate skip.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/ConfirmInspectionParams"
+        },
+        "result": {
+          "$ref": "#/$defs/InspectionList"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "ConfirmInspectionMethod",
+      "type": "object"
+    },
+    "ConfirmInspectionParams": {
+      "additionalProperties": false,
+      "properties": {
+        "inspection_id": {
+          "title": "Inspection Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "inspection_id"
+      ],
+      "title": "ConfirmInspectionParams",
+      "type": "object"
+    },
+    "CreateInspectionMethod": {
+      "description": "Start an inspection of the job's vehicle from a checklist template,\nat the odometer reading the technician reads off the dash.\n\nThe odometer is required: fleet_vehicle_inspection's inverse raises on\nan empty one.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/CreateInspectionParams"
+        },
+        "result": {
+          "$ref": "#/$defs/InspectionDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "CreateInspectionMethod",
+      "type": "object"
+    },
+    "CreateInspectionParams": {
+      "additionalProperties": false,
+      "properties": {
+        "odometer": {
+          "exclusiveMinimum": 0,
+          "title": "Odometer",
+          "type": "number"
+        },
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        },
+        "template_id": {
+          "title": "Template Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id",
+        "template_id",
+        "odometer"
+      ],
+      "title": "CreateInspectionParams",
+      "type": "object"
+    },
+    "DayHours": {
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "hours": {
+          "description": "Job time that day, across every entry, not only this page's.",
+          "title": "Hours",
+          "type": "number"
+        }
+      },
+      "required": [
+        "date",
+        "hours"
+      ],
+      "title": "DayHours",
+      "type": "object"
+    },
+    "DeleteBreakMethod": {
+      "description": "Remove the break after a clocked period by joining it to the next.\nThe break's time counts as clocked; job entries stay as they are.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/DeleteBreakParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Notice"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "DeleteBreakMethod",
+      "type": "object"
+    },
+    "DeleteBreakParams": {
+      "additionalProperties": false,
+      "properties": {
+        "attendance_id": {
+          "title": "Attendance Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "attendance_id"
+      ],
+      "title": "DeleteBreakParams",
+      "type": "object"
+    },
+    "DeleteJobBreakMethod": {
+      "description": "Join two parts of one job back into one entry.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/DeleteJobBreakParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Notice"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "DeleteJobBreakMethod",
+      "type": "object"
+    },
+    "DeleteJobBreakParams": {
+      "additionalProperties": false,
+      "properties": {
+        "after_id": {
+          "title": "After Id",
+          "type": "integer"
+        },
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "line_id",
+        "after_id"
+      ],
+      "title": "DeleteJobBreakParams",
+      "type": "object"
+    },
+    "DeleteTimesheetMethod": {
+      "description": "Remove an entry made by mistake.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/DeleteTimesheetParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Notice"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "DeleteTimesheetMethod",
+      "type": "object"
+    },
+    "DeleteTimesheetParams": {
+      "additionalProperties": false,
+      "properties": {
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "line_id"
+      ],
+      "title": "DeleteTimesheetParams",
+      "type": "object"
+    },
+    "FindJobMethod": {
+      "description": "A job from a scanned or typed code: its reference, its quote's\nnumber, the VIN, the plate or the unit number. ``None`` if nothing\nmatches.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/FindJobParams"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JobSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "FindJobMethod",
+      "type": "object"
+    },
+    "FindJobParams": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code"
+      ],
+      "title": "FindJobParams",
+      "type": "object"
+    },
+    "FinishMethod": {
+      "description": "Complete the repair (core ``action_repair_end``). The technician's\ntimer on the job stops: the work is done.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/FinishParams"
+        },
+        "result": {
+          "$ref": "#/$defs/JobDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "FinishMethod",
+      "type": "object"
+    },
+    "FinishParams": {
+      "additionalProperties": false,
+      "properties": {
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id"
+      ],
+      "title": "FinishParams",
+      "type": "object"
+    },
+    "GradeMethod": {
+      "description": "Grade a checklist item. ``None`` leaves conditions, actions or the\nnote as they are. The severity is enough for the pass/fail result:\nshop_inspection maps it.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/GradeParams"
+        },
+        "result": {
+          "$ref": "#/$defs/InspectionDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "GradeMethod",
+      "type": "object"
+    },
+    "GradeParams": {
+      "additionalProperties": false,
+      "properties": {
+        "action_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action Ids"
+        },
+        "condition_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Condition Ids"
+        },
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "maxLength": 10000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "severity": {
+          "enum": [
+            "today",
+            "good",
+            "future",
+            "attention",
+            "fail_state",
+            "na"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "line_id",
+        "severity"
+      ],
+      "title": "GradeParams",
+      "type": "object"
+    },
+    "InspectionDetail": {
+      "additionalProperties": false,
+      "description": "The checklist.",
+      "properties": {
+        "editable": {
+          "title": "Editable",
+          "type": "boolean"
+        },
+        "inspection": {
+          "$ref": "#/$defs/InspectionSummary"
+        },
+        "job": {
+          "$ref": "#/$defs/JobSummary"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/InspectionLine"
+          },
+          "title": "Lines",
+          "type": "array"
+        }
+      },
+      "required": [
+        "inspection",
+        "job",
+        "lines",
+        "editable"
+      ],
+      "title": "InspectionDetail",
+      "type": "object"
+    },
+    "InspectionLine": {
+      "additionalProperties": false,
+      "description": "One checklist item.",
+      "properties": {
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "Actions",
+          "type": "array"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "instruction": {
+          "title": "Instruction",
+          "type": "string"
+        },
+        "measurement_alert": {
+          "title": "Measurement Alert",
+          "type": "boolean"
+        },
+        "measurement_summary": {
+          "title": "Measurement Summary",
+          "type": "string"
+        },
+        "measurements": {
+          "items": {
+            "$ref": "#/$defs/Measurement"
+          },
+          "title": "Measurements",
+          "type": "array"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        },
+        "photo_count": {
+          "title": "Photo Count",
+          "type": "integer"
+        },
+        "severity": {
+          "anyOf": [
+            {
+              "enum": [
+                "today",
+                "good",
+                "future",
+                "attention",
+                "fail_state",
+                "na"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Severity"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category",
+        "severity",
+        "note",
+        "instruction",
+        "measurement_summary",
+        "measurement_alert",
+        "conditions",
+        "actions",
+        "measurements",
+        "photo_count"
+      ],
+      "title": "InspectionLine",
+      "type": "object"
+    },
+    "InspectionLineDetail": {
+      "additionalProperties": false,
+      "description": "One item, with everything its grading form needs.",
+      "properties": {
+        "actions": {
+          "description": "The item's usual recommended actions first, then the rest.",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "Actions",
+          "type": "array"
+        },
+        "conditions": {
+          "description": "The item's usual conditions first, then the rest.",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "editable": {
+          "title": "Editable",
+          "type": "boolean"
+        },
+        "inspection": {
+          "$ref": "#/$defs/InspectionSummary"
+        },
+        "line": {
+          "$ref": "#/$defs/InspectionLine"
+        },
+        "photos": {
+          "items": {
+            "$ref": "#/$defs/Photo"
+          },
+          "title": "Photos",
+          "type": "array"
+        },
+        "severities": {
+          "items": {
+            "$ref": "#/$defs/SeverityChoice"
+          },
+          "title": "Severities",
+          "type": "array"
+        }
+      },
+      "required": [
+        "line",
+        "inspection",
+        "photos",
+        "severities",
+        "conditions",
+        "actions",
+        "editable"
+      ],
+      "title": "InspectionLineDetail",
+      "type": "object"
+    },
+    "InspectionLineMethod": {
+      "description": "One checklist item, with its photos and grading choices.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/InspectionLineParams"
+        },
+        "result": {
+          "$ref": "#/$defs/InspectionLineDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "InspectionLineMethod",
+      "type": "object"
+    },
+    "InspectionLineParams": {
+      "additionalProperties": false,
+      "properties": {
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "line_id"
+      ],
+      "title": "InspectionLineParams",
+      "type": "object"
+    },
+    "InspectionList": {
+      "additionalProperties": false,
+      "properties": {
+        "default_odometer": {
+          "title": "Default Odometer",
+          "type": "number"
+        },
+        "has_vehicle": {
+          "title": "Has Vehicle",
+          "type": "boolean"
+        },
+        "job": {
+          "$ref": "#/$defs/JobSummary"
+        },
+        "odometer_unit": {
+          "title": "Odometer Unit",
+          "type": "string"
+        },
+        "records": {
+          "items": {
+            "$ref": "#/$defs/InspectionSummary"
+          },
+          "title": "Records",
+          "type": "array"
+        },
+        "templates": {
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "Templates",
+          "type": "array"
+        }
+      },
+      "required": [
+        "job",
+        "records",
+        "templates",
+        "has_vehicle",
+        "default_odometer",
+        "odometer_unit"
+      ],
+      "title": "InspectionList",
+      "type": "object"
+    },
+    "InspectionMethod": {
+      "description": "An inspection's checklist, by category.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/InspectionParams"
+        },
+        "result": {
+          "$ref": "#/$defs/InspectionDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "InspectionMethod",
+      "type": "object"
+    },
+    "InspectionParams": {
+      "additionalProperties": false,
+      "properties": {
+        "inspection_id": {
+          "title": "Inspection Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "inspection_id"
+      ],
+      "title": "InspectionParams",
+      "type": "object"
+    },
+    "InspectionSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "counts": {
+          "$ref": "#/$defs/SeverityCounts"
+        },
+        "date_inspected": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Date Inspected"
+        },
+        "graded_count": {
+          "title": "Graded Count",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "line_count": {
+          "title": "Line Count",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "odometer": {
+          "title": "Odometer",
+          "type": "number"
+        },
+        "odometer_unit": {
+          "title": "Odometer Unit",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "todo",
+            "success",
+            "failure"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "confirmed",
+            "cancel"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "state_label": {
+          "title": "State Label",
+          "type": "string"
+        },
+        "template": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "state",
+        "state_label",
+        "result",
+        "odometer",
+        "odometer_unit",
+        "date_inspected",
+        "template",
+        "graded_count",
+        "line_count",
+        "counts"
+      ],
+      "title": "InspectionSummary",
+      "type": "object"
+    },
+    "InspectionsMethod": {
+      "description": "The job's inspections, and the checklists one can start from.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/InspectionsParams"
+        },
+        "result": {
+          "$ref": "#/$defs/InspectionList"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "InspectionsMethod",
+      "type": "object"
+    },
+    "InspectionsParams": {
+      "additionalProperties": false,
+      "properties": {
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id"
+      ],
+      "title": "InspectionsParams",
+      "type": "object"
+    },
+    "JobChoice": {
+      "additionalProperties": false,
+      "description": "A job time can be moved to, with its services.",
+      "properties": {
+        "customer": {
+          "title": "Customer",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "ref": {
+          "title": "Ref",
+          "type": "string"
+        },
+        "services": {
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "Services",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "ref",
+        "customer",
+        "services"
+      ],
+      "title": "JobChoice",
+      "type": "object"
+    },
+    "JobDetail": {
+      "additionalProperties": false,
+      "description": "The job hub: everything one screen shows about a job.",
+      "properties": {
+        "can_edit_parts": {
+          "title": "Can Edit Parts",
+          "type": "boolean"
+        },
+        "can_finish": {
+          "description": "Under repair, and the shop lets technicians close jobs.",
+          "title": "Can Finish",
+          "type": "boolean"
+        },
+        "can_start": {
+          "description": "Confirmed and not started: the Start Repair button.",
+          "title": "Can Start",
+          "type": "boolean"
+        },
+        "customer_concern": {
+          "description": "Plain text, never markup.",
+          "title": "Customer Concern",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "inspection_count": {
+          "title": "Inspection Count",
+          "type": "integer"
+        },
+        "inspection_graded": {
+          "title": "Inspection Graded",
+          "type": "integer"
+        },
+        "inspection_total": {
+          "title": "Inspection Total",
+          "type": "integer"
+        },
+        "internal_notes": {
+          "description": "The order's Repair Notes as plain text; technicians' notes land here.",
+          "title": "Internal Notes",
+          "type": "string"
+        },
+        "is_mine": {
+          "description": "Assigned to the current user (others' jobs show through a shared\nappointment type, or because nobody has them yet).",
+          "title": "Is Mine",
+          "type": "boolean"
+        },
+        "label": {
+          "description": "Vehicle description, else customer, else the order's reference.",
+          "title": "Label",
+          "type": "string"
+        },
+        "name": {
+          "description": "The order's reference, e.g. ``RO/00123``.",
+          "title": "Name",
+          "type": "string"
+        },
+        "odometer_in": {
+          "title": "Odometer In",
+          "type": "number"
+        },
+        "odometer_unit": {
+          "title": "Odometer Unit",
+          "type": "string"
+        },
+        "partner": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parts_done": {
+          "title": "Parts Done",
+          "type": "integer"
+        },
+        "parts_total": {
+          "title": "Parts Total",
+          "type": "integer"
+        },
+        "priority": {
+          "title": "Priority",
+          "type": "boolean"
+        },
+        "repair_request": {
+          "title": "Repair Request",
+          "type": "string"
+        },
+        "sale_order": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schedule_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Schedule Date"
+        },
+        "services": {
+          "items": {
+            "$ref": "#/$defs/Service"
+          },
+          "title": "Services",
+          "type": "array"
+        },
+        "stage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "confirmed",
+            "under_repair",
+            "done",
+            "cancel"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "state_label": {
+          "title": "State Label",
+          "type": "string"
+        },
+        "technician": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timer_running": {
+          "description": "The current user's timer is running on this job.",
+          "title": "Timer Running",
+          "type": "boolean"
+        },
+        "under_warranty": {
+          "title": "Under Warranty",
+          "type": "boolean"
+        },
+        "vehicle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Vehicle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "label",
+        "state",
+        "state_label",
+        "stage",
+        "priority",
+        "schedule_date",
+        "partner",
+        "vehicle",
+        "technician",
+        "is_mine",
+        "customer_concern",
+        "timer_running",
+        "parts_done",
+        "parts_total",
+        "inspection_graded",
+        "inspection_total",
+        "internal_notes",
+        "repair_request",
+        "odometer_in",
+        "odometer_unit",
+        "under_warranty",
+        "sale_order",
+        "services",
+        "inspection_count",
+        "can_start",
+        "can_finish",
+        "can_edit_parts"
+      ],
+      "title": "JobDetail",
+      "type": "object"
+    },
+    "JobMethod": {
+      "description": "The job hub: the vehicle, the concern, the services with their\ntimers, and what the technician may do next.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/JobParams"
+        },
+        "result": {
+          "$ref": "#/$defs/JobDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "JobMethod",
+      "type": "object"
+    },
+    "JobParams": {
+      "additionalProperties": false,
+      "properties": {
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id"
+      ],
+      "title": "JobParams",
+      "type": "object"
+    },
+    "JobSummary": {
+      "additionalProperties": false,
+      "description": "One row of \"My Jobs\".",
+      "properties": {
+        "customer_concern": {
+          "description": "Plain text, never markup.",
+          "title": "Customer Concern",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "inspection_graded": {
+          "title": "Inspection Graded",
+          "type": "integer"
+        },
+        "inspection_total": {
+          "title": "Inspection Total",
+          "type": "integer"
+        },
+        "is_mine": {
+          "description": "Assigned to the current user (others' jobs show through a shared\nappointment type, or because nobody has them yet).",
+          "title": "Is Mine",
+          "type": "boolean"
+        },
+        "label": {
+          "description": "Vehicle description, else customer, else the order's reference.",
+          "title": "Label",
+          "type": "string"
+        },
+        "name": {
+          "description": "The order's reference, e.g. ``RO/00123``.",
+          "title": "Name",
+          "type": "string"
+        },
+        "partner": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parts_done": {
+          "title": "Parts Done",
+          "type": "integer"
+        },
+        "parts_total": {
+          "title": "Parts Total",
+          "type": "integer"
+        },
+        "priority": {
+          "title": "Priority",
+          "type": "boolean"
+        },
+        "schedule_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Schedule Date"
+        },
+        "stage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "confirmed",
+            "under_repair",
+            "done",
+            "cancel"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "state_label": {
+          "title": "State Label",
+          "type": "string"
+        },
+        "technician": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timer_running": {
+          "description": "The current user's timer is running on this job.",
+          "title": "Timer Running",
+          "type": "boolean"
+        },
+        "vehicle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Vehicle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "label",
+        "state",
+        "state_label",
+        "stage",
+        "priority",
+        "schedule_date",
+        "partner",
+        "vehicle",
+        "technician",
+        "is_mine",
+        "customer_concern",
+        "timer_running",
+        "parts_done",
+        "parts_total",
+        "inspection_graded",
+        "inspection_total"
+      ],
+      "title": "JobSummary",
+      "type": "object"
+    },
+    "JobsMethod": {
+      "description": "The technician's jobs: assigned, shared through the appointment\ntype, or unassigned. Priority first, then by schedule.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/JobsParams"
+        },
+        "result": {
+          "items": {
+            "$ref": "#/$defs/JobSummary"
+          },
+          "title": "Result",
+          "type": "array"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "JobsMethod",
+      "type": "object"
+    },
+    "JobsParams": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "JobsParams",
+      "type": "object"
+    },
+    "Measurement": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "out_of_spec": {
+          "title": "Out Of Spec",
+          "type": "boolean"
+        },
+        "position": {
+          "title": "Position",
+          "type": "string"
+        },
+        "position_label": {
+          "title": "Position Label",
+          "type": "string"
+        },
+        "spec_max": {
+          "title": "Spec Max",
+          "type": "number"
+        },
+        "spec_min": {
+          "title": "Spec Min",
+          "type": "number"
+        },
+        "uom_label": {
+          "title": "Uom Label",
+          "type": "string"
+        },
+        "value": {
+          "description": "0 means not measured yet.",
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "position",
+        "position_label",
+        "uom_label",
+        "value",
+        "spec_min",
+        "spec_max",
+        "out_of_spec"
+      ],
+      "title": "Measurement",
+      "type": "object"
+    },
+    "Notice": {
+      "additionalProperties": false,
+      "description": "A change done; what to tell the technician.",
+      "properties": {
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "title": "Notice",
+      "type": "object"
+    },
+    "Part": {
+      "additionalProperties": false,
+      "description": "A part to install: an ``add`` move on the repair.",
+      "properties": {
+        "added_by_technician": {
+          "description": "Added from the app, on top of the estimate the customer approved.",
+          "title": "Added By Technician",
+          "type": "boolean"
+        },
+        "available": {
+          "description": "Reserved in stock, so it can be picked now.",
+          "title": "Available",
+          "type": "boolean"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "lots": {
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "Lots",
+          "type": "array"
+        },
+        "picked": {
+          "title": "Picked",
+          "type": "boolean"
+        },
+        "product": {
+          "$ref": "#/$defs/Product"
+        },
+        "quantity_demand": {
+          "title": "Quantity Demand",
+          "type": "number"
+        },
+        "quantity_done": {
+          "title": "Quantity Done",
+          "type": "number"
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "waiting",
+            "confirmed",
+            "partially_available",
+            "assigned",
+            "done",
+            "cancel"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "state_label": {
+          "title": "State Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "product",
+        "quantity_demand",
+        "quantity_done",
+        "picked",
+        "state",
+        "state_label",
+        "available",
+        "added_by_technician",
+        "lots"
+      ],
+      "title": "Part",
+      "type": "object"
+    },
+    "PartList": {
+      "additionalProperties": false,
+      "properties": {
+        "can_edit": {
+          "title": "Can Edit",
+          "type": "boolean"
+        },
+        "job": {
+          "$ref": "#/$defs/JobSummary"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/Part"
+          },
+          "title": "Parts",
+          "type": "array"
+        }
+      },
+      "required": [
+        "job",
+        "parts",
+        "can_edit"
+      ],
+      "title": "PartList",
+      "type": "object"
+    },
+    "PartScan": {
+      "additionalProperties": false,
+      "description": "What a scanned code is: a part on the job, or a product to add.",
+      "properties": {
+        "move_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The job's part with that product, when it has one.",
+          "title": "Move Id"
+        },
+        "product": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CatalogProduct"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The product, when the code names one but the job doesn't have it."
+        }
+      },
+      "required": [
+        "move_id",
+        "product"
+      ],
+      "title": "PartScan",
+      "type": "object"
+    },
+    "PartsMethod": {
+      "description": "The parts the job expects, and what has been used so far.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/PartsParams"
+        },
+        "result": {
+          "$ref": "#/$defs/PartList"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "PartsMethod",
+      "type": "object"
+    },
+    "PartsParams": {
+      "additionalProperties": false,
+      "properties": {
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id"
+      ],
+      "title": "PartsParams",
+      "type": "object"
+    },
+    "Photo": {
+      "additionalProperties": false,
+      "properties": {
+        "full_url": {
+          "title": "Full Url",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "url": {
+          "description": "A 512px rendition, for the thumbnail strip.",
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "url",
+        "full_url"
+      ],
+      "title": "Photo",
+      "type": "object"
+    },
+    "Product": {
+      "additionalProperties": false,
+      "properties": {
+        "barcode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Barcode"
+        },
+        "default_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Default Code"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "tracking": {
+          "enum": [
+            "none",
+            "lot",
+            "serial"
+          ],
+          "title": "Tracking",
+          "type": "string"
+        },
+        "uom": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "default_code",
+        "barcode",
+        "tracking",
+        "uom"
+      ],
+      "title": "Product",
+      "type": "object"
+    },
+    "Ref": {
+      "additionalProperties": false,
+      "description": "Any record shown by name.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Ref",
+      "type": "object"
+    },
+    "RemovePhotoMethod": {
+      "description": "Delete a photo taken by mistake.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/RemovePhotoParams"
+        },
+        "result": {
+          "$ref": "#/$defs/InspectionLineDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "RemovePhotoMethod",
+      "type": "object"
+    },
+    "RemovePhotoParams": {
+      "additionalProperties": false,
+      "properties": {
+        "photo_id": {
+          "title": "Photo Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "photo_id"
+      ],
+      "title": "RemovePhotoParams",
+      "type": "object"
+    },
+    "RepairTechAppMethods": {
+      "description": "Facades on repair.tech.app.",
+      "properties": {
+        "add_break": {
+          "$ref": "#/$defs/AddBreakMethod"
+        },
+        "add_note": {
+          "$ref": "#/$defs/AddNoteMethod"
+        },
+        "add_part": {
+          "$ref": "#/$defs/AddPartMethod"
+        },
+        "add_photo": {
+          "$ref": "#/$defs/AddPhotoMethod"
+        },
+        "catalog": {
+          "$ref": "#/$defs/CatalogMethod"
+        },
+        "catalog_categories": {
+          "$ref": "#/$defs/CatalogCategoriesMethod"
+        },
+        "clock_toggle": {
+          "$ref": "#/$defs/ClockToggleMethod"
+        },
+        "confirm_inspection": {
+          "$ref": "#/$defs/ConfirmInspectionMethod"
+        },
+        "create_inspection": {
+          "$ref": "#/$defs/CreateInspectionMethod"
+        },
+        "delete_break": {
+          "$ref": "#/$defs/DeleteBreakMethod"
+        },
+        "delete_job_break": {
+          "$ref": "#/$defs/DeleteJobBreakMethod"
+        },
+        "delete_timesheet": {
+          "$ref": "#/$defs/DeleteTimesheetMethod"
+        },
+        "find_job": {
+          "$ref": "#/$defs/FindJobMethod"
+        },
+        "finish": {
+          "$ref": "#/$defs/FinishMethod"
+        },
+        "grade": {
+          "$ref": "#/$defs/GradeMethod"
+        },
+        "inspection": {
+          "$ref": "#/$defs/InspectionMethod"
+        },
+        "inspection_line": {
+          "$ref": "#/$defs/InspectionLineMethod"
+        },
+        "inspections": {
+          "$ref": "#/$defs/InspectionsMethod"
+        },
+        "job": {
+          "$ref": "#/$defs/JobMethod"
+        },
+        "jobs": {
+          "$ref": "#/$defs/JobsMethod"
+        },
+        "parts": {
+          "$ref": "#/$defs/PartsMethod"
+        },
+        "remove_photo": {
+          "$ref": "#/$defs/RemovePhotoMethod"
+        },
+        "reset_part": {
+          "$ref": "#/$defs/ResetPartMethod"
+        },
+        "scan_part": {
+          "$ref": "#/$defs/ScanPartMethod"
+        },
+        "session": {
+          "$ref": "#/$defs/SessionMethod"
+        },
+        "set_measurement": {
+          "$ref": "#/$defs/SetMeasurementMethod"
+        },
+        "set_part_quantity": {
+          "$ref": "#/$defs/SetPartQuantityMethod"
+        },
+        "shift": {
+          "$ref": "#/$defs/ShiftMethod"
+        },
+        "split_timesheet": {
+          "$ref": "#/$defs/SplitTimesheetMethod"
+        },
+        "start_repair": {
+          "$ref": "#/$defs/StartRepairMethod"
+        },
+        "stop_running": {
+          "$ref": "#/$defs/StopRunningMethod"
+        },
+        "timer_start": {
+          "$ref": "#/$defs/TimerStartMethod"
+        },
+        "timer_stop": {
+          "$ref": "#/$defs/TimerStopMethod"
+        },
+        "timesheet": {
+          "$ref": "#/$defs/TimesheetMethod"
+        },
+        "timesheets": {
+          "$ref": "#/$defs/TimesheetsMethod"
+        },
+        "update_attendance": {
+          "$ref": "#/$defs/UpdateAttendanceMethod"
+        },
+        "update_break": {
+          "$ref": "#/$defs/UpdateBreakMethod"
+        },
+        "update_job_break": {
+          "$ref": "#/$defs/UpdateJobBreakMethod"
+        },
+        "update_timesheet": {
+          "$ref": "#/$defs/UpdateTimesheetMethod"
+        },
+        "use_all": {
+          "$ref": "#/$defs/UseAllMethod"
+        }
+      },
+      "required": [
+        "add_break",
+        "add_note",
+        "add_part",
+        "add_photo",
+        "catalog",
+        "catalog_categories",
+        "clock_toggle",
+        "confirm_inspection",
+        "create_inspection",
+        "delete_break",
+        "delete_job_break",
+        "delete_timesheet",
+        "find_job",
+        "finish",
+        "grade",
+        "inspection",
+        "inspection_line",
+        "inspections",
+        "job",
+        "jobs",
+        "parts",
+        "remove_photo",
+        "reset_part",
+        "scan_part",
+        "session",
+        "set_measurement",
+        "set_part_quantity",
+        "shift",
+        "split_timesheet",
+        "start_repair",
+        "stop_running",
+        "timer_start",
+        "timer_stop",
+        "timesheet",
+        "timesheets",
+        "update_attendance",
+        "update_break",
+        "update_job_break",
+        "update_timesheet",
+        "use_all"
+      ],
+      "title": "RepairTechAppMethods",
+      "type": "object"
+    },
+    "ResetPartMethod": {
+      "description": "Undo the part's usage: back to nothing used.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/ResetPartParams"
+        },
+        "result": {
+          "$ref": "#/$defs/PartList"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "ResetPartMethod",
+      "type": "object"
+    },
+    "ResetPartParams": {
+      "additionalProperties": false,
+      "properties": {
+        "move_id": {
+          "title": "Move Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "move_id"
+      ],
+      "title": "ResetPartParams",
+      "type": "object"
+    },
+    "RunningTimer": {
+      "additionalProperties": false,
+      "description": "The one work timer the technician has running, wherever it is.",
+      "properties": {
+        "job_label": {
+          "title": "Job Label",
+          "type": "string"
+        },
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        },
+        "service_id": {
+          "title": "Service Id",
+          "type": "integer"
+        },
+        "service_name": {
+          "title": "Service Name",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repair_id",
+        "service_id",
+        "job_label",
+        "service_name",
+        "started_at"
+      ],
+      "title": "RunningTimer",
+      "type": "object"
+    },
+    "ScanPartMethod": {
+      "description": "What a scanned barcode is: one of the job's parts, or a product the\njob doesn't have yet (to offer adding it). Matches the barcode, then\nthe internal reference, then a lot or serial number.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/ScanPartParams"
+        },
+        "result": {
+          "$ref": "#/$defs/PartScan"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "ScanPartMethod",
+      "type": "object"
+    },
+    "ScanPartParams": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id",
+        "code"
+      ],
+      "title": "ScanPartParams",
+      "type": "object"
+    },
+    "Service": {
+      "additionalProperties": false,
+      "description": "An accepted service line the technician logs time against.",
+      "properties": {
+        "actual_hours": {
+          "description": "Everyone's logged time.",
+          "title": "Actual Hours",
+          "type": "number"
+        },
+        "estimated_hours": {
+          "title": "Estimated Hours",
+          "type": "number"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "my_hours": {
+          "description": "The current user's share of ``actual_hours``, stopped timers only.",
+          "title": "My Hours",
+          "type": "number"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "timer": {
+          "$ref": "#/$defs/Timer"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "estimated_hours",
+        "actual_hours",
+        "my_hours",
+        "timer"
+      ],
+      "title": "Service",
+      "type": "object"
+    },
+    "SessionMethod": {
+      "description": "The signed-in technician, their company and employee, and the\nshop's settings for the app.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/SessionParams"
+        },
+        "result": {
+          "$ref": "#/$defs/TechSession"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "SessionMethod",
+      "type": "object"
+    },
+    "SessionParams": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "SessionParams",
+      "type": "object"
+    },
+    "SetMeasurementMethod": {
+      "description": "Record a measured value; 0 means not measured.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/SetMeasurementParams"
+        },
+        "result": {
+          "$ref": "#/$defs/InspectionLineDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "SetMeasurementMethod",
+      "type": "object"
+    },
+    "SetMeasurementParams": {
+      "additionalProperties": false,
+      "properties": {
+        "measurement_id": {
+          "title": "Measurement Id",
+          "type": "integer"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "measurement_id",
+        "value"
+      ],
+      "title": "SetMeasurementParams",
+      "type": "object"
+    },
+    "SetPartQuantityMethod": {
+      "description": "Record how much of a part was used, with its lot or serial when it\nis tracked: ``lot_id`` from a picker, ``lot_name`` from a scanner.\n\nWrites ``stock.move.quantity`` only: changing the demand\n(``product_uom_qty``) would make core rewrite the customer's approved\nquote line.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/SetPartQuantityParams"
+        },
+        "result": {
+          "$ref": "#/$defs/PartList"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "SetPartQuantityMethod",
+      "type": "object"
+    },
+    "SetPartQuantityParams": {
+      "additionalProperties": false,
+      "properties": {
+        "lot_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot Id"
+        },
+        "lot_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot Name"
+        },
+        "move_id": {
+          "title": "Move Id",
+          "type": "integer"
+        },
+        "quantity": {
+          "minimum": 0,
+          "title": "Quantity",
+          "type": "number"
+        }
+      },
+      "required": [
+        "move_id",
+        "quantity"
+      ],
+      "title": "SetPartQuantityParams",
+      "type": "object"
+    },
+    "SeverityChoice": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "enum": [
+            "today",
+            "good",
+            "future",
+            "attention",
+            "fail_state",
+            "na"
+          ],
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "label"
+      ],
+      "title": "SeverityChoice",
+      "type": "object"
+    },
+    "SeverityCounts": {
+      "additionalProperties": false,
+      "properties": {
+        "attention": {
+          "title": "Attention",
+          "type": "integer"
+        },
+        "fail_state": {
+          "title": "Fail State",
+          "type": "integer"
+        },
+        "future": {
+          "title": "Future",
+          "type": "integer"
+        },
+        "good": {
+          "title": "Good",
+          "type": "integer"
+        },
+        "today": {
+          "title": "Today",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "today",
+        "good",
+        "future",
+        "attention",
+        "fail_state"
+      ],
+      "title": "SeverityCounts",
+      "type": "object"
+    },
+    "Shift": {
+      "additionalProperties": false,
+      "description": "The technician's day: clocked in or not, and the job timer running.",
+      "properties": {
+        "clocked_in": {
+          "title": "Clocked In",
+          "type": "boolean"
+        },
+        "hours_today": {
+          "description": "Everything clocked today, the open period up to now included.",
+          "title": "Hours Today",
+          "type": "number"
+        },
+        "running": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RunningTimer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "since": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "When the current clock-in started.",
+          "title": "Since"
+        }
+      },
+      "required": [
+        "clocked_in",
+        "since",
+        "hours_today",
+        "running"
+      ],
+      "title": "Shift",
+      "type": "object"
+    },
+    "ShiftMethod": {
+      "description": "Clocked in or not, today's clocked hours, and the job timer running\nanywhere. Polled by the app's header.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/ShiftParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Shift"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "ShiftMethod",
+      "type": "object"
+    },
+    "ShiftParams": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "ShiftParams",
+      "type": "object"
+    },
+    "SplitTimesheetMethod": {
+      "description": "Move the slice ``start``-``end`` of an entry to another job.\n\nThe slice may touch either end of the entry or sit inside it. The entry\nshrinks to what is left, and copies carry the slice (on the chosen job)\nand, for a slice inside, the tail after it (on the entry's job), so\ntogether they cover exactly the original time. The entry shrinks\n*first*: the no-overlap constraint is checked on every write.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/SplitTimesheetParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Notice"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "SplitTimesheetMethod",
+      "type": "object"
+    },
+    "SplitTimesheetParams": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "job_id": {
+          "title": "Job Id",
+          "type": "integer"
+        },
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        },
+        "service_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service Id"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "line_id",
+        "job_id",
+        "start",
+        "end"
+      ],
+      "title": "SplitTimesheetParams",
+      "type": "object"
+    },
+    "StartRepairMethod": {
+      "description": "Move a confirmed job to Under Repair.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/StartRepairParams"
+        },
+        "result": {
+          "$ref": "#/$defs/JobDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "StartRepairMethod",
+      "type": "object"
+    },
+    "StartRepairParams": {
+      "additionalProperties": false,
+      "properties": {
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id"
+      ],
+      "title": "StartRepairParams",
+      "type": "object"
+    },
+    "StopRunningMethod": {
+      "description": "Stop whatever timer the technician has running, from anywhere in\nthe app. The job it ran on, or ``None`` if nothing was running.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/StopRunningParams"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JobDetail"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "StopRunningMethod",
+      "type": "object"
+    },
+    "StopRunningParams": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "StopRunningParams",
+      "type": "object"
+    },
+    "TechSession": {
+      "additionalProperties": false,
+      "description": "Who is using the app; fetched once at startup.",
+      "properties": {
+        "company": {
+          "$ref": "#/$defs/Ref"
+        },
+        "employee": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "``None`` means timers and clocking in are refused: time is logged per\nemployee."
+        },
+        "lang": {
+          "title": "Lang",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "options": {
+          "$ref": "#/$defs/AppOptions"
+        },
+        "tz": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Tz"
+        },
+        "uid": {
+          "title": "Uid",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "uid",
+        "name",
+        "lang",
+        "tz",
+        "company",
+        "employee",
+        "options"
+      ],
+      "title": "TechSession",
+      "type": "object"
+    },
+    "Timer": {
+      "additionalProperties": false,
+      "description": "The current user's timer on one service.",
+      "properties": {
+        "running": {
+          "title": "Running",
+          "type": "boolean"
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Started At"
+        }
+      },
+      "required": [
+        "running",
+        "started_at"
+      ],
+      "title": "Timer",
+      "type": "object"
+    },
+    "TimerStartMethod": {
+      "description": "Start timing a service. A timer running anywhere else stops at the\nsame instant, and the first timer of the day clocks the technician in.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/TimerStartParams"
+        },
+        "result": {
+          "$ref": "#/$defs/TimerStarted"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "TimerStartMethod",
+      "type": "object"
+    },
+    "TimerStartParams": {
+      "additionalProperties": false,
+      "properties": {
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        },
+        "service_id": {
+          "title": "Service Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id",
+        "service_id"
+      ],
+      "title": "TimerStartParams",
+      "type": "object"
+    },
+    "TimerStarted": {
+      "additionalProperties": false,
+      "description": "A started timer, and what starting it did on the side.",
+      "properties": {
+        "clocked_in": {
+          "description": "Starting the timer clocked the technician in for the day.",
+          "title": "Clocked In",
+          "type": "boolean"
+        },
+        "job": {
+          "$ref": "#/$defs/JobDetail"
+        },
+        "stopped": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RunningTimer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The timer that was running elsewhere and stopped at the same instant."
+        }
+      },
+      "required": [
+        "job",
+        "clocked_in",
+        "stopped"
+      ],
+      "title": "TimerStarted",
+      "type": "object"
+    },
+    "TimerStopMethod": {
+      "description": "Stop timing a service. Stopping a timer that isn't running does\nnothing.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/TimerStopParams"
+        },
+        "result": {
+          "$ref": "#/$defs/JobDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "TimerStopMethod",
+      "type": "object"
+    },
+    "TimerStopParams": {
+      "additionalProperties": false,
+      "properties": {
+        "repair_id": {
+          "title": "Repair Id",
+          "type": "integer"
+        },
+        "service_id": {
+          "title": "Service Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repair_id",
+        "service_id"
+      ],
+      "title": "TimerStopParams",
+      "type": "object"
+    },
+    "TimesheetDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "entry": {
+          "$ref": "#/$defs/TimesheetEntry"
+        },
+        "jobs": {
+          "items": {
+            "$ref": "#/$defs/JobChoice"
+          },
+          "title": "Jobs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "entry",
+        "jobs"
+      ],
+      "title": "TimesheetDetail",
+      "type": "object"
+    },
+    "TimesheetEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "description": "The entry's day, ``YYYY-MM-DD``.",
+          "title": "Date",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "``None`` while the timer runs.",
+          "title": "End"
+        },
+        "hours": {
+          "title": "Hours",
+          "type": "number"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "job": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Named by its label (vehicle, else customer), as everywhere in the app."
+        },
+        "job_ref": {
+          "description": "The order's reference: two jobs on one vehicle share a label.",
+          "title": "Job Ref",
+          "type": "string"
+        },
+        "service": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "start": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Start"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "date",
+        "start",
+        "end",
+        "hours",
+        "job",
+        "job_ref",
+        "service"
+      ],
+      "title": "TimesheetEntry",
+      "type": "object"
+    },
+    "TimesheetMethod": {
+      "description": "One entry, with the jobs it can be moved to.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/TimesheetParams"
+        },
+        "result": {
+          "$ref": "#/$defs/TimesheetDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "TimesheetMethod",
+      "type": "object"
+    },
+    "TimesheetPage": {
+      "additionalProperties": false,
+      "properties": {
+        "attendance": {
+          "description": "Clocked time for the days this page shows.",
+          "items": {
+            "$ref": "#/$defs/AttendanceDay"
+          },
+          "title": "Attendance",
+          "type": "array"
+        },
+        "job_hours": {
+          "items": {
+            "$ref": "#/$defs/DayHours"
+          },
+          "title": "Job Hours",
+          "type": "array"
+        },
+        "page": {
+          "title": "Page",
+          "type": "integer"
+        },
+        "page_size": {
+          "title": "Page Size",
+          "type": "integer"
+        },
+        "records": {
+          "items": {
+            "$ref": "#/$defs/TimesheetEntry"
+          },
+          "title": "Records",
+          "type": "array"
+        },
+        "total": {
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "records",
+        "total",
+        "page",
+        "page_size",
+        "attendance",
+        "job_hours"
+      ],
+      "title": "TimesheetPage",
+      "type": "object"
+    },
+    "TimesheetParams": {
+      "additionalProperties": false,
+      "properties": {
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "line_id"
+      ],
+      "title": "TimesheetParams",
+      "type": "object"
+    },
+    "TimesheetsMethod": {
+      "description": "The technician's repair-job time, newest first, 20 a page; with the\nclocked time and the job time of each day on the page. ``search``\nmatches the job's reference or the description, or a day\n(``YYYY-MM-DD``).",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/TimesheetsParams"
+        },
+        "result": {
+          "$ref": "#/$defs/TimesheetPage"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "TimesheetsMethod",
+      "type": "object"
+    },
+    "TimesheetsParams": {
+      "additionalProperties": false,
+      "properties": {
+        "page": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "search": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Search"
+        }
+      },
+      "title": "TimesheetsParams",
+      "type": "object"
+    },
+    "UpdateAttendanceMethod": {
+      "description": "Correct one clocked period's start and end. Worked hours follow:\nhr.attendance computes them from the two times.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/UpdateAttendanceParams"
+        },
+        "result": {
+          "$ref": "#/$defs/AttendanceDay"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "UpdateAttendanceMethod",
+      "type": "object"
+    },
+    "UpdateAttendanceParams": {
+      "additionalProperties": false,
+      "properties": {
+        "attendance_id": {
+          "title": "Attendance Id",
+          "type": "integer"
+        },
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attendance_id",
+        "start",
+        "end"
+      ],
+      "title": "UpdateAttendanceParams",
+      "type": "object"
+    },
+    "UpdateBreakMethod": {
+      "description": "Move or resize the break after a clocked period: the end of that\nperiod and the start of the next. The two job entries that met the\nbreak's old edges (\"Add break\" split them there) follow it; any other\njob time inside the new break is refused, not trimmed.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/UpdateBreakParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Notice"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "UpdateBreakMethod",
+      "type": "object"
+    },
+    "UpdateBreakParams": {
+      "additionalProperties": false,
+      "properties": {
+        "attendance_id": {
+          "title": "Attendance Id",
+          "type": "integer"
+        },
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attendance_id",
+        "start",
+        "end"
+      ],
+      "title": "UpdateBreakParams",
+      "type": "object"
+    },
+    "UpdateJobBreakMethod": {
+      "description": "Move or resize the gap between two parts of one job.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/UpdateJobBreakParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Notice"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "UpdateJobBreakMethod",
+      "type": "object"
+    },
+    "UpdateJobBreakParams": {
+      "additionalProperties": false,
+      "properties": {
+        "after_id": {
+          "title": "After Id",
+          "type": "integer"
+        },
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "line_id",
+        "after_id",
+        "start",
+        "end"
+      ],
+      "title": "UpdateJobBreakParams",
+      "type": "object"
+    },
+    "UpdateTimesheetMethod": {
+      "description": "Correct an entry's times, and with ``job_id`` its job and service.\n\nThe duration is written as such rather than through ``date_time_end``,\nwhose inverse only works when the line's unit is hours and otherwise\nleaves the old duration - read back later as \"still running\".",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/UpdateTimesheetParams"
+        },
+        "result": {
+          "$ref": "#/$defs/TimesheetDetail"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "UpdateTimesheetMethod",
+      "type": "object"
+    },
+    "UpdateTimesheetParams": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "job_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Job Id"
+        },
+        "line_id": {
+          "title": "Line Id",
+          "type": "integer"
+        },
+        "service_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service Id"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "line_id",
+        "start",
+        "end"
+      ],
+      "title": "UpdateTimesheetParams",
+      "type": "object"
+    },
+    "UseAllMethod": {
+      "description": "Mark the whole expected quantity as used. Not for tracked parts:\ntheir lots or serials have to be scanned.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/UseAllParams"
+        },
+        "result": {
+          "$ref": "#/$defs/PartList"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "UseAllMethod",
+      "type": "object"
+    },
+    "UseAllParams": {
+      "additionalProperties": false,
+      "properties": {
+        "move_id": {
+          "title": "Move Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "move_id"
+      ],
+      "title": "UseAllParams",
+      "type": "object"
+    },
+    "Vehicle": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "description": "Colour/Year/Brand/Model/Plate/Unit: what a technician sees walking up\nto the car.",
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "license_plate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "License Plate"
+        },
+        "model_year": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Model Year"
+        },
+        "unit_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unit Number"
+        },
+        "vin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vin"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "license_plate",
+        "vin",
+        "model_year",
+        "unit_number"
+      ],
+      "title": "Vehicle",
+      "type": "object"
+    }
+  },
+  "description": "Facades defined by repair_tech_app.",
+  "properties": {
+    "repair.tech.app": {
+      "$ref": "#/$defs/RepairTechAppMethods"
+    }
+  },
+  "required": [
+    "repair.tech.app"
+  ],
+  "title": "RepairTechApp",
+  "type": "object"
+}

@@ -1,0 +1,10 @@
+/*
+ * Copyright 2026 Avunu LLC (avu.nu)
+ * License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
+ *
+ * The app's own stylex.create() rules, compiled by @stylexswc into the marker
+ * below, so they ship in this hashed file (and the service worker's
+ * precache) instead of a stray stylex.css. Unlayered on purpose: Astryx's
+ * styles live in cascade layers, so these override them where we ask.
+ */
+@stylex;

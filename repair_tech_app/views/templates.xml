@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!-- `vite` is what PwaApp read from the build's manifest. -->
+    <template id="index" name="Technician App">&lt;!DOCTYPE html&gt;
+<html t-att-lang="(request.env.user.lang or 'en_US').replace('_', '-')">
+        <head>
+            <meta charset="utf-8" />
+            <title t-out="pwa.name" />
+            <t t-call="repair_tech_api.pwa_head" />
+            <!-- An installed app shows the page before its stylesheet loads. -->
+            <style
+            >html { background: #f6f6f4; } @media (prefers-color-scheme: dark) { html { background: #151515; } }</style>
+            <link
+                t-foreach="vite['css']"
+                t-as="href"
+                rel="stylesheet"
+                t-att-href="href"
+            />
+            <link
+                t-foreach="vite['preload']"
+                t-as="href"
+                rel="modulepreload"
+                t-att-href="href"
+            />
+            <script type="module" t-att-src="vite['script']" />
+        </head>
+        <body>
+            <div id="app" />
+        </body>
+    </html>
+    </template>
+</odoo>

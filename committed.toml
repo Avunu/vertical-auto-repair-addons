@@ -26,13 +26,14 @@ allowed_scopes = [
   "repair_purchase_order_match",
   "repair_service_productivity",
   "repair_service_workflow",
+  "repair_tech_api",
+  "repair_tech_app",
+  "repair_tech_board",
   "shop_demo",
   "shop_estimate",
   "shop_inspection",
   "shop_inspection_report",
   "shop_scheduling",
-  "shopfloor_repair",
-  "shopfloor_repair_mobile",
   "tests",
 ]
 subject_length = 100

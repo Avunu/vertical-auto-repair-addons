@@ -3,21 +3,20 @@ title: "Avunu auto repair vertical"
 description:
   "Odoo 18.0 modules for automotive repair shops: digital vehicle inspections and the
   customer's inspection report, estimates built from inspection findings, appointment
-  scheduling, the service workflow on the repair order, and an iPad-first technician app
-  on OCA Shopfloor."
+  scheduling, the service workflow on the repair order, an iPad-first technician app,
+  and the shop's job board."
 ---
 
 Odoo 18.0 modules for automotive repair shops: digital vehicle inspections and the
 customer's inspection report, estimates built from inspection findings, appointment
-scheduling, the service workflow on the repair order, and an iPad-first technician app
-on OCA Shopfloor. They are built and maintained by [Avunu LLC](https://avunu.net) and
-published for anyone to use. Together they form an industry vertical in the spirit of
-OCA's `vertical-*` repositories (such as
+scheduling, the service workflow on the repair order, an iPad-first technician app, and
+the shop's job board. They are built and maintained by [Avunu LLC](https://avunu.net)
+and published for anyone to use. Together they form an industry vertical in the spirit
+of OCA's `vertical-*` repositories (such as
 [OCA/vertical-hotel](https://github.com/OCA/vertical-hotel)), built on Avunu's
 [repair](https://github.com/Avunu/repair-addons),
-[fleet](https://github.com/Avunu/fleet-addons),
-[EDI](https://github.com/Avunu/edi-addons) and
-[Shopfloor](https://github.com/Avunu/shopfloor-app-addons) addons and on OCA modules.
+[fleet](https://github.com/Avunu/fleet-addons), and
+[EDI](https://github.com/Avunu/edi-addons) addons and on OCA modules.
 
 ## Modules
 
@@ -40,15 +39,16 @@ A repair order's inspections feed both the customer's report and the estimate.
 | `repair_service_productivity`                                   | Computes the Timesheets app's Billable Time and Non-billable Time for repair work: each technician gets their share of a service's invoiced time once the repair order has been invoiced, and clocked attendance beyond that is non-billable; adds an Estimated vs Actual Time measure | AGPL-3.0-or-later |
 | [`repair_purchase_order_match`](repair_purchase_order_match.md) | Links a purchase order imported from an emailed or EDI document to its repair order: automatically when its PO number is a repair order number, otherwise through a TypeSafe AI suggestion that a user confirms from the chatter. Both steps are also available as `muk_mcp` tools     | AGPL-3.0-or-later |
 
-### Technician app
+### Technician app and job board
 
-`shopfloor_repair` holds the REST services and `shopfloor_repair_mobile` the app, so the
-API stays usable without the frontend.
+Installable web apps in React and TypeScript, over typed model methods ("facades") that
+`repair_tech_api` defines and generates the TypeScript from.
 
-| Module                                                  | What it does                                                                                                                                                                                                                                | Licence           |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| [`shopfloor_repair`](shopfloor_repair.md)               | REST services for the technician app, as an OCA Shopfloor scenario: assigned jobs, a work timer, parts consumption, a parts catalogue and digital vehicle inspections                                                                       | AGPL-3.0-or-later |
-| [`shopfloor_repair_mobile`](shopfloor_repair_mobile.md) | The iPad-first technician app on OCA `shopfloor_mobile_base`, served at `/shopfloor/app/repair_shop`, with camera scanning and photo capture; each technician has their own API key and signs in with Google or Apple rather than typing it | AGPL-3.0-or-later |
+| Module                                      | What it does                                                                                                                                                                                                                                                                                                                          | Licence           |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| [`repair_tech_app`](repair_tech_app.md)     | The technician's iPad app at `/repair-tech/app/`: jobs, a work timer per service, parts and the parts catalogue, inspections with measurements and photos, timesheets and the time clock; camera and hardware scanning, opens offline. Replaces `shopfloor_repair` and `shopfloor_repair_mobile` and takes their data over on install | AGPL-3.0-or-later |
+| [`repair_tech_board`](repair_tech_board.md) | The shop's TV board at `/repair-tech/board/`: open jobs as colour-coded cards, one column per technician                                                                                                                                                                                                                              | AGPL-3.0-or-later |
+| [`repair_tech_api`](repair_tech_api.md)     | Typed facades (Pydantic) callable over call_kw and JSON-2, the TypeScript and client generated from them, the plumbing for installable apps, and the board's data                                                                                                                                                                     | AGPL-3.0-or-later |
 
 ### Fleet app and demo data
 
@@ -92,9 +92,9 @@ odoo module add Avunu/vertical-auto-repair-addons 18.0
 Add the repositories listed under Dependencies the same way.
 
 Some modules need setting up after install: appointment types and bookable technicians
-for `shop_scheduling`, a TypeSafe API key for `repair_purchase_order_match`, and
-technician groups, API keys and a server restart for the technician app. Their READMEs
-give the steps.
+for `shop_scheduling`, a TypeSafe API key for `repair_purchase_order_match`, and the
+Technician group, employees and a timesheet project for the technician app. Their
+READMEs give the steps.
 
 ## Dependencies
 
@@ -104,19 +104,20 @@ Each module's `__manifest__.py` is the source of truth. Besides Odoo core module
 Use the 18.0 branch of each repository listed and clone the ones your chosen modules
 need; each Avunu repository's README lists what its own modules need in turn.
 
-| Module                        | Needs from OCA or others                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Python packages |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `shop_inspection`             | `fleet_vehicle_inspection` and `fleet_vehicle_inspection_template` ([OCA/fleet](https://github.com/OCA/fleet)), `repair_fleet_vehicle` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons))                                                                                                                                                                                                                                                                                                                             | none            |
-| `shop_inspection_report`      | `shop_inspection` (this repository)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | none            |
-| `shop_estimate`               | `repair_service_so_sync` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_inspection` (this repository)                                                                                                                                                                                                                                                                                                                                                                                                      | none            |
-| `shop_scheduling`             | `repair_service` and `repair_scheduled_date_calendar_view` ([OCA/repair](https://github.com/OCA/repair)), `resource_booking` ([OCA/calendar](https://github.com/OCA/calendar)), `shop_inspection` (this repository)                                                                                                                                                                                                                                                                                                                | none            |
-| `repair_service_workflow`     | `repair_service_so_sync`, `repair_timesheet_time_control` and `repair_purchase_order_parts` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_scheduling` (this repository)                                                                                                                                                                                                                                                                                                                                   | none            |
-| `repair_service_productivity` | `hr_timesheet_sheet` ([OCA/timesheet](https://github.com/OCA/timesheet)), `repair_service_workflow` (this repository)                                                                                                                                                                                                                                                                                                                                                                                                              | none            |
-| `repair_purchase_order_match` | `edi_purchase_oca` ([OCA/edi-framework](https://github.com/OCA/edi-framework)), `queue_job` ([OCA/queue](https://github.com/OCA/queue)), `muk_mcp` ([muk-it/odoo-modules](https://github.com/muk-it/odoo-modules)), `repair_purchase_order_parts` and `repair_fleet_vehicle` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `edi_purchase_order_import` ([Avunu/edi-addons](https://github.com/Avunu/edi-addons))                                                                                                | `typesafe_sdk`  |
-| `shopfloor_repair`            | `shopfloor_base` ([OCA/shopfloor-app](https://github.com/OCA/shopfloor-app)), `base_rest` ([OCA/rest-framework](https://github.com/OCA/rest-framework)), `jsonifier` ([OCA/server-tools](https://github.com/OCA/server-tools)), `repair_timesheet` ([OCA/repair](https://github.com/OCA/repair)), `repair_timesheet_time_control`, `repair_fleet_vehicle` and `repair_stage` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `repair_service_workflow`, `shop_inspection` and `shop_scheduling` (this repository) | none            |
-| `shopfloor_repair_mobile`     | `shopfloor_mobile_base` and `shopfloor_mobile_base_auth_api_key` ([OCA/shopfloor-app](https://github.com/OCA/shopfloor-app)), `shopfloor_mobile_base_auth_oauth` and `shopfloor_mobile_camera_scan` ([Avunu/shopfloor-app-addons](https://github.com/Avunu/shopfloor-app-addons)), `shopfloor_repair` (this repository)                                                                                                                                                                                                            | none            |
-| `fleet_vehicle_simplify`      | `shop_vehicle_vin` ([Avunu/fleet-addons](https://github.com/Avunu/fleet-addons)), `shop_inspection` (this repository)                                                                                                                                                                                                                                                                                                                                                                                                              | none            |
-| `shop_demo`                   | `l10n_us_gaap` ([OCA/l10n-usa](https://github.com/OCA/l10n-usa)), `repair_fleet_vehicle`, `repair_order_template_service`, `repair_service_so_sync` and `repair_timesheet_time_control` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_vehicle_catalog` and `shop_vehicle_vin` ([Avunu/fleet-addons](https://github.com/Avunu/fleet-addons)), `shop_inspection`, `shop_inspection_report`, `shop_estimate` and `shop_scheduling` (this repository)                                                         | none            |
+| Module                        | Needs from OCA or others                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Python packages |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `shop_inspection`             | `fleet_vehicle_inspection` and `fleet_vehicle_inspection_template` ([OCA/fleet](https://github.com/OCA/fleet)), `repair_fleet_vehicle` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons))                                                                                                                                                                                                                                                                     | none            |
+| `shop_inspection_report`      | `shop_inspection` (this repository)                                                                                                                                                                                                                                                                                                                                                                                                                                        | none            |
+| `shop_estimate`               | `repair_service_so_sync` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_inspection` (this repository)                                                                                                                                                                                                                                                                                                                                              | none            |
+| `shop_scheduling`             | `repair_service` and `repair_scheduled_date_calendar_view` ([OCA/repair](https://github.com/OCA/repair)), `resource_booking` ([OCA/calendar](https://github.com/OCA/calendar)), `shop_inspection` (this repository)                                                                                                                                                                                                                                                        | none            |
+| `repair_service_workflow`     | `repair_service_so_sync`, `repair_timesheet_time_control` and `repair_purchase_order_parts` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_scheduling` (this repository)                                                                                                                                                                                                                                                                           | none            |
+| `repair_service_productivity` | `hr_timesheet_sheet` ([OCA/timesheet](https://github.com/OCA/timesheet)), `repair_service_workflow` (this repository)                                                                                                                                                                                                                                                                                                                                                      | none            |
+| `repair_purchase_order_match` | `edi_purchase_oca` ([OCA/edi-framework](https://github.com/OCA/edi-framework)), `queue_job` ([OCA/queue](https://github.com/OCA/queue)), `muk_mcp` ([muk-it/odoo-modules](https://github.com/muk-it/odoo-modules)), `repair_purchase_order_parts` and `repair_fleet_vehicle` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `edi_purchase_order_import` ([Avunu/edi-addons](https://github.com/Avunu/edi-addons))                                        | `typesafe_sdk`  |
+| `repair_tech_api`             | `repair_stage` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_inspection` and `shop_scheduling` (this repository)                                                                                                                                                                                                                                                                                                                                  | `pydantic`      |
+| `repair_tech_board`           | `repair_tech_api` (this repository)                                                                                                                                                                                                                                                                                                                                                                                                                                        | none            |
+| `repair_tech_app`             | `repair_timesheet_time_control` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `repair_tech_api`, `repair_service_workflow`, `shop_inspection` and `shop_scheduling` (this repository)                                                                                                                                                                                                                                                                   | `pydantic`      |
+| `fleet_vehicle_simplify`      | `shop_vehicle_vin` ([Avunu/fleet-addons](https://github.com/Avunu/fleet-addons)), `shop_inspection` (this repository)                                                                                                                                                                                                                                                                                                                                                      | none            |
+| `shop_demo`                   | `l10n_us_gaap` ([OCA/l10n-usa](https://github.com/OCA/l10n-usa)), `repair_fleet_vehicle`, `repair_order_template_service`, `repair_service_so_sync` and `repair_timesheet_time_control` ([Avunu/repair-addons](https://github.com/Avunu/repair-addons)), `shop_vehicle_catalog` and `shop_vehicle_vin` ([Avunu/fleet-addons](https://github.com/Avunu/fleet-addons)), `shop_inspection`, `shop_inspection_report`, `shop_estimate` and `shop_scheduling` (this repository) | none            |
 
 `shop_demo` seeds a company named USA Demo Company, which `l10n_us_gaap`'s demo data
 creates, and stops with an error if there is none: install it into a database with demo
@@ -127,9 +128,10 @@ data.
 for different models; `shop_demo`'s README describes how cancelling a repair order fails
 when both are installed.
 
-`shopfloor_repair_mobile` has no build step: its Vue components are plain ES modules.
-The npm setup in its `static/` directory is a development check only, and production
-needs no Node; see its README.
+`repair_tech_app` and `repair_tech_board` are compiled frontends: each has a
+`package.json` and a pnpm lockfile, and its `build` script writes `static/dist/`, which
+is not committed. odoo-nix builds them into the deployed tree; elsewhere, run
+`pnpm install && pnpm run build` in each before installing it.
 
 ## Development
 
@@ -164,24 +166,22 @@ odoo-bin -c odoo.conf -d <testdb> -i <module> \
 
 Notes:
 
-- `shopfloor_repair`'s README adds `--http-port 8098 --gevent-port 8097` to the command,
-  which keeps the test run clear of a server on the default ports. Its test products use
-  `SFR-TEST-*` barcodes, because `product.barcode` is unique across the database.
+- `repair_tech_app` and `repair_tech_board` have browser tests that run the built
+  frontend in Chrome; they are skipped until it is built (`odoo module build`).
+  `repair_tech_app`'s frontend also has its own unit tests: `pnpm test` in the addon.
+  Its test products use `RTA-TEST-*` barcodes, because `product.barcode` is unique
+  across the database.
 - `repair_purchase_order_match` needs `typesafe_sdk` installed even to run its tests;
   they replace the TypeSafe client with a mock, so no API key is needed.
-- `shop_demo`, `fleet_vehicle_simplify`, `repair_service_productivity` and
-  `shopfloor_repair_mobile` have no automated tests. `shopfloor_repair_mobile`'s README
-  describes a development check instead: `npm install && npm run typecheck` in its
-  `static/` directory type-checks the app's JSDoc types and compiles every component
-  template with the Vue version the browser runs.
+- `shop_demo`, `fleet_vehicle_simplify` and `repair_service_productivity` have no
+  automated tests.
 
 ## Licence
 
 Every module is licensed under the
-[GNU Affero General Public License v3.0 or later](https://github.com/Avunu/vertical-auto-repair-addons/blob/18.0/LICENSE).
-The licence of each module is also stated in its `__manifest__.py` (`AGPL-3`, Odoo's
-identifier for version 3) and in its source file headers. No module vendors third-party
-code.
+[GNU Affero General Public License v3.0 or later](LICENSE). The licence of each module
+is also stated in its `__manifest__.py` (`AGPL-3`, Odoo's identifier for version 3) and
+in its source file headers. No module vendors third-party code.
 
 ## Provenance
 
