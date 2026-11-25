@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo noupdate="1">
+    <!--
+        The job board's six statuses are stages. Three already exist in
+        repair_stage (Waiting for Customer, Waiting for Parts, Under Repair);
+        three are new, all of a confirmed order. The stages before Confirmed
+        and Confirmed itself carry no board status, so the board leaves their
+        orders off.
+    -->
+    <record id="repair_stage.stage_waiting_customer" model="repair.order.stage">
+        <field name="board_status">cust</field>
+    </record>
+    <record id="repair_stage.stage_waiting_parts" model="repair.order.stage">
+        <field name="board_status">parts</field>
+    </record>
+    <record id="repair_stage.stage_under_repair" model="repair.order.stage">
+        <field name="board_status">repair</field>
+    </record>
+    <record id="stage_waiting_diagnostics" model="repair.order.stage">
+        <field name="name">Waiting for Diagnostics</field>
+        <field name="sequence">22</field>
+        <field name="state">confirmed</field>
+        <field name="board_status">diag</field>
+    </record>
+    <record id="stage_waiting_pa_inspection" model="repair.order.stage">
+        <field name="name">Waiting for PA Inspection</field>
+        <field name="sequence">24</field>
+        <field name="state">confirmed</field>
+        <field name="board_status">pa</field>
+    </record>
+    <record id="stage_ready_for_repair" model="repair.order.stage">
+        <field name="name">Ready for Repair</field>
+        <field name="sequence">45</field>
+        <field name="state">confirmed</field>
+        <field name="board_status">ready</field>
+    </record>
+</odoo>

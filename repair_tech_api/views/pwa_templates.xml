@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!--
+        The <head> tags that make a page installable. t-call it from a page
+        rendered through PwaApp.render(), which puts `pwa` in the context.
+        `odoo-server-version` tells the app's client which transport to use
+        (call_kw up to 18.0, JSON-2 from 19.0).
+    -->
+    <template id="pwa_head" name="Technician app: PWA head">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <meta name="theme-color" t-att-content="pwa.theme_color" />
+        <meta name="odoo-server-version" t-att-content="pwa.server_version" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            t-att-content="pwa.status_bar_style"
+        />
+        <meta name="apple-mobile-web-app-title" t-att-content="pwa.short_name" />
+        <link rel="manifest" t-attf-href="#{pwa.scope}manifest.webmanifest" />
+        <link rel="icon" type="image/png" t-att-href="pwa.icon(192)" />
+        <link rel="apple-touch-icon" t-att-href="pwa.icon(192)" />
+        <script type="module">
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.register(<t
+            t-out="json.dumps(pwa.scope + 'sw.js')"
+        />);
+            }
+        </script>
+    </template>
+</odoo>
