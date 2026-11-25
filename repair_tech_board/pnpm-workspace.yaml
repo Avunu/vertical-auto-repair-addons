@@ -1,0 +1,7 @@
+# The addon is one package; this file only carries pnpm settings, which the
+# Nix install reads too (odoo-nix docs/development/frontend.md).
+#
+# Install scripts stay off, as they are in the Nix build (--ignore-scripts):
+# Vite 8 bundles with Rolldown, so esbuild's native binary is never needed.
+allowBuilds:
+  esbuild: false
