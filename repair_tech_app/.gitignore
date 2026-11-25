@@ -1,0 +1,3 @@
+node_modules/
+# Built by `vite build` (odoo-nix builds it into builtOdoo; `devenv up` keeps it built).
+static/dist/

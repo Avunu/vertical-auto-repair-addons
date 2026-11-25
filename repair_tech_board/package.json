@@ -1,0 +1,33 @@
+{
+  "name": "repair_tech_board",
+  "private": true,
+  "description": "The shop's job board: React 19 (React Compiler, in Rust) and TypeScript 7, bundled by Vite into static/dist/, over repair_tech_api's board_jobs facade.",
+  "type": "module",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^12.9.0"
+    }
+  },
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "watch": "vite build --watch",
+    "check": "tsc --noEmit && node ../repair_tech_api/tools/generate_api_types.mjs frontend/api --check",
+    "generate": "python ../repair_tech_api/tools/export_api_schema.py --module repair_tech_api --title RepairTechBoardApi --out frontend/api/api.schema.json && node ../repair_tech_api/tools/generate_api_types.mjs frontend/api"
+  },
+  "dependencies": {
+    "@fontsource/barlow-condensed": "5.3.0",
+    "@fontsource/barlow-semi-condensed": "5.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "json-schema-to-typescript": "^16.0.0",
+    "oxc-transform-react": "^0.158.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "repair_tech_app",
+  "private": true,
+  "description": "The technician's iPad app: React 19 (React Compiler, in Rust), TypeScript 7 and Astryx, bundled by Vite/Rolldown into static/dist/, over the repair.tech.app facades.",
+  "type": "module",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^12.9.0"
+    }
+  },
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "watch": "vite build --watch",
+    "check": "tsc --noEmit && oxlint --deny-warnings && node ../repair_tech_api/tools/generate_api_types.mjs frontend/api --check",
+    "test": "vitest run",
+    "generate": "python ../repair_tech_api/tools/export_api_schema.py --module repair_tech_app --title RepairTechApp --out frontend/api/api.schema.json && node ../repair_tech_api/tools/generate_api_types.mjs frontend/api",
+    "astryx": "astryx"
+  },
+  "dependencies": {
+    "@astryxdesign/core": "^0.7.17",
+    "@astryxdesign/theme-neutral": "^0.7.17",
+    "@heroicons/react": "^2.2.0",
+    "@stylexjs/stylex": "^0.19.2",
+    "@tanstack/query-async-storage-persister": "^5.108.4",
+    "@tanstack/react-query": "^5.108.4",
+    "@tanstack/react-query-persist-client": "^5.108.4",
+    "@tanstack/react-router": "^1.170.46",
+    "barcode-detector": "^3.2.4",
+    "idb-keyval": "^6.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zxing-wasm": "3.1.7"
+  },
+  "devDependencies": {
+    "@astryxdesign/cli": "^0.7.17",
+    "@stylexswc/unplugin": "0.19.2",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.13",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "happy-dom": "^21.0.4",
+    "json-schema-to-typescript": "^16.0.0",
+    "oxc-transform-react": "^0.158.0",
+    "oxlint": "^1.95.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
+  }
+}

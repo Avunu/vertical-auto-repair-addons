@@ -1,0 +1,215 @@
+{
+  "$defs": {
+    "Board": {
+      "additionalProperties": false,
+      "description": "Everything the shop's job board draws.",
+      "properties": {
+        "job_types": {
+          "description": "Every appointment type with a board icon, for the board's key.",
+          "items": {
+            "$ref": "#/$defs/BoardJobType"
+          },
+          "title": "Job Types",
+          "type": "array"
+        },
+        "jobs": {
+          "description": "Open jobs whose stage has a board status, scheduled for today or\nearlier or not scheduled yet.",
+          "items": {
+            "$ref": "#/$defs/BoardJob"
+          },
+          "title": "Jobs",
+          "type": "array"
+        },
+        "technicians": {
+          "description": "Everyone with an open job that shows, by name: one column each.",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "Technicians",
+          "type": "array"
+        }
+      },
+      "required": [
+        "jobs",
+        "technicians",
+        "job_types"
+      ],
+      "title": "Board",
+      "type": "object"
+    },
+    "BoardJob": {
+      "additionalProperties": false,
+      "description": "One card on the shop's job board.",
+      "properties": {
+        "customer": {
+          "title": "Customer",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "job_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BoardJobType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The job's appointment type, when that type has a board icon."
+        },
+        "name": {
+          "description": "The order's reference, e.g. ``RO/00123``.",
+          "title": "Name",
+          "type": "string"
+        },
+        "number": {
+          "description": "The digits of ``name`` without leading zeros, for the card: ``123``.",
+          "title": "Number",
+          "type": "string"
+        },
+        "status": {
+          "description": "From the job's stage (``repair.order.stage.board_status``).",
+          "enum": [
+            "diag",
+            "pa",
+            "cust",
+            "parts",
+            "ready",
+            "repair"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "technician_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "``None`` puts the card in the board's unassigned column.",
+          "title": "Technician Id"
+        },
+        "vehicle": {
+          "description": "Model year and model, e.g. ``2019 Cascadia``. Empty without a vehicle.",
+          "title": "Vehicle",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "number",
+        "customer",
+        "vehicle",
+        "job_type",
+        "status",
+        "technician_id"
+      ],
+      "title": "BoardJob",
+      "type": "object"
+    },
+    "BoardJobType": {
+      "additionalProperties": false,
+      "description": "An appointment type with a job board icon.",
+      "properties": {
+        "icon": {
+          "enum": [
+            "car",
+            "truck"
+          ],
+          "title": "Icon",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "label": {
+          "description": "For the board's key, e.g. ``Heavy truck``.",
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "icon"
+      ],
+      "title": "BoardJobType",
+      "type": "object"
+    },
+    "BoardJobsMethod": {
+      "description": "The shop's job board: every open job whose stage has a board status,\nscheduled for today or earlier or not scheduled yet, and the\ntechnicians who have open work. Not limited to the current user's\njobs. A job booked for a later day stays off until its day.",
+      "properties": {
+        "params": {
+          "$ref": "#/$defs/BoardJobsParams"
+        },
+        "result": {
+          "$ref": "#/$defs/Board"
+        }
+      },
+      "required": [
+        "params",
+        "result"
+      ],
+      "title": "BoardJobsMethod",
+      "type": "object"
+    },
+    "BoardJobsParams": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "BoardJobsParams",
+      "type": "object"
+    },
+    "Ref": {
+      "additionalProperties": false,
+      "description": "Any record shown by name.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Ref",
+      "type": "object"
+    },
+    "RepairOrderMethods": {
+      "description": "Facades on repair.order.",
+      "properties": {
+        "board_jobs": {
+          "$ref": "#/$defs/BoardJobsMethod"
+        }
+      },
+      "required": [
+        "board_jobs"
+      ],
+      "title": "RepairOrderMethods",
+      "type": "object"
+    }
+  },
+  "description": "Facades defined by repair_tech_api.",
+  "properties": {
+    "repair.order": {
+      "$ref": "#/$defs/RepairOrderMethods"
+    }
+  },
+  "required": [
+    "repair.order"
+  ],
+  "title": "RepairTechBoardApi",
+  "type": "object"
+}

@@ -106,6 +106,36 @@
         "repair_service_workflow/static/description"
       ]
     },
+    "repair_tech_api": {
+      "component": "repair_tech_api-18.0",
+      "exclude-paths": [
+        "repair_tech_api/tests",
+        "repair_tech_api/readme",
+        "repair_tech_api/i18n",
+        "repair_tech_api/i18n_extra",
+        "repair_tech_api/static/description"
+      ]
+    },
+    "repair_tech_app": {
+      "component": "repair_tech_app-18.0",
+      "exclude-paths": [
+        "repair_tech_app/tests",
+        "repair_tech_app/readme",
+        "repair_tech_app/i18n",
+        "repair_tech_app/i18n_extra",
+        "repair_tech_app/static/description"
+      ]
+    },
+    "repair_tech_board": {
+      "component": "repair_tech_board-18.0",
+      "exclude-paths": [
+        "repair_tech_board/tests",
+        "repair_tech_board/readme",
+        "repair_tech_board/i18n",
+        "repair_tech_board/i18n_extra",
+        "repair_tech_board/static/description"
+      ]
+    },
     "shop_demo": {
       "component": "shop_demo-18.0",
       "exclude-paths": [
@@ -154,26 +184,6 @@
         "shop_scheduling/i18n",
         "shop_scheduling/i18n_extra",
         "shop_scheduling/static/description"
-      ]
-    },
-    "shopfloor_repair": {
-      "component": "shopfloor_repair-18.0",
-      "exclude-paths": [
-        "shopfloor_repair/tests",
-        "shopfloor_repair/readme",
-        "shopfloor_repair/i18n",
-        "shopfloor_repair/i18n_extra",
-        "shopfloor_repair/static/description"
-      ]
-    },
-    "shopfloor_repair_mobile": {
-      "component": "shopfloor_repair_mobile-18.0",
-      "exclude-paths": [
-        "shopfloor_repair_mobile/tests",
-        "shopfloor_repair_mobile/readme",
-        "shopfloor_repair_mobile/i18n",
-        "shopfloor_repair_mobile/i18n_extra",
-        "shopfloor_repair_mobile/static/description"
       ]
     }
   }

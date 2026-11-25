@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Avunu LLC (avu.nu)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo noupdate="1">
+    <!--
+        The settings that default to on. Settings delete a boolean parameter
+        when it is turned off, so the app reads a missing parameter as off and
+        these start the shop where shopfloor_repair's scenario options did.
+    -->
+    <record id="param_allow_finish" model="ir.config_parameter">
+        <field name="key">repair_tech_app.allow_finish</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_show_unassigned" model="ir.config_parameter">
+        <field name="key">repair_tech_app.show_unassigned</field>
+        <field name="value">True</field>
+    </record>
+</odoo>

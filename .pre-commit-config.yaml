@@ -27,6 +27,13 @@ exclude: |
   # release-please writes these in its own style
   (^|/)CHANGELOG\.md$|^\.release-please-manifest\.json$|
   # odoo-nix:local-begin exclude
+  # Generated: a frontend's typed API (repair_tech_api/tools), Astryx's theme
+  # module and agent docs (`astryx theme add`, `astryx init`), pnpm's
+  # lockfiles (multi-document YAML since pnpm 12).
+  /frontend/api/|/astryx-themes\.js$|^repair_tech_app/(AGENTS|GEMINI)\.md$|(^|/)pnpm-lock\.yaml$|
+  # ES modules the OWL-oriented ESLint config can't parse; tsc and oxlint
+  # check the frontends instead.
+  ^repair_tech_api/tools/generate_api_types\.mjs$|
   # odoo-nix:local-end exclude
   # odoo-nix: locks
   (^|/)(uv|flake)\.lock$|(^|/)package-lock\.json$
